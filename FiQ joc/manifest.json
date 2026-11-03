@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "Demolición con FiQ",
+  "short_name": "Demolición FiQ",
+  "description": "Juego de catapulta de Física y Química: derriba estructuras con energía cinética, ondas de choque y combustión.",
+  "lang": "es",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0d2533",
+  "theme_color": "#0d2533",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
