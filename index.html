@@ -460,7 +460,7 @@ const unlockedAt=n=>UNLOCK.slice(0,n+1).flat();
 // Escala coherente con g = 9,8 m/s²: 20 px = 1 m y cada fotograma dura DT_S segundos
 const PX_M=20, G_MS2=9.8, DT_S=Math.sqrt(gravity/(PX_M*G_MS2)), V_MS=1/(PX_M*DT_S), WIND_N=1/(PX_M*DT_S*DT_S);   // V_MS: m/s por px/fotograma · WIND_N: N sobre 1 kg por px/fotograma²
 const MERGE_GAP=24, MAX_GAP=14; // huecos mayores que MAX_GAP entre grupos de estructuras se reducen a MAX_GAP
-const BURN_T=520, BLOCK_DPS=.009, TARGET_DPS=.0085, TARGET_BURN=150, PATCH_LIFE=220, DROPS=8; // fuego
+const BURN_T=520, BLOCK_DPS=.009, TARGET_DPS=.0085, TARGET_BURN=150, PATCH_LIFE=220, DROPS=10; // fuego
 const FALL_PX=110;         // píxeles de caída de un objetivo atrapado por la red por cada punto de daño
 const AIR_TARGETS=[
  [[270,170,0,12],[330,235,10,12]],   // nivel 1: el segundo volador, más bajo y casi quieto
