@@ -449,8 +449,30 @@ const NEAR_SHIFT=[220,230,300,150,115,60,50,60,120,0,0]; // px que se acercan la
 let tutStep=-1, hintT=null, sheetKey='', paused=true, started=false, wind=0, windLines=[], shards=[], pendingWind=false, ammo={}, ammoBase={}, fires=[], drops=[], fireT=0;
 const NET_R=64;
 const LAB=10, STEP_MS=1000/60;   // LAB: índice del laboratorio libre · paso fijo de física (60 Hz)
-const CANCEL_R=22;   // radio (en unidades del mundo) alrededor de la catapulta donde soltar cancela el disparo
-let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,aimId=null;   // lienzo lógico (≥1000×560 según la ventana), desplazamiento del mundo y píxeles por unidad
+const CANCEL_MOUSE=22, CANCEL_TOUCH=CANCEL_MOUSE*3;   // radio (unidades del mundo) alrededor de la catapulta donde soltar cancela el disparo: ×3 con el dedo
+let cancelR=CANCEL_MOUSE;
+let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,aimId=null;
+// Cámara: en pantallas táctiles se acerca a las estructuras cuando no ocupan la mayor parte de la pantalla.
+// Mundo → pantalla: u = CAMZ·x + CAMTX ; v = CAMZ·y + CAMTY (el suelo se mantiene abajo). VX0/VX1/VY0 = borde visible del mundo.
+let CAMZ=1,CAMTX=0,CAMTY=0,VX0=0,VX1=1000,VY0=0,camBox=null;
+const coarseMQ=window.matchMedia?matchMedia('(pointer: coarse)'):{matches:false};
+function computeCamBox(){
+ let x1=0,top=ground;
+ blocks.forEach(b=>{if(b.alive&&!b.launch){x1=Math.max(x1,b.x+b.w);top=Math.min(top,b.y)}});
+ targets.forEach(t=>{if(t.alive){x1=Math.max(x1,t.x+t.r);top=Math.min(top,t.y-t.r-16)}});
+ // a la izquierda cabe el proyectil estirado; arriba, margen para la parábola
+ camBox=x1>0?{x0:sling.x-140,x1:x1+60,top:Math.min(top-90,sling.y-200)}:null;
+}
+function updateCamera(){
+ let z=1,xc=500;
+ if(coarseMQ.matches&&camBox){
+  z=Math.min(LW/(camBox.x1-camBox.x0),LH/(560-camBox.top),1.7);
+  if(z<1.12)z=1;else xc=(camBox.x0+camBox.x1)/2;
+ }
+ const tx=z===1?OX:LW/2-z*xc,ty=z===1?OY:LH-560*z;
+ if(z!==CAMZ||Math.abs(tx-CAMTX)>.01||Math.abs(ty-CAMTY)>.01){CAMZ=z;CAMTX=tx;CAMTY=ty;bgCache=null}
+ VX0=-CAMTX/CAMZ;VX1=(LW-CAMTX)/CAMZ;VY0=-CAMTY/CAMZ;
+}   // lienzo lógico (≥1000×560 según la ventana), desplazamiento del mundo y píxeles por unidad
 let labMode=false,labWindN=0,labMass=0,windGuide=false,lastSnap=null,shotLog=[],graphN=-1,stats={},idle=0,prevKey=0,pendingCheck=false;
 try{windGuide=localStorage.getItem('catapulta-caos-guia')==='1'}catch(e){}
             // radio de la red abierta
@@ -460,7 +482,7 @@ let blocks=[], targets=[], particles=[], floaters=[], shockwaves=[], projectile=
 // ---------- Audio (sintetizado con Web Audio, sin archivos externos) ----------
 const sfx=(()=>{
  const AC=(typeof window!=='undefined')&&(window.AudioContext||window.webkitAudioContext)||null;
- let ac=null,master=null,nb=null,muted=false,active=0;const last={};
+ let ac=null,master=null,nb=null,muted=false,ends=[];const last={};
  try{muted=localStorage.getItem('catapulta-caos-mute')==='1'}catch(e){}
  function unlock(){
   if(!AC)return;
@@ -470,25 +492,31 @@ const sfx=(()=>{
     const comp=ac.createDynamicsCompressor();master.connect(comp);comp.connect(ac.destination);
     nb=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
    }
-   if(ac.state==='suspended')ac.resume();
+   if(!ac._ready){ac._ready=true;
+    ac.onstatechange=()=>{if(ac&&ac.state!=='running'&&!document.hidden){try{ac.resume()}catch(e){}}};
+    try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}   // iOS: suena aunque el interruptor lateral esté en silencio
+    try{const sb=ac.createBuffer(1,1,22050),ss=ac.createBufferSource();ss.buffer=sb;ss.connect(ac.destination);ss.start(0)}catch(e){}   // "despierta" el audio en iOS
+   }
+   if(ac.state!=='running'){const r=ac.resume&&ac.resume();if(r&&r.catch)r.catch(()=>{})}
   }catch(e){ac=null}
- }
+  }
  const can=(key,gap)=>{
   if(!ac||muted||settling)return false;
-  const t=ac.currentTime;if(last[key]!==undefined&&t-last[key]<gap)return false;
-  last[key]=t;return active<30;
+   if(ac.state!=='running'){try{ac.resume()}catch(e){}return false}
+   const t=ac.currentTime;if(last[key]!==undefined&&t-last[key]<gap/1000)return false;   // gap está en milisegundos
+   last[key]=t;ends=ends.filter(e=>e>t);return ends.length<36;
  };
  function tone(f,d,o={}){
   const t=ac.currentTime+(o.delay||0),osc=ac.createOscillator(),g=ac.createGain(),v=Math.max(.0002,o.vol===undefined?.25:o.vol);
   osc.type=o.type||'sine';osc.frequency.setValueAtTime(f,t);if(o.to)osc.frequency.exponentialRampToValueAtTime(Math.max(20,o.to),t+d);
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+(o.attack||.005));g.gain.exponentialRampToValueAtTime(.0001,t+d);
-  osc.connect(g);g.connect(master);osc.start(t);osc.stop(t+d+.03);active++;osc.onended=()=>{active--};
+  osc.connect(g);g.connect(master);osc.start(t);osc.stop(t+d+.03);ends.push(t+d+.06);
  }
  function noise(d,o={}){
   const t=ac.currentTime+(o.delay||0),src=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain(),v=Math.max(.0002,o.vol===undefined?.25:o.vol);
   src.buffer=nb;f.type=o.type||'lowpass';f.Q.value=o.q||1;f.frequency.setValueAtTime(o.freq||1000,t);if(o.to)f.frequency.exponentialRampToValueAtTime(Math.max(30,o.to),t+d);
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+(o.attack||.003));g.gain.exponentialRampToValueAtTime(.0001,t+d);
-  src.connect(f);f.connect(g);g.connect(master);src.start(t,Math.random()*1.5,d+.05);active++;src.onended=()=>{active--};
+  src.connect(f);f.connect(g);g.connect(master);src.start(t,Math.random()*1.5,d+.05);ends.push(t+d+.08);
  }
  function tinkle(n,vol){
   for(let i=0;i<n;i++)tone(2000+Math.random()*3800,.06+Math.random()*.1,{vol:.12*vol,delay:Math.random()*.28,type:i%3?'sine':'triangle'});
@@ -756,6 +784,7 @@ function setupLevel(n){
  // Anclaje: todo bloque que toca el suelo queda fijado con su cimiento
  blocks.forEach(b=>{if(b.y+b.h>=ground-1){b.anchored=true;b.foundation={x:b.x-5,w:b.w+10,broken:false}}});
  settleStructures();
+ computeCamBox();updateCamera();
  integrityMax=blocks.filter(b=>!b.launch).reduce((s,b)=>s+b.strength,0)||1;
  prevKey=progKey();
  updateHud();
@@ -836,7 +865,7 @@ function updateHud(){
 function roundedRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
 let bgCache=null,bgKey=-1;
 function paintBackground(c){
- const X0=-OX,X1=1000+OX,Y0=-OY;const g=c.createLinearGradient(0,Y0,0,560);g.addColorStop(0,'#f8fcf6');g.addColorStop(1,'#e2edee');c.fillStyle=g;c.fillRect(X0-4,Y0-4,LW+8,LH+8);
+ const X0=VX0,X1=VX1,Y0=VY0;const g=c.createLinearGradient(0,Y0,0,560);g.addColorStop(0,'#f8fcf6');g.addColorStop(1,'#e2edee');c.fillStyle=g;c.fillRect(X0-4,Y0-4,(X1-X0)+8,LH/CAMZ+8);
  // papel milimetrado: 1 m = 20 px, cuadrícula mayor cada 5 m (alineada con la catapulta)
  const ox=((sling.x%20)+20)%20,oM=((sling.x%100)+100)%100,xs=ox+Math.floor((X0-ox)/20)*20,xM=oM+Math.floor((X0-oM)/100)*100;
  c.lineWidth=1;c.strokeStyle='rgba(27,127,153,.13)';c.beginPath();
@@ -866,8 +895,8 @@ function paintBackground(c){
  c.fillText('Ep = m·g·h',330,48);c.fillText('Ec = ½·m·v²',120,48);c.fillText('F = m·a',810,48);
  c.font='700 13px ui-monospace,Menlo,Consolas,monospace';c.fillText('C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O',560,210);c.fillText('p = m·v',840,200);c.fillText('C₂H₅OH',262,196);
  // banco de pruebas con regla (en metros desde la catapulta)
- c.fillStyle='#35505e';c.fillRect(X0-4,ground,LW+8,80);
- c.fillStyle='#78a0b2';c.fillRect(X0-4,ground,LW+8,6);
+ c.fillStyle='#35505e';c.fillRect(X0-4,ground,(X1-X0)+8,80);
+ c.fillStyle='#78a0b2';c.fillRect(X0-4,ground,(X1-X0)+8,6);
  c.strokeStyle='#d9eef5';c.lineWidth=1.5;c.beginPath();
  for(let x=xs;x<=X1;x+=20){c.moveTo(x+.5,ground+6);c.lineTo(x+.5,ground+((Math.round((x-sling.x)/20)%5===0)?18:11))}
  c.stroke();
@@ -877,12 +906,12 @@ function paintBackground(c){
  for(let k=1;k<=4;k++)c.fillText((k*5)+' m',X0+6,ground-k*100+14);
 }
 function drawBackground(){
- const key=sling.x+'|'+LW+'|'+LH+'|'+SC;
+ const key=sling.x+'|'+LW+'|'+LH+'|'+SC+'|'+CAMZ+'|'+CAMTX+'|'+CAMTY;
  if(bgKey!==key){bgKey=key;bgCache=null}
  if(!bgCache&&typeof document.createElement==='function'){
-  try{const cv=document.createElement('canvas');cv.width=Math.round(LW*SC);cv.height=Math.round(LH*SC);const c=cv.getContext('2d');c.setTransform(SC,0,0,SC,OX*SC,OY*SC);paintBackground(c);bgCache=cv}catch(e){bgCache=null}
+  try{const cv=document.createElement('canvas');cv.width=Math.round(LW*SC);cv.height=Math.round(LH*SC);const c=cv.getContext('2d');c.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);paintBackground(c);bgCache=cv}catch(e){bgCache=null}
  }
- if(bgCache)ctx.drawImage(bgCache,-OX,-OY,LW,LH);else paintBackground(ctx);
+ if(bgCache)ctx.drawImage(bgCache,VX0,VY0,VX1-VX0,LH/CAMZ);else paintBackground(ctx);
 }
 function drawFoundations(){
  blocks.forEach(b=>{
@@ -946,12 +975,13 @@ function drawBars(){
  targets.forEach(t=>{if(t.alive)drawBar(t.x,t.y-t.r-11,30,t.hp/t.maxhp)});
 }
 function drawWind(){
- const kmh=Math.abs(wind)*600,dir=wind<0?-1:1,cx=500,cy=34-OY;
+ const kmh=Math.abs(wind)*600,dir=wind<0?-1:1,cx=0,cy=0;
  // rayas de viento
  const a=Math.min(.5,.12+Math.abs(wind)*7);
  if(kmh>=2){ctx.strokeStyle='rgba(27,127,200,'+(a*1.5).toFixed(2)+')';ctx.lineWidth=2;ctx.lineCap='round';
   windLines.forEach(w=>{const len=(14+Math.abs(wind)*900)*w.l;ctx.beginPath();ctx.moveTo(w.x,w.y);ctx.lineTo(w.x+dir*len,w.y);ctx.stroke()})}
- // panel
+ // panel (en coordenadas de pantalla: arriba y centrado)
+ ctx.save();ctx.translate((LW/2-CAMTX)/CAMZ,(34-CAMTY)/CAMZ);ctx.scale(1/CAMZ,1/CAMZ);
  ctx.fillStyle='#ffffffd9';ctx.beginPath();ctx.roundRect(cx-70,cy-18,140,36,18);ctx.fill();
  ctx.fillStyle='#17324d';ctx.font='bold 14px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
  if(kmh<2){ctx.fillText('🌬️ Calma',cx,cy+1)}
@@ -963,7 +993,7 @@ function drawWind(){
   ctx.beginPath();ctx.moveTo(s,cy);ctx.lineTo(e,cy);ctx.moveTo(e-dir*7,cy-6);ctx.lineTo(e,cy);ctx.lineTo(e-dir*7,cy+6);ctx.stroke();
   ctx.textAlign='left';ctx.fillText((Math.abs(wind)*WIND_N).toFixed(2)+' N',cx+2,cy+1);
  }
- ctx.textBaseline='alphabetic';
+ ctx.restore();ctx.textBaseline='alphabetic';
 }
 function drawTarget(t){
  if(!t.alive)return;
@@ -1082,7 +1112,7 @@ function drawDrops(){
 function drawShockwaves(){
  shockwaves.forEach(w=>{
   const a=Math.max(0,1-w.r/w.maxR);
-  ctx.save();ctx.beginPath();ctx.rect(-OX,-OY,LW,ground+8+OY);ctx.clip();
+  ctx.save();ctx.beginPath();ctx.rect(VX0,VY0,VX1-VX0,ground+8-VY0);ctx.clip();
   const g=ctx.createRadialGradient(w.x,w.y,Math.max(1,w.r*.55),w.x,w.y,w.r);
   g.addColorStop(0,'rgba(190,230,255,0)');g.addColorStop(1,'rgba(210,240,255,'+(a*.45).toFixed(3)+')');
   ctx.fillStyle=g;ctx.beginPath();ctx.arc(w.x,w.y,w.r,0,Math.PI*2);ctx.fill();
@@ -1315,25 +1345,25 @@ function projectileVsBlock(p,b){
  }
  if(!destroyed){p.x+=nx*pen;p.y+=ny*pen}
 }
-function inCancel(){return dragging&&dragPos&&Math.hypot(dragPos.x-sling.x,dragPos.y-sling.y)<CANCEL_R}
+function inCancel(){return dragging&&dragPos&&Math.hypot(dragPos.x-sling.x,dragPos.y-sling.y)<cancelR}
 function cancelAim(){dragging=false;dragPos=null;wasCancel=false;aimId=null}
 function drawCancelZone(){
  if(!dragging||!dragPos||(projectile&&projectile.fired))return;
  const on=inCancel(),pu=Math.sin(Date.now()/160);
  ctx.save();ctx.lineCap='round';
- if(on){ctx.fillStyle='rgba(255,107,53,.16)';ctx.beginPath();ctx.arc(sling.x,sling.y,CANCEL_R,0,Math.PI*2);ctx.fill()}
+ if(on){ctx.fillStyle='rgba(255,107,53,.16)';ctx.beginPath();ctx.arc(sling.x,sling.y,cancelR,0,Math.PI*2);ctx.fill()}
  ctx.strokeStyle=on?'#ff6b35':'rgba(18,48,63,.45)';ctx.lineWidth=on?3.5:2;ctx.setLineDash([6,5]);
- ctx.beginPath();ctx.arc(sling.x,sling.y,CANCEL_R+(on?2*pu:0),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+ ctx.beginPath();ctx.arc(sling.x,sling.y,cancelR+(on?2*pu:0),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
  if(on){ // aspa de cancelar y mensaje
-  const q=7;ctx.lineWidth=4;ctx.strokeStyle='#ff6b35';ctx.beginPath();ctx.moveTo(sling.x-q,sling.y-q-CANCEL_R-16);ctx.lineTo(sling.x+q,sling.y+q-CANCEL_R-16);ctx.moveTo(sling.x+q,sling.y-q-CANCEL_R-16);ctx.lineTo(sling.x-q,sling.y+q-CANCEL_R-16);ctx.stroke();
+  const q=7;ctx.lineWidth=4;ctx.strokeStyle='#ff6b35';ctx.beginPath();ctx.moveTo(sling.x-q,sling.y-q-cancelR-16);ctx.lineTo(sling.x+q,sling.y+q-cancelR-16);ctx.moveTo(sling.x+q,sling.y-q-cancelR-16);ctx.lineTo(sling.x-q,sling.y+q-cancelR-16);ctx.stroke();
   ctx.font='800 14px system-ui,sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.fillStyle='#c4471b';
-  ctx.strokeText('Suelta para cancelar',sling.x,sling.y-CANCEL_R-34);ctx.fillText('Suelta para cancelar',sling.x,sling.y-CANCEL_R-34);
+  ctx.strokeText('Suelta para cancelar',sling.x,sling.y-cancelR-34);ctx.fillText('Suelta para cancelar',sling.x,sling.y-cancelR-34);
  }
  ctx.restore();
 }
 function launch(){
  const dx=sling.x-dragPos.x,dy=sling.y-dragPos.y,dist=Math.hypot(dx,dy);
- if(dist<CANCEL_R){cancelAim();sfx.tick();return}
+ if(dist<cancelR){cancelAim();sfx.tick();return}
  if(!(ammo[ammoSel.value]>0)){dragging=false;dragPos=null;return}
  lastSnap=takeSnap();const m=materials[ammoSel.value],scale=Math.min(1.6,dist/65)*m.speed;
  projectile={x:sling.x,y:sling.y,r:m.r,mass:projMass(ammoSel.value),vx:dx*.075*scale,vy:dy*.075*scale,kind:ammoSel.value,fired:true,bounce:m.bounce,age:0,still:0,shockCd:0,shocks:0,open:false,openT:0,netR:0,broken:false};
@@ -1513,7 +1543,7 @@ function showToast(success){
 }
 function render(){
  ctx.save();
- ctx.setTransform(SC,0,0,SC,OX*SC,OY*SC);
+ctx.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);
  if(shake>0)ctx.translate((Math.random()-.5)*shake*2,(Math.random()-.5)*shake*2);
  drawBackground();drawFoundations();
  blocks.forEach(drawBlock);targets.forEach(drawTarget);drawFires();drawBurning();drawBars();
@@ -1561,7 +1591,7 @@ function loop(ts){
  if(paused||(typeof rotMQ!=='undefined'&&rotMQ.matches))acc=0;else{acc+=dt;let n=0;while(acc>=STEP_MS-.5&&n<5){physics();acc-=STEP_MS;n++}if(n>=5)acc=0}
  render();requestAnimationFrame(loop);
 }
-function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*LW-OX,y:(e.clientY-r.top)/r.height*LH-OY}}
+function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/r.width*LW-CAMTX)/CAMZ,y:((e.clientY-r.top)/r.height*LH-CAMTY)/CAMZ}}
 // ---------- Apuntado: ratón, dedo y lápiz ----------
 // Los Pointer Events unifican ratón y táctil (pointerdown/move/up = touchstart/move/end + mouse). Un solo dedo apunta;
 // los demás se ignoran. En navegadores sin PointerEvent se usan touchstart/touchmove/touchend como alternativa.
@@ -1569,10 +1599,10 @@ function aimDown(e){
  if(paused||aimId!==null)return;
  if(projectile?.fired&&projectile.kind==='red'&&!projectile.open){openNet(projectile);return}
  if(won||gameOver||projectile?.fired||ammoLeft()===0)return;
- const p=pointerPos(e),touch=e.pointerType==='touch'||e.pointerType==='pen';
+ const p=pointerPos(e),touch=e.pointerType==='touch'||e.pointerType==='pen'||e.pointerType==='touchfallback';
  const start=dragPos||{x:sling.x,y:sling.y},r1=touch?85:45,r2=touch?100:55;   // zona de agarre más grande para el dedo
  if(Math.hypot(p.x-start.x,p.y-start.y)<r1||Math.hypot(p.x-sling.x,p.y-sling.y)<r2){
-  dragging=true;aimId=e.pointerId;dragPos=p;
+  dragging=true;aimId=e.pointerId;dragPos=p;cancelR=touch?CANCEL_TOUCH:CANCEL_MOUSE;
   if(e.pointerType!=='touchfallback'){try{canvas.setPointerCapture(e.pointerId)}catch(_){}}
  }
 }
@@ -1607,10 +1637,12 @@ canvas.addEventListener('contextmenu',e=>{e.preventDefault();if(dragging)cancelA
 canvas.addEventListener('touchmove',e=>{if(e.cancelable)e.preventDefault()},{passive:false});
 document.addEventListener('gesturestart',e=>e.preventDefault());   // zoom con pellizco en iOS
 // iOS solo permite activar el audio dentro de touchend/click
-['touchend','click'].forEach(t=>document.addEventListener(t,sfx.unlock,{capture:true,passive:true}));
+['touchend','pointerup','click'].forEach(t=>document.addEventListener(t,sfx.unlock,{capture:true,passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)sfx.unlock()});
 // pausa y cancela el apuntado al girar a vertical o al cambiar de app
 const rotMQ=window.matchMedia?matchMedia('(orientation: portrait) and (pointer: coarse) and (max-width: 900px)'):{matches:false};
 if(rotMQ.addEventListener)rotMQ.addEventListener('change',()=>{if(rotMQ.matches)cancelAim()});
+if(coarseMQ.addEventListener)coarseMQ.addEventListener('change',updateCamera);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAim()});
 // intenta fijar la orientación horizontal (Android, ya instalada o en pantalla completa)
 let orientTried=false;
@@ -1693,6 +1725,7 @@ function layout(){
  const dpr=Math.min(3,window.devicePixelRatio||1);let sc=Math.max(.6,Math.min(3,w/lw*dpr));
  while(lw*sc*lh*sc>2.6e7&&sc>.6)sc-=.1;
  if(lw!==LW||lh!==LH||Math.abs(sc-SC)>.02){LW=lw;LH=lh;OX=(lw-1000)/2;OY=lh-560;SC=sc;canvas.width=Math.round(lw*sc);canvas.height=Math.round(lh*sc);bgCache=null}
+ updateCamera();
  st.style.setProperty('--ui',Math.max(.62,Math.min(1.9,Math.min(w/1100,h/620))).toFixed(3));
 }
 (function(){
@@ -1764,7 +1797,18 @@ if(typeof document.addEventListener==='function'){
  document.addEventListener('keydown',e=>{if((e.key||'').toLowerCase()==='m'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){sfx.toggle();refreshMute()}});
 }
 refreshMute();
-if('serviceWorker' in navigator)addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+// Service worker: siempre intenta la versión más reciente; si hay una nueva, recarga sola cuando estés en un menú.
+if('serviceWorker' in navigator){
+ let hadSW=!!navigator.serviceWorker.controller,newVersion=false;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadSW)newVersion=true;hadSW=true});
+ addEventListener('load',()=>{
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
+   reg.update().catch(()=>{});
+   document.addEventListener('visibilitychange',()=>{if(!document.hidden)reg.update().catch(()=>{})});
+  }).catch(()=>{});
+  setInterval(()=>{if(newVersion&&!dragging&&!projectile&&(paused||won||gameOver))location.reload()},1500);
+ });
+}
 refreshGuide();buildChips();setupLevel(0);showScreen('title');drawGraph();requestAnimationFrame(loop);
 })();
 </script>
