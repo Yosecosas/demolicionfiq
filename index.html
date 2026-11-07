@@ -149,7 +149,6 @@
   .sub{font-size:.78rem}
   .controls{gap:6px}
   header button{padding:8px 11px;font-size:.88rem;border-radius:11px}
-  #guideBtn[aria-pressed=true]{background:#fff3ea;box-shadow:0 0 0 2px var(--accent),0 3px 0 #12303f26}
   #reset.primary{background:var(--accent);color:#fff}
   .gamebox{border-width:3px;border-radius:22px;box-shadow:0 18px 44px #12303f2e}
   /* HUD superior izquierdo */
@@ -247,13 +246,6 @@
   body{background-image:none!important;background-color:#0d2533!important}
   main#app{flex:1;min-height:0;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:#0d2533;container-type:normal}
   .gamebox{border:0!important;border-radius:0!important;box-shadow:none!important;max-height:none;flex:none;background:#e9f1ee}
-  .tools{position:absolute;right:12px;top:12px;z-index:4;display:flex;gap:6px;transform:scale(var(--ui,1));transform-origin:top right}
-  .tools button{width:36px;height:36px;padding:0;display:grid;place-items:center;font-size:1rem;border-radius:11px;background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--glass-line);box-shadow:0 2px 8px #12303f22;color:var(--ink)}
-  .tools button:hover:not(:disabled){background:#fff}
-  .tools button:disabled{opacity:.4}
-  .tools button.primary{background:var(--accent);color:#fff}
-  .tools #guideBtn[aria-pressed=true]{background:#fff3ea;box-shadow:0 0 0 2px var(--accent)}
-  .tools #fsBtn[aria-pressed=true]{background:#fff3ea}
   .rcol{top:calc(58px*var(--ui,1));max-height:calc((100% - 150px)/var(--ui,1))}
   canvas#game{width:100%;height:100%;image-rendering:auto}
   .chip.new::after{top:-9px;right:auto;left:8px;font-size:.55rem}
@@ -282,7 +274,6 @@
   @media (display-mode:standalone),(display-mode:fullscreen){#fsBtn{display:none}}
   /* dedos: botones más grandes y sin teclas de atajo */
   @media (pointer:coarse){
-   .tools button{width:44px;height:44px;font-size:1.15rem}
    .dock kbd{display:none}.dock .chips{max-width:100%}
    .chip{min-height:44px}
    .lab input[type=range]{height:30px}
@@ -291,7 +282,6 @@
   @media (pointer:coarse) and (max-height:480px){
    .rcol #sheet,.rcol .gcap,.rcol #graph{display:none}
    .rcol{top:calc(72px*var(--ui,1));width:min(200px,24%)}
-   .tools{transform:scale(.86)}
   }
   /* aviso de girar el móvil (iOS no respeta "orientation" del manifest) */
   #rotate{display:none;position:fixed;inset:0;z-index:999;background:#0d2533;color:#fff;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px;font-weight:700;font-size:1.1rem}
@@ -299,6 +289,43 @@
   @keyframes rot{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
   @media (orientation:portrait) and (pointer:coarse) and (max-width:900px){#rotate{display:flex}}
   @media (prefers-reduced-motion:reduce){#rotate .ph{animation:none;transform:rotate(-90deg)}}
+
+  /* menú de inicio: sin deslizamiento a menos que "Cómo jugar" esté desplegado */
+  .menu .screen{margin:auto}
+  .menu.lock{overflow:hidden;overscroll-behavior:none;touch-action:none}
+  @media (max-height:480px){
+   .screen{padding:8px 16px}
+   .mk{font-size:.68rem}
+   .mt{font-size:2rem;margin:2px 0}
+   .mp{font-size:.95rem;margin:0}
+   .mi{margin:6px auto 10px;max-width:640px;font-size:.8rem;line-height:1.35}
+   .formulas{margin:0 0 12px;font-size:.74rem;gap:6px 8px}
+   .formulas span{padding:2px 8px}
+   .play{font-size:1.15rem;padding:9px 30px}
+   .tip{margin-top:10px;font-size:.78rem}
+   .menu details.help{margin-top:8px}
+   .menu details.help summary{padding:6px 12px;font-size:.85rem}
+  }
+
+  /* ===== botones del juego: sonido · niveles · reiniciar ===== */
+  .tools{position:absolute;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:4;display:flex;gap:10px;transform:scale(var(--uit,1));transform-origin:top right}
+  .tools button.tb{width:62px;height:62px;padding:0;border:0;border-radius:19px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+   color:#fff;font:800 .6rem/1 system-ui,-apple-system,'Segoe UI',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;
+   background:linear-gradient(180deg,var(--c1),var(--c2));box-shadow:0 5px 0 var(--sh),0 9px 18px #0d253f55,inset 0 2px 0 #ffffff55;
+   transition:transform .08s,box-shadow .08s,filter .15s;-webkit-tap-highlight-color:transparent}
+  .tools button.tb svg{width:30px;height:30px;filter:drop-shadow(0 2px 0 #0003)}
+  .tools button.tb:hover{filter:brightness(1.1)}
+  .tools button.tb:active{transform:translateY(4px);box-shadow:0 1px 0 var(--sh),0 4px 9px #0d253f55,inset 0 2px 0 #ffffff55}
+  .tb-snd{--c1:#3cc0df;--c2:#1b86a2;--sh:#0f5f75}
+  .tb-menu{--c1:#4a7389;--c2:#21465a;--sh:#0c2433}
+  .tb-reset{--c1:#ff9a68;--c2:#ff6b35;--sh:#b8431a}
+  .tb-snd.muted{--c1:#9aaeb7;--c2:#667b85;--sh:#46585f}
+  .tb-snd .off{display:none}.tb-snd.muted .on{display:none}.tb-snd.muted .off{display:inline}
+  .tools button.tb.primary{animation:tbpulse 1.1s ease-in-out infinite}
+  @keyframes tbpulse{0%,100%{box-shadow:0 5px 0 var(--sh),0 0 0 0 #ff6b3599,inset 0 2px 0 #ffffff55}50%{box-shadow:0 5px 0 var(--sh),0 0 0 11px #ff6b3500,inset 0 2px 0 #ffffff55}}
+  .rcol{top:calc(84px*var(--uit,1))}
+  @media (pointer:coarse) and (max-height:480px){.rcol{top:calc(84px*var(--uit,1))}}
+  @media (prefers-reduced-motion:reduce){.tools button.tb.primary{animation:none}}
 </style>
 </head>
 <body>
@@ -306,13 +333,15 @@
   <div class="gamebox" id="stage">
     <canvas id="game" width="1000" height="560" aria-label="Juego de catapulta"></canvas>
     <div class="tools" id="tools">
-      <button id="undoBtn" title="Deshacer el último disparo (Z): recuperas la munición y el viento, pero cuenta como un disparo en la puntuación" disabled>⏪</button>
-      <button id="guideBtn" title="Guía de puntos sin viento (pulsa para incluir el viento)" aria-pressed="false">🧭</button>
-      <button id="helpBtn" title="Ver el tutorial">❓</button>
-      <button id="muteBtn" title="Sonido activado (M para silenciar)">🔊</button>
-      <button id="fsBtn" title="Pantalla completa (F)" aria-pressed="false">⛶</button>
-      <button id="menuBtn" title="Elegir nivel (Esc)">☰</button>
-      <button id="reset" title="Reiniciar el nivel">↻</button>
+      <button id="muteBtn" class="tb tb-snd" title="Sonido activado (M para silenciar)" aria-label="Sonido">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 9.5v5h3.6l4.9 4V5.5l-4.9 4H3.5z" fill="currentColor"/><g class="on" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15.6 8.6a4.8 4.8 0 010 6.8"/><path d="M18.4 5.9a8.6 8.6 0 010 12.2"/></g><g class="off" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15.6 9.4l5 5.2M20.6 9.4l-5 5.2"/></g></svg>
+        <span id="muteLbl">Sonido</span></button>
+      <button id="menuBtn" class="tb tb-menu" title="Elegir nivel (Esc)" aria-label="Niveles">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><rect x="3.5" y="3.5" width="7.2" height="7.2" rx="2.2"/><rect x="13.3" y="3.5" width="7.2" height="7.2" rx="2.2"/><rect x="3.5" y="13.3" width="7.2" height="7.2" rx="2.2"/><rect x="13.3" y="13.3" width="7.2" height="7.2" rx="2.2"/></svg>
+        <span>Niveles</span></button>
+      <button id="reset" class="tb tb-reset" title="Reiniciar el nivel" aria-label="Reiniciar">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.2a8 8 0 11-2.7-6"/><path d="M20.4 3.6v5.4h-5.4"/></svg>
+        <span>Reiniciar</span></button>
     </div>
     <div class="hud" aria-label="Estado de la partida">
       <div class="pill lv" id="lvTitle">🧪 Experimento 1</div>
@@ -374,7 +403,7 @@
         <div class="mk">Cuaderno de experimentos</div>
         <h3>Elige un nivel</h3>
         <div class="levels" id="levels"></div>
-        <div class="row"><button id="backBtn">← Inicio</button><button id="labBtn">🔬 Laboratorio libre</button><button class="primary" id="resumeBtn" hidden>Continuar partida</button></div>
+        <div class="row"><button id="backBtn">← Inicio</button><button id="labBtn">🔬 Laboratorio libre</button><button id="tutBtn">❓ Tutorial</button><button id="guideBtn" aria-pressed="false">🧭 Guía sin viento</button><button id="fsBtn">⛶ Pantalla completa</button><button class="primary" id="resumeBtn" hidden>Continuar partida</button></div>
       </section>
     </div>
   </div>
@@ -405,7 +434,7 @@ const blockMats={
  metal:{color:'#aab7c4',strength:8.0,density:3.0,resist:2.3,shockResist:2.5}
 };
 const ground=500, sling={x:150,y:390}, gravity=.34;
-const ANCHOR_BREAK=.4;      // el anclaje cede cuando la vida baja de este porcentaje
+const ANCHOR_BREAK=.55;      // el anclaje cede cuando la vida baja de este porcentaje
 const FALL_SAFE=3.5;        // velocidad de caída sin daño
 const COLLIDE_SAFE=2.2;     // velocidad de choque entre bloques sin daño
 const SHOW_FULL_BARS=false; // true: barras de vida visibles también en bloques intactos
@@ -415,46 +444,48 @@ const TARGET_HP=2;
 const AMMO_ORDER=['wood','stone','metal','rubber','glass','red','fire'];
 const AMMO_PER_LEVEL=[
  {wood:5,stone:4},
- {wood:4,stone:4,rubber:2},
- {wood:4,stone:3,metal:4,rubber:2},
- {wood:3,stone:2,metal:3,rubber:1,glass:2},
- {wood:3,stone:3,metal:3,rubber:2,glass:3,red:2},
- {wood:3,stone:3,metal:2,rubber:1,glass:2,red:2},
- {wood:2,stone:3,metal:2,rubber:1,glass:2,red:1,fire:4},
- {wood:3,stone:2,metal:3,rubber:1,glass:4,red:2,fire:1},
- {wood:3,stone:3,metal:2,rubber:3,glass:2,red:2,fire:2},
- {wood:3,stone:3,metal:3,rubber:2,glass:3,red:3,fire:3}
+ {wood:3,stone:3,rubber:2},
+ {wood:3,stone:3,metal:3,rubber:2},
+ {wood:3,stone:2,metal:2,rubber:1,glass:2},
+ {wood:3,stone:2,metal:2,rubber:1,glass:3},
+ {wood:2,red:6},                    // 6 · solo voladores: la gracia es la red
+ {fire:5},                          // 7 · solo alcohol
+ {wood:2,stone:2,metal:2,rubber:1,glass:3,red:1,fire:1},
+ {wood:2,stone:2,metal:2,rubber:1,glass:1,red:1},
+ {wood:2,stone:3,metal:2,rubber:2,glass:2,red:2,fire:2}
 ];
 // Materiales que se desbloquean en cada nivel (el resto de niveles acumulan los anteriores)
-const UNLOCK=[['wood','stone'],['rubber'],['metal'],['glass'],['red'],[],['fire'],[],[],[]];
+const UNLOCK=[['wood','stone'],['rubber'],['metal'],['glass'],[],['red'],['fire'],[],[],[]];
 const unlockedAt=n=>UNLOCK.slice(0,n+1).flat();
 // Escala coherente con g = 9,8 m/s²: 20 px = 1 m y cada fotograma dura DT_S segundos
 const PX_M=20, G_MS2=9.8, DT_S=Math.sqrt(gravity/(PX_M*G_MS2)), V_MS=1/(PX_M*DT_S), WIND_N=1/(PX_M*DT_S*DT_S);   // V_MS: m/s por px/fotograma · WIND_N: N sobre 1 kg por px/fotograma²
 const MERGE_GAP=24, MAX_GAP=14; // huecos mayores que MAX_GAP entre grupos de estructuras se reducen a MAX_GAP
-const BURN_T=520, BLOCK_DPS=.009, TARGET_DPS=.0085, TARGET_BURN=150, PATCH_LIFE=220, DROPS=16; // fuego
+const BURN_T=520, BLOCK_DPS=.009, TARGET_DPS=.0085, TARGET_BURN=150, PATCH_LIFE=220, DROPS=10; // fuego
 const FALL_PX=110;         // píxeles de caída de un objetivo atrapado por la red por cada punto de daño
 const AIR_TARGETS=[
- [[270,170,0,12],[330,245,22,14]],
+ [[270,170,0,12],[330,235,10,12]],   // nivel 1: el segundo volador, más bajo y casi quieto
  [[260,175,0,12],[310,250,25,14]],
  [[230,170,0,12],[285,250,22,14]],
  [[250,235,22,14],[420,300,25,14]],
  [[230,300,0,14],[330,270,20,14],[560,300,25,14]],
- [],[],
+ [[250,300,10,14],[380,360,22,14],[510,320,0,12],[640,380,25,14]],   // 6 · solo voladores
+ [],
  [[260,190,0,12],[400,260,22,14]],
- [[300,200,0,12],[470,300,22,14]],
+ [],
  [[200,280,0,14],[360,330,20,14],[560,300,25,14],[700,260,0,12]],
  [[430,210,20,14],[560,290,0,12]]
 ];
-const NEAR_SHIFT=[220,230,300,150,115,60,50,60,120,0,0]; // px que se acercan las estructuras a la catapulta en cada nivel (sube el valor = más fácil)
+const NEAR_SHIFT=[220,230,300,150,115,120,50,60,60,0,0]; // px que se acercan las estructuras a la catapulta en cada nivel (sube el valor = más fácil)
 let tutStep=-1, hintT=null, sheetKey='', paused=true, started=false, wind=0, windLines=[], shards=[], pendingWind=false, ammo={}, ammoBase={}, fires=[], drops=[], fireT=0;
 const NET_R=64;
 const LAB=10, STEP_MS=1000/60;   // LAB: índice del laboratorio libre · paso fijo de física (60 Hz)
-const CANCEL_MOUSE=22, CANCEL_TOUCH=CANCEL_MOUSE*3;   // radio (unidades del mundo) alrededor de la catapulta donde soltar cancela el disparo: ×3 con el dedo
+const CANCEL_MOUSE=22, CANCEL_TOUCH=44;   // radio (unidades del mundo) alrededor de la catapulta donde soltar cancela el disparo (44 con el dedo)
 let cancelR=CANCEL_MOUSE;
-let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,aimId=null;
+let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,firstExit=false,aimId=null;
 // Cámara: en pantallas táctiles se acerca a las estructuras cuando no ocupan la mayor parte de la pantalla.
 // Mundo → pantalla: u = CAMZ·x + CAMTX ; v = CAMZ·y + CAMTY (el suelo se mantiene abajo). VX0/VX1/VY0 = borde visible del mundo.
 let CAMZ=1,CAMTX=0,CAMTY=0,VX0=0,VX1=1000,VY0=0,camBox=null;
+const TOUCH_LIFT=36;   // unidades extra de suelo visibles bajo la catapulta en móvil: la barra de munición no tapa la base de las estructuras
 const coarseMQ=window.matchMedia?matchMedia('(pointer: coarse)'):{matches:false};
 function computeCamBox(){
  let x1=0,top=ground;
@@ -465,11 +496,12 @@ function computeCamBox(){
 }
 function updateCamera(){
  let z=1,xc=500;
+ const yb=560+(coarseMQ.matches?TOUCH_LIFT:0);   // coordenada del mundo que queda en el borde inferior de la pantalla
  if(coarseMQ.matches&&camBox){
-  z=Math.min(LW/(camBox.x1-camBox.x0),LH/(560-camBox.top),1.7);
+  z=Math.min(LW/(camBox.x1-camBox.x0),LH/(yb-camBox.top),1.7);
   if(z<1.12)z=1;else xc=(camBox.x0+camBox.x1)/2;
  }
- const tx=z===1?OX:LW/2-z*xc,ty=z===1?OY:LH-560*z;
+ const tx=z===1?OX:LW/2-z*xc,ty=LH-yb*z;
  if(z!==CAMZ||Math.abs(tx-CAMTX)>.01||Math.abs(ty-CAMTY)>.01){CAMZ=z;CAMTX=tx;CAMTY=ty;bgCache=null}
  VX0=-CAMTX/CAMZ;VX1=(LW-CAMTX)/CAMZ;VY0=-CAMTY/CAMZ;
 }   // lienzo lógico (≥1000×560 según la ventana), desplazamiento del mundo y píxeles por unidad
@@ -566,13 +598,13 @@ const sfx=(()=>{
 function resetStats(){stats={maxEc:0,maxEcM:0,maxEcV:0,maxEcK:'wood',maxV:0,causes:{},blocks:0,shocks:0,retries:0}}
 function projMass(k){return labMode&&labMass>0?labMass:materials[k].mass}
 function progKey(){return targets.filter(t=>t.alive).length*1000+integrity()}
-function quiet(){return !projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!blocks.some(b=>b.alive&&b.burn>0)&&!targets.some(t=>t.alive&&t.burn>0)&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)<.15)}
+function quiet(){return !projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!blocks.some(b=>b.alive&&b.burn>0)&&!targets.some(t=>t.alive&&t.burn>0)&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)}
 function nudge(msg){const el=$('matHint');if(!el)return;el.innerHTML='<b>💡 Consejo</b>'+msg;el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>el.classList.remove('show'),5200)}
 // Tras cada disparo: si no ha cambiado nada (objetivos ni estructura) se cuenta como disparo sin efecto
 function checkProgress(){
  if(labMode||won||gameOver)return;
  const k=progKey();
- if(k===prevKey){idle++;if(idle>=2&&ammoLeft()>0){nudge('Dos disparos seguidos sin efecto. Prueba otro material, usa ⏪ Deshacer o ↻ Reiniciar.');$('reset').classList.add('primary')}}
+ if(k===prevKey){idle++;if(idle>=2&&ammoLeft()>0){nudge('Dos disparos seguidos sin efecto. Prueba otro material o reinicia el nivel con ↻.');$('reset').classList.add('primary')}}
  else{idle=0;$('reset').classList.remove('primary')}
  prevKey=k;
 }
@@ -585,7 +617,7 @@ function takeSnap(){
 function undoShot(){
  if(!lastSnap||paused)return;
  const s=lastSnap,r=(stats.retries||0)+1;lastSnap=null;
- blocks=JSON.parse(JSON.stringify(s.blocks));targets=JSON.parse(JSON.stringify(s.targets));
+ blocks=JSON.parse(JSON.stringify(s.blocks));arbs=new Map();targets=JSON.parse(JSON.stringify(s.targets));
  fires=s.fires.map(f=>({x:f.x,y:f.y,r:f.r,life:f.life,ox:f.ox,oy:f.oy,b:f.bi>=0?blocks[f.bi]:null}));
  ammo=Object.assign({},s.ammo);shots=s.shots;wind=s.wind;stats=JSON.parse(JSON.stringify(s.stats));stats.retries=r;
  ammoSel.value=s.sel;
@@ -652,13 +684,14 @@ function block(x,y,w,h,mat='wood',target=false){
  const m=blockMats[mat];
  const b={x,y,w,h,mat,color:m.color,strength:m.strength,hp:m.strength,resist:m.resist,shockResist:m.shockResist,
   mass:Math.max(.3,w*h*m.density*.001),target,alive:true,anchored:false,foundation:null,launch:false,
-  vx:0,vy:0,angle:0,av:0,contact:false,flash:0,burn:0,fireAcc:0,cracks:makeCracks(w,h)};
+  vx:0,vy:0,angle:0,av:0,contact:false,flash:0,burn:0,fireAcc:0,cracks:makeCracks(w,h),id:++BODY_ID};
+ b.I=b.mass*(w*w+h*h)/12;   // momento de inercia de un rectángulo
  blocks.push(b);return b;
 }
 // ---------- Viento ----------
 function newWind(){
  if(labMode){wind=labWindN/WIND_N;return}
- const max=WIND_BASE+WIND_PER_LEVEL*currentLevel;
+ const max=(WIND_BASE+WIND_PER_LEVEL*currentLevel)*(currentLevel===0?.6:1);   // nivel 1: viento un 40 % más flojo
  const mag=(.2+Math.random()*.8)*max;
  wind=(Math.random()<.5?-1:1)*mag;
 }
@@ -673,7 +706,7 @@ function target(x,y){targets.push({x,y,r:14,alive:true,vx:0,vy:0,hp:TARGET_HP,ma
 function airTarget(x,y,ax=0,ay=12){targets.push({x,y,bx:x,by:y,ax,ay,ph:Math.random()*6.28,age:0,r:14,alive:true,vx:0,vy:0,hp:TARGET_HP,maxhp:TARGET_HP,cd:0,flash:0,air:true,fly:true,netted:0,burn:0});}
 
 function setupLevel(n){
- currentLevel=n;labMode=(n===LAB);lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];targets=[];particles=[];shards=[];fires=[];drops=[];pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});pickAmmo();
+ currentLevel=n;labMode=(n===LAB);lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});pickAmmo();
  $('toast').classList.remove('show');if(typeof LEVELS!=='undefined'&&LEVELS[n])$('lvTitle').textContent='🧪 '+(n+1)+' · '+LEVELS[n].t;if(n===LAB)$('lvTitle').textContent='🔬 Laboratorio libre';
  if(n===0){
   block(600,ground-55,22,55,'wood');block(660,ground-55,22,55,'wood');beam(630,ground-116,105,18,'wood');
@@ -714,13 +747,7 @@ function setupLevel(n){
   block(720,ground-235,18,30,'glass');block(750,ground-235,18,30,'glass');target(735,ground-253);
   target(450,ground-22);target(630,ground-22);target(830,ground-22);
  } else if(n===5){
-  // 6 · Equilibrio: pilar único con la masa arriba y una torre de dos pisos
-  block(340,ground-150,22,150,'stone');beam(351,ground-172,130,22,'metal');
-  block(310,ground-202,20,30,'glass');block(372,ground-202,20,30,'glass');target(351,ground-195);
-  block(470,ground-150,22,150,'wood');block(540,ground-150,22,150,'wood');beam(505,ground-172,120,22,'stone');
-  block(494,ground-242,22,70,'wood');beam(505,ground-260,90,18,'metal');target(505,ground-285);
-  target(416,ground-22);target(516,ground-22);
-  block(640,ground-60,60,60,'stone');target(670,ground-80);
+  // 6 · La red: solo voladores (sin estructuras; los blancos están en AIR_TARGETS)
  } else if(n===6){
   // 7 · Combustión: fortaleza de madera protegida por un muro de piedra
   block(330,ground-110,24,110,'wood');block(420,ground-110,24,110,'wood');beam(387,ground-132,130,22,'wood');
@@ -737,11 +764,13 @@ function setupLevel(n){
   block(570,ground-70,24,70,'metal');block(640,ground-70,24,70,'metal');beam(607,ground-88,120,18,'metal');
   target(607,ground-105);target(617,ground-22);
  } else if(n===8){
-  // 9 · Colisiones: un alto muro de piedra esconde los objetivos
-  block(430,ground-200,30,200,'stone');
-  target(500,ground-22);target(550,ground-22);target(600,ground-22);
-  block(660,ground-90,22,90,'wood');block(730,ground-90,22,90,'wood');beam(695,ground-108,110,18,'wood');
-  target(695,ground-125);target(706,ground-22);
+  // 9 · Equilibrio: pilar único con la masa arriba y una torre de dos pisos
+  block(340,ground-150,22,150,'stone');beam(351,ground-172,130,22,'metal');
+  block(310,ground-202,20,30,'glass');block(372,ground-202,20,30,'glass');target(351,ground-195);
+  block(470,ground-150,22,150,'wood');block(540,ground-150,22,150,'wood');beam(505,ground-172,120,22,'stone');
+  block(494,ground-242,22,70,'wood');beam(505,ground-260,90,18,'metal');target(505,ground-285);
+  target(416,ground-22);target(516,ground-22);
+  block(640,ground-60,60,60,'stone');target(670,ground-80);
  } else if(n===LAB){
   // Laboratorio libre: una estructura de cada material y dos voladores para experimentar
   block(520,ground-70,22,70,'wood');block(580,ground-70,22,70,'wood');beam(551,ground-88,100,18,'wood');target(551,ground-105);
@@ -792,7 +821,7 @@ function setupLevel(n){
 // Deja que las estructuras se asienten sin daños antes de empezar a jugar
 function settleStructures(){
  settling=true;
- for(let i=0;i<320;i++){stepBlocks();stepTargets()}
+ for(let i=0;i<480;i++){stepBlocks();stepTargets()}
  settling=false;
  blocks.forEach(b=>{b.hp=b.strength;b.vx=b.vy=b.av=0;b.angle=0;b.flash=0});
  targets.forEach(t=>{t.vx=t.vy=0;t.age=0});
@@ -839,7 +868,7 @@ function cycleAmmo(dir){
 function updateHud(){
  $('shots').textContent=shots;$('ammoLeft').textContent=labMode?'∞':ammoLeft();
  $('targets').textContent=targets.filter(t=>t.alive).length;
- {const ig=integrity();$('integrity').textContent=ig;const ib=$('intBar');if(ib){ib.style.width=ig+'%';ib.style.background=ig>60?'#4cd964':ig>30?'#ffcc33':'#ff453a'}}
+ {const ig=integrity();$('integrity').parentElement.style.display=blocks.some(b=>!b.launch)?'':'none';$('integrity').textContent=ig;const ib=$('intBar');if(ib){ib.style.width=ig+'%';ib.style.background=ig>60?'#4cd964':ig>30?'#ffcc33':'#ff453a'}}
  const fw=Math.abs(wind)*WIND_N;                                   // fuerza del viento (N) sobre 1 kg
  $('wind').textContent=Math.abs(wind)<.0033?'Calma':(wind<0?'← ':'→ ')+fw.toFixed(2)+' N';
  const sel=ammoSel.value,m=materials[sel],mi=MATINFO[sel];
@@ -858,7 +887,7 @@ function updateHud(){
  } else if(shots===0){$('vel').textContent='0.0';$('ec').textContent='0';$('ep').textContent='0';$('alt').textContent='0.0'}
  const un=unlockedAt(currentLevel),nw=UNLOCK[currentLevel]||[];
  for(const k of AMMO_ORDER){const c=chipEls[k];if(!c)continue;const n=ammo[k]||0;c.btn.hidden=!un.includes(k);c.btn.classList.toggle('new',nw.includes(k)&&currentLevel>0);c.cnt.textContent=labMode?'∞':'×'+n;c.btn.disabled=n<=0;c.btn.classList.toggle('on',k===sel);c.btn.setAttribute('aria-checked',k===sel?'true':'false')}
- $('undoBtn').disabled=!lastSnap;$('labPanel').hidden=!labMode;$('netWarn').hidden=!(sel==='red'&&!targets.some(t=>t.alive&&t.air));
+ $('labPanel').hidden=!labMode;$('netWarn').hidden=!(sel==='red'&&!targets.some(t=>t.alive&&t.air));
 }
 
 // ---------- Dibujo ----------
@@ -895,7 +924,7 @@ function paintBackground(c){
  c.fillText('Ep = m·g·h',330,48);c.fillText('Ec = ½·m·v²',120,48);c.fillText('F = m·a',810,48);
  c.font='700 13px ui-monospace,Menlo,Consolas,monospace';c.fillText('C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O',560,210);c.fillText('p = m·v',840,200);c.fillText('C₂H₅OH',262,196);
  // banco de pruebas con regla (en metros desde la catapulta)
- c.fillStyle='#35505e';c.fillRect(X0-4,ground,(X1-X0)+8,80);
+ c.fillStyle='#35505e';c.fillRect(X0-4,ground,(X1-X0)+8,300);
  c.fillStyle='#78a0b2';c.fillRect(X0-4,ground,(X1-X0)+8,6);
  c.strokeStyle='#d9eef5';c.lineWidth=1.5;c.beginPath();
  for(let x=xs;x<=X1;x+=20){c.moveTo(x+.5,ground+6);c.lineTo(x+.5,ground+((Math.round((x-sling.x)/20)%5===0)?18:11))}
@@ -970,7 +999,7 @@ function drawBars(){
   if(!b.alive||b.launch)return;
   const f=b.hp/b.strength;
   if(f>=.999&&!SHOW_FULL_BARS)return;
-  drawBar(b.x+b.w/2,b.y-9,b.w,f);
+  const ba=blockAABB(b);drawBar((ba.l+ba.r)/2,ba.t-9,b.w,f);
  });
  targets.forEach(t=>{if(t.alive)drawBar(t.x,t.y-t.r-11,30,t.hp/t.maxhp)});
 }
@@ -1095,8 +1124,10 @@ function drawBurning(){
  blocks.forEach(b=>{
   if(!b.alive||b.burn<=0)return;
   const al=Math.min(1,b.burn/60),n=Math.max(1,Math.round(b.w/16));
-  for(let i=0;i<n;i++)flame(b.x+(i+.5)*b.w/n,b.y+5,15+7*Math.sin(fireT*.35+i*1.7+b.x),Math.min(8,b.w/n*.5),fireT*.3+i+b.x,al);
-  if(b.h>50)flame(b.x+b.w*.5,b.y+b.h*.55,13+5*Math.sin(fireT*.3+b.y),Math.min(7,b.w*.4),fireT*.28+b.y,al);
+  ctx.save();ctx.translate(b.x+b.w/2,b.y+b.h/2);ctx.rotate(b.angle);
+  for(let i=0;i<n;i++)flame(-b.w/2+(i+.5)*b.w/n,-b.h/2+5,15+7*Math.sin(fireT*.35+i*1.7+b.x),Math.min(8,b.w/n*.5),fireT*.3+i+b.x,al);
+  if(b.h>50)flame(0,b.h*.05,13+5*Math.sin(fireT*.3+b.y),Math.min(7,b.w*.4),fireT*.28+b.y,al);
+  ctx.restore();
  });
 }
 function drawDrops(){
@@ -1170,14 +1201,15 @@ function applyShockToBlock(w,b,dist){
  let dx=b.x+b.w/2-w.x,dy=b.y+b.h/2-w.y-12;const d=Math.hypot(dx,dy)||1;dx/=d;dy/=d;
  const dv=w.k*f*9/Math.sqrt(b.mass+.6);
  b.vx+=dx*dv;b.vy+=dy*dv;
- b.av=Math.max(-.12,Math.min(.12,b.av+(Math.random()-.5)*dv*.02));
+ {const q=closestOnBlock(b,w.x,w.y),rx=q.x-q.cx,ry=q.y-q.cy;   // la onda golpea más cerca de un lado: el bloque gira
+  b.av=Math.max(-BLK_AVMAX,Math.min(BLK_AVMAX,b.av+(rx*dy-ry*dx)*dv*b.mass/b.I*.8+(Math.random()-.5)*dv*.02))}
 }
 function stepShockwaves(){
  shockwaves.forEach(w=>{
   w.r+=w.speed*(1-.6*w.r/w.maxR);
   blocks.forEach(b=>{
    if(!b.alive||w.hit.has(b))return;
-   const nx=Math.max(b.x,Math.min(w.x,b.x+b.w)),ny=Math.max(b.y,Math.min(w.y,b.y+b.h));
+   const qq=closestOnBlock(b,w.x,w.y),nx=qq.x,ny=qq.y;
    const dist=Math.hypot(w.x-nx,w.y-ny);
    if(dist<=w.r){w.hit.add(b);applyShockToBlock(w,b,dist)}
   });
@@ -1195,10 +1227,21 @@ function stepShockwaves(){
 }
 
 // ---------- Proyectil ----------
-function circleRect(cx,cy,r,b){
- const nx=Math.max(b.x,Math.min(cx,b.x+b.w)),ny=Math.max(b.y,Math.min(cy,b.y+b.h));
- let dx=cx-nx,dy=cy-ny;return dx*dx+dy*dy<r*r;
+// Punto más cercano de un bloque (con su giro) a (px,py): {x,y,d2,inside,lx,ly,cx,cy}; lx/ly = coordenadas locales del punto
+function closestOnBlock(b,px,py){
+ const cx=b.x+b.w/2,cy=b.y+b.h/2,c=Math.cos(b.angle),s=Math.sin(b.angle);
+ const dx=px-cx,dy=py-cy,lx=dx*c+dy*s,ly=-dx*s+dy*c,hw=b.w/2,hh=b.h/2;
+ const qx=Math.max(-hw,Math.min(hw,lx)),qy=Math.max(-hh,Math.min(hh,ly));
+ return{x:cx+qx*c-qy*s,y:cy+qx*s+qy*c,d2:(lx-qx)*(lx-qx)+(ly-qy)*(ly-qy),inside:Math.abs(lx)<hw&&Math.abs(ly)<hh,lx:lx,ly:ly,cx:cx,cy:cy};
 }
+function circleRect(cx,cy,r,b){return closestOnBlock(b,cx,cy).d2<r*r}
+// Caja envolvente alineada con los ejes de un bloque girado
+function blockAABB(b){
+ const c=Math.abs(Math.cos(b.angle)),s=Math.abs(Math.sin(b.angle)),ex=(c*b.w+s*b.h)/2,ey=(s*b.w+c*b.h)/2,cx=b.x+b.w/2,cy=b.y+b.h/2;
+ return{l:cx-ex,r:cx+ex,t:cy-ey,b:cy+ey};
+}
+// Velocidad de un punto del bloque (incluye la rotación)
+function blockVelAt(b,x,y){return{x:b.vx-b.av*(y-(b.y+b.h/2)),y:b.vy+b.av*(x-(b.x+b.w/2))}}
 // Cristal: se fragmenta. En el aire (sobre un volador) las esquirlas forman una lluvia hacia delante y abajo
 function shatter(p,x,y,air){
  if(p.broken)return;p.broken=true;
@@ -1240,29 +1283,39 @@ function stepShards(){
 function ignite(b){if(!b.alive||b.mat!=='wood')return;if(b.burn<=0){burst(b.x+b.w/2,b.y,'#ff9a3c',6);sfx.ignite()}b.burn=Math.max(b.burn,BURN_T)}
 function igniteTarget(t){if(t.alive)t.burn=Math.max(t.burn,TARGET_BURN)}
 function addFire(x,y,block,r=12){
- fires.push({x,y,r,life:PATCH_LIFE,b:block||null,ox:block?x-block.x:0,oy:block?y-block.y:0});
+ const q=block?closestOnBlock(block,x,y):null;   // el fuego se pega al bloque y gira con él
+ fires.push({x,y,r,life:PATCH_LIFE,b:block||null,ox:q?q.lx:0,oy:q?q.ly:0});
  if(fires.length>70)fires.shift();
 }
 // La botella se rompe y salpica gotas de alcohol ardiendo
-function splash(p,x,y,air){
+function splash(p,x,y,air,src,nx,ny){
  if(p.broken)return;p.broken=true;
  sfx.splash();
+ if(nx===undefined){nx=0;ny=-1}
+ // tangente del impacto: las gotas heredan solo la velocidad paralela a la superficie (nunca hacia dentro)
+ const dot=p.vx*nx+p.vy*ny,tvx=p.vx-dot*nx,tvy=p.vy-dot*ny;
  for(let i=0;i<DROPS;i++){
-  // en el aire (contra un volador) las gotas llueven hacia abajo, como las esquirlas de cristal
-  const ang=(air?Math.PI/2:-Math.PI/2)+(Math.random()-.5)*(air?3.6:3.8),sp=2.5+Math.random()*7;
-  drops.push({x,y,vx:Math.cos(ang)*sp+p.vx*(air?.55:.25),vy:Math.sin(ang)*sp+p.vy*(air?.25:.1),life:150,dead:false});
+  let vx,vy;
+  if(air){   // contra un volador: llueven hacia abajo, como las esquirlas de cristal
+   const ang=Math.PI/2+(Math.random()-.5)*3.6,sp=3.5+Math.random()*6.5;
+   vx=Math.cos(ang)*sp+p.vx*.55;vy=Math.sin(ang)*sp+p.vy*.25;
+  }else{     // contra bloques, enemigos o suelo: salen en el semicírculo del lado por el que llegó el proyectil
+   const ang=Math.atan2(ny,nx)+(Math.random()-.5)*2.5,sp=3.5+Math.random()*6.5;
+   vx=Math.cos(ang)*sp+tvx*.25;vy=Math.sin(ang)*sp+tvy*.25;
+  }
+  drops.push({x:x+nx*4,y:y+ny*4,vx,vy,life:150,dead:false,g:6,src:src||null});   // g: fotogramas de gracia solo respecto al objeto golpeado
  }
  burst(x,y,'#ff9a3c',12);burst(x,y,'#ffe27a',6);shake=Math.max(shake,2);
  projectile=null;pendingWind=true;
 }
 function stepDrops(){
  drops.forEach(d=>{
-  d.vy+=gravity*.8;d.vx+=wind*.6;d.vx*=.995;
+  d.vy+=gravity*.8;d.vx+=wind*.6;d.vx*=.995;const grace=d.g>0;if(grace)d.g--;
   for(let k=0;k<2&&!d.dead;k++){
    d.x+=d.vx/2;d.y+=d.vy/2;
-   for(const b of blocks){if(b.alive&&circleRect(d.x,d.y,3,b)){addFire(d.x,d.y,b);ignite(b);d.dead=true;break}}
+   for(const b of blocks){if(grace&&b===d.src)continue;if(b.alive&&circleRect(d.x,d.y,3,b)){addFire(d.x,d.y,b);ignite(b);d.dead=true;break}}
    if(d.dead)break;
-   for(const t of targets){if(t.alive&&Math.hypot(t.x-d.x,t.y-d.y)<t.r+3){igniteTarget(t);if(!t.air)addFire(t.x,t.y+t.r-4,null,10);d.dead=true;break}}
+   for(const t of targets){if(grace&&t===d.src)continue;if(t.alive&&Math.hypot(t.x-d.x,t.y-d.y)<t.r+3){igniteTarget(t);if(!t.air)addFire(t.x,t.y+t.r-4,null,10);d.dead=true;break}}
    if(d.dead)break;
    if(d.y>ground-2){addFire(d.x,ground-2,null);d.dead=true}
   }
@@ -1274,7 +1327,7 @@ function stepDrops(){
 function stepFire(){
  fires.forEach(f=>{                                   // charcos de llamas
   f.life--;
-  if(f.b){if(!f.b.alive){f.life=0;return}f.x=f.b.x+f.ox;f.y=f.b.y+f.oy}
+  if(f.b){if(!f.b.alive){f.life=0;return}const fb=f.b,fc=Math.cos(fb.angle),fs=Math.sin(fb.angle);f.x=fb.x+fb.w/2+f.ox*fc-f.oy*fs;f.y=fb.y+fb.h/2+f.ox*fs+f.oy*fc}
   for(const b of blocks){
    if(!b.alive||!circleRect(f.x,f.y-4,f.r,b))continue;
    if(b.mat==='wood')ignite(b);else if(b.mat==='glass')b.fireAcc+=.004;   // la madera arde; el cristal solo se resiente
@@ -1290,11 +1343,11 @@ function stepFire(){
    if(b.burn%12===0){
     for(const o of blocks){
      if(o===b||!o.alive||o.mat!=='wood'||o.burn>0)continue;
-     if(b.x-6<o.x+o.w&&o.x-6<b.x+b.w&&b.y-6<o.y+o.h&&o.y-6<b.y+b.h&&Math.random()<.25)ignite(o);
+     const ba=blockAABB(b),oa=blockAABB(o);if(ba.l-6<oa.r&&oa.l-6<ba.r&&ba.t-6<oa.b&&oa.t-6<ba.b&&Math.random()<.25)ignite(o);
     }
     for(const t of targets)if(t.alive&&circleRect(t.x,t.y,t.r+4,b))igniteTarget(t);
    }
-   if(Math.random()<.12)particles.push({x:b.x+Math.random()*b.w,y:b.y,vx:(Math.random()-.5)*.6,vy:-1.2,life:30,color:'#5a5a5a',r:3});
+   if(Math.random()<.12){const sa=blockAABB(b);particles.push({x:sa.l+Math.random()*(sa.r-sa.l),y:sa.t,vx:(Math.random()-.5)*.6,vy:-1.2,life:30,color:'#5a5a5a',r:3})}
   }
   if(b.fireAcc>=.06){const a=b.fireAcc;b.fireAcc=0;damageBlock(b,a,b.x+b.w/2,b.y)}
  });
@@ -1313,17 +1366,16 @@ function netTarget(t,p){
 }
 function projectileVsBlock(p,b){
  if(p.broken)return;
- const cx=Math.max(b.x,Math.min(p.x,b.x+b.w)),cy=Math.max(b.y,Math.min(p.y,b.y+b.h));
- let nx=p.x-cx,ny=p.y-cy,d=Math.hypot(nx,ny);
- if(d>=p.r)return;
- if(d<.001){nx=p.x-(b.x+b.w/2);ny=p.y-(b.y+b.h/2);d=Math.hypot(nx,ny)||1}
- nx/=d;ny/=d;                       // normal: del bloque hacia el proyectil
- const pen=p.r-d;
- const vn=-((p.vx-b.vx)*nx+(p.vy-b.vy)*ny); // velocidad de cierre
+ const q=closestOnBlock(b,p.x,p.y),cx=q.x,cy=q.y;
+ let nx,ny,d;
+ if(q.inside){nx=p.x-q.cx;ny=p.y-q.cy;d=0;const l=Math.hypot(nx,ny)||1;nx/=l;ny/=l}
+ else{d=Math.sqrt(q.d2);if(d>=p.r)return;nx=(p.x-cx)/d;ny=(p.y-cy)/d}   // normal: del bloque hacia el proyectil
+ const pen=p.r-d,bv=blockVelAt(b,cx,cy);
+ const vn=-((p.vx-bv.x)*nx+(p.vy-bv.y)*ny); // velocidad de cierre
  let destroyed=false;
  if(vn>0){
   if(vn>1.3)sfx.impact(p.kind,vn,b.mat);
-  if(p.kind==='fire'&&vn>1.4){damageBlock(b,.5*p.mass*vn*vn*.03*materials.fire.damage/b.resist,cx,cy);splash(p,cx,cy);return}
+  if(p.kind==='fire'){damageBlock(b,.5*p.mass*Math.max(vn,1.4)*Math.max(vn,1.4)*.03*materials.fire.damage/b.resist,cx,cy);ignite(b);splash(p,cx,cy,false,b,nx,ny);return}
   if(p.kind==='glass'&&vn>2){damageBlock(b,.5*p.mass*vn*vn*.03*materials.glass.damage/b.resist,cx,cy);shatter(p,cx,cy,false);return}
   if(vn>1.3){
    const ke=.5*p.mass*vn*vn;                              // energía cinética del golpe
@@ -1333,13 +1385,14 @@ function projectileVsBlock(p,b){
   }
   if(destroyed){p.vx*=.82;p.vy*=.82}                        // atraviesa lo que rompe, algo frenado
   else{
-   const ia=1/p.mass,ib=b.anchored?0:1/b.mass,e=p.bounce;
-   const j=(1+e)*vn/(ia+ib);
+   const soft=p.kind==='rubber'?.3:1;   // la goma casi no empuja lo que golpea: el bloque 'pesa' más para ella y rebota mejor
+   const ia=1/p.mass,ib=b.anchored?0:soft/b.mass,ii=b.anchored?0:soft/b.I,e=p.bounce;
+   const rx=cx-q.cx,ry=cy-q.cy,rn=rx*ny-ry*nx;            // brazo de palanca del golpe
+   const j=(1+e)*vn/(ia+ib+ii*rn*rn);
    p.vx+=nx*j*ia;p.vy+=ny*j*ia;
    if(ib){
     b.vx-=nx*j*ib;b.vy-=ny*j*ib;
-    const rx=cx-(b.x+b.w/2),ry=cy-(b.y+b.h/2);
-    b.av=Math.max(-.12,Math.min(.12,b.av+(ry*nx-rx*ny)*j*ib*.0012));
+    b.av=Math.max(-BLK_AVMAX,Math.min(BLK_AVMAX,b.av-rn*j*ii*.6));   // un golpe descentrado hace girar el bloque
    }
   }
  }
@@ -1397,14 +1450,14 @@ function stepProjectile(){
     if(t.cd<=0){damageTarget(t,.5*p.mass*sp*sp*.02*materials[p.kind].damage);t.cd=12}
     p.vx*=.92;p.vy*=.92;maybeShock(p,t.x,t.y,sp);
     if(p.kind==='glass'){shatter(p,t.x,t.y,t.air);return}
-    if(p.kind==='fire'){igniteTarget(t);splash(p,t.x,t.y,t.air);return}
+    if(p.kind==='fire'){igniteTarget(t);const dx=p.x-t.x,dy=p.y-t.y,dl=Math.hypot(dx,dy)||1;splash(p,t.x,t.y,t.air,t,dx/dl,dy/dl);return}
    }
   }
   if(p.y+p.r>ground){
    const vi=p.vy;p.y=ground-p.r;
    if(vi>2)sfx.impact(p.kind,vi,'ground');
    if(p.kind==='glass'&&vi>2.5){shatter(p,p.x,ground-4,false);return}
-   if(p.kind==='fire'&&vi>1){splash(p,p.x,ground-4);return}
+   if(p.kind==='fire'){splash(p,p.x,ground-4);return}
    if(vi>0){if(vi>4){maybeShock(p,p.x,ground,vi);dust(p.x,5)}p.vy=-vi*p.bounce}
    p.vx*=.77;
    if(Math.abs(p.vy)<1.2){p.vy=0;p.vx*=.9}
@@ -1415,64 +1468,157 @@ function stepProjectile(){
 }
 
 // ---------- Bloques: física, anclaje y choques ----------
-function resolveBlocks(a,b,ox,oy){
- const ia=a.anchored?0:1/a.mass,ib=b.anchored?0:1/b.mass,it=ia+ib;
- if(it===0)return;
- const acx=a.x+a.w/2,acy=a.y+a.h/2,bcx=b.x+b.w/2,bcy=b.y+b.h/2;
- let nx=0,ny=0,pen;
- if(oy<ox){ny=bcy>=acy?1:-1;pen=oy}else{nx=bcx>=acx?1:-1;pen=ox}   // normal de a hacia b
- a.x-=nx*pen*ia/it;a.y-=ny*pen*ia/it;b.x+=nx*pen*ib/it;b.y+=ny*pen*ib/it;
- const vn=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;
- if(vn<0){
-  const approach=-vn,e=approach>2.5?.08:0,j=(1+e)*approach/it;
-  a.vx-=j*ia*nx;a.vy-=j*ia*ny;b.vx+=j*ib*nx;b.vy+=j*ib*ny;
-  // daño por choque entre bloques (caídas de vigas, derrumbes...)
-  if(!settling&&approach>COLLIDE_SAFE){sfx.thud(approach);
-   const d=(approach-COLLIDE_SAFE)*(1/it)*.32;
-   const mx=(acx+bcx)/2,my=(acy+bcy)/2;
-   damageBlock(a,d/a.resist,mx,my);damageBlock(b,d/b.resist,mx,my);
+// ---------- Sólidos rígidos: cajas con rotación (colisiones SAT + impulsos secuenciales con fricción) ----------
+const BODY_SUBSTEPS=2, SOLVER_ITERS=12, BLK_VMAX=12, BLK_AVMAX=.3, SLOP=.6, BIAS=.2;
+const FRICTION={wood:.6,stone:.7,metal:.4,glass:.35};
+let arbs=new Map(), BODY_ID=3;
+const mkStatic=(id,x,y,w,h)=>({id,x,y,w,h,angle:0,vx:0,vy:0,av:0,anchored:true,alive:true,isGround:true,mass:1e9,I:1e12,im:0,ii:0});
+const STATICS=[mkStatic(1,-4000,ground,9000,1000),mkStatic(2,-1000,-4000,1000,8000),mkStatic(3,1000,-4000,1000,8000)];
+const fricOf=b=>b.isGround?.8:(FRICTION[b.mat]||.5);
+
+function boxXf(b){const c=Math.cos(b.angle),s=Math.sin(b.angle);return{px:b.x+b.w/2,py:b.y+b.h/2,hx:b.w/2,hy:b.h/2,c:c,s:s}}
+function incidentEdge(xf,fnx,fny){
+ const nx=-(xf.c*fnx+xf.s*fny),ny=-(-xf.s*fnx+xf.c*fny),ax=Math.abs(nx),ay=Math.abs(ny);
+ let p,f;const hx=xf.hx,hy=xf.hy;
+ if(ax>ay){
+  if(nx>0){p=[[hx,-hy],[hx,hy]];f=[[0,0,3,4],[0,0,4,1]]}else{p=[[-hx,hy],[-hx,-hy]];f=[[0,0,1,2],[0,0,2,3]]}
+ }else{
+  if(ny>0){p=[[hx,hy],[-hx,hy]];f=[[0,0,4,1],[0,0,1,2]]}else{p=[[-hx,-hy],[hx,-hy]];f=[[0,0,2,3],[0,0,3,4]]}
+ }
+ return p.map((q,i)=>({x:xf.px+xf.c*q[0]-xf.s*q[1],y:xf.py+xf.s*q[0]+xf.c*q[1],fp:f[i]}));
+}
+function clipSeg(vin,nx,ny,off,edge){
+ const out=[],d0=nx*vin[0].x+ny*vin[0].y-off,d1=nx*vin[1].x+ny*vin[1].y-off;
+ if(d0<=0)out.push(vin[0]);
+ if(d1<=0)out.push(vin[1]);
+ if(d0*d1<0){
+  const t=d0/(d0-d1),a=vin[0],b=vin[1],v={x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y)};
+  if(d0>0)v.fp=[a.fp[0],edge,a.fp[2],0];   // inEdge1 = borde recortado
+  else v.fp=[b.fp[0],b.fp[1],b.fp[2],0],v.fp[1]=edge;
+  if(d0>0)v.fp=[edge,a.fp[1],0,a.fp[3]];else v.fp=[b.fp[0],edge,b.fp[2],0];
+  out.push(v);
+ }
+ return out;
+}
+// Contactos entre dos cajas (A→B). Devuelve null si no se tocan.
+function collideBoxes(A,B){
+ const xa=boxXf(A),xb=boxXf(B),dpx=xb.px-xa.px,dpy=xb.py-xa.py;
+ const dAx=xa.c*dpx+xa.s*dpy,dAy=-xa.s*dpx+xa.c*dpy,dBx=xb.c*dpx+xb.s*dpy,dBy=-xb.s*dpx+xb.c*dpy;
+ const cc=Math.abs(xa.c*xb.c+xa.s*xb.s),ss=Math.abs(-xa.s*xb.c+xa.c*xb.s);
+ const faX=Math.abs(dAx)-xa.hx-(cc*xb.hx+ss*xb.hy),faY=Math.abs(dAy)-xa.hy-(ss*xb.hx+cc*xb.hy);
+ if(faX>0||faY>0)return null;
+ const fbX=Math.abs(dBx)-(cc*xa.hx+ss*xa.hy)-xb.hx,fbY=Math.abs(dBy)-(ss*xa.hx+cc*xa.hy)-xb.hy;
+ if(fbX>0||fbY>0)return null;
+ let axis=0,sep=faX,nx=dAx>0?xa.c:-xa.c,ny=dAx>0?xa.s:-xa.s;
+ const RT=.95,AT=.01;
+ if(faY>RT*sep+AT*xa.hy){axis=1;sep=faY;nx=dAy>0?-xa.s:xa.s;ny=dAy>0?xa.c:-xa.c}
+ if(fbX>RT*sep+AT*xb.hx){axis=2;sep=fbX;nx=dBx>0?xb.c:-xb.c;ny=dBx>0?xb.s:-xb.s}
+ if(fbY>RT*sep+AT*xb.hy){axis=3;sep=fbY;nx=dBy>0?-xb.s:xb.s;ny=dBy>0?xb.c:-xb.c}
+ let fnx,fny,front,snx,sny,side,negSide,posSide,negEdge,posEdge,inc;
+ if(axis===0){fnx=nx;fny=ny;front=xa.px*fnx+xa.py*fny+xa.hx;snx=-xa.s;sny=xa.c;side=xa.px*snx+xa.py*sny;negSide=-side+xa.hy;posSide=side+xa.hy;negEdge=3;posEdge=1;inc=incidentEdge(xb,fnx,fny)}
+ else if(axis===1){fnx=nx;fny=ny;front=xa.px*fnx+xa.py*fny+xa.hy;snx=xa.c;sny=xa.s;side=xa.px*snx+xa.py*sny;negSide=-side+xa.hx;posSide=side+xa.hx;negEdge=2;posEdge=4;inc=incidentEdge(xb,fnx,fny)}
+ else if(axis===2){fnx=-nx;fny=-ny;front=xb.px*fnx+xb.py*fny+xb.hx;snx=-xb.s;sny=xb.c;side=xb.px*snx+xb.py*sny;negSide=-side+xb.hy;posSide=side+xb.hy;negEdge=3;posEdge=1;inc=incidentEdge(xa,fnx,fny)}
+ else{fnx=-nx;fny=-ny;front=xb.px*fnx+xb.py*fny+xb.hy;snx=xb.c;sny=xb.s;side=xb.px*snx+xb.py*sny;negSide=-side+xb.hx;posSide=side+xb.hx;negEdge=2;posEdge=4;inc=incidentEdge(xa,fnx,fny)}
+ const c1=clipSeg(inc,-snx,-sny,negSide,negEdge);if(c1.length<2)return null;
+ const c2=clipSeg(c1,snx,sny,posSide,posEdge);if(c2.length<2)return null;
+ const pts=[];
+ for(const v of c2){
+  const separation=fnx*v.x+fny*v.y-front;
+  if(separation<=0){
+   const fp=axis>=2?[v.fp[2],v.fp[3],v.fp[0],v.fp[1]]:v.fp;
+   pts.push({x:v.x-separation*fnx,y:v.y-separation*fny,sep:separation,key:fp[0]|(fp[1]<<3)|(fp[2]<<6)|(fp[3]<<9),Pn:0,Pt:0});
   }
  }
- if(ny!==0){ // fricción en contactos verticales
-  if(!a.anchored)a.vx*=.93;if(!b.anchored)b.vx*=.93;
-  if(ny>0&&!a.anchored)a.contact=true;
-  if(ny<0&&!b.anchored)b.contact=true;
- }
+ return pts.length?{nx:nx,ny:ny,pts:pts}:null;
+}
+const bcx=b=>b.x+b.w/2, bcy=b=>b.y+b.h/2;
+function applyP(A,B,rA,rB,px,py){   // aplica el impulso P a A (−) y a B (+)
+ A.vx-=A.im*px;A.vy-=A.im*py;A.av-=A.ii*(rA[0]*py-rA[1]*px);
+ B.vx+=B.im*px;B.vy+=B.im*py;B.av+=B.ii*(rB[0]*py-rB[1]*px);
 }
 function stepBlocks(){
- for(let iter=0;iter<2;iter++){
-  blocks.forEach(b=>{
-   if(!b.alive)return;
+ const live=blocks.filter(b=>b.alive);
+ for(let sub=0;sub<BODY_SUBSTEPS;sub++){
+  for(const b of live){
    b.contact=false;
-   if(b.anchored){b.vx=b.vy=b.av=0;return}               // los bloques anclados no se mueven
-   b.vy=Math.min(b.vy+gravity*.55,10);b.x+=b.vx;b.y+=b.vy;b.angle+=b.av;
-   b.vx*=.985;b.vy*=.99;b.av*=.985;
-   if(b.y+b.h>ground){
-    const vi=b.vy;b.y=ground-b.h;
-    if(vi>0)b.vy=vi>2?-vi*.13:0;
-    b.vx*=.83;b.av*=.7;b.contact=true;
-    if(Math.abs(b.vy)<.5)b.vy=0;
-    if(!settling&&vi>FALL_SAFE)damageBlock(b,(vi-FALL_SAFE)*b.mass*.32/b.resist,b.x+b.w/2,ground);
-    if(!b.alive)return;
-   }
-   if(b.x<0){b.x=0;b.vx*=-.3}if(b.x+b.w>1000){b.x=1000-b.w;b.vx*=-.3}
-  });
-  for(let i=0;i<blocks.length;i++){
-   const a=blocks[i];if(!a.alive)continue;
-   for(let j=i+1;j<blocks.length;j++){
-    const b=blocks[j];if(!b.alive||!a.alive)continue;
-    if(a.anchored&&b.anchored)continue;
-    const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);if(ox<=0)continue;
-    const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);if(oy<=0)continue;
-    resolveBlocks(a,b,ox,oy);
+   if(b.anchored){b.vx=b.vy=b.av=0;b.im=0;b.ii=0}                     // los bloques anclados no se mueven
+   else{b.im=1/b.mass;b.ii=settling?0:1/b.I;b.vy=Math.min(b.vy+gravity*.55,BLK_VMAX)}
+   const bb=blockAABB(b);b._l=bb.l;b._r=bb.r;b._t=bb.t;b._b=bb.b;
+  }
+  // 1) detección de contactos y fusión con los del paso anterior (acumulación de impulsos)
+  const next=new Map(),list=[],all=STATICS.concat(live);
+  for(let i=0;i<all.length;i++){
+   const a=all[i];
+   for(let j=Math.max(i+1,STATICS.length);j<all.length;j++){
+    const b=all[j];
+    if(!a.alive||!b.alive)continue;
+    if(a.im===0&&b.im===0&&!(a.isGround&&false))continue;
+    if(!a.isGround&&(a._r<b._l||b._r<a._l||a._b<b._t||b._b<a._t))continue;
+    const hit=collideBoxes(a,b);if(!hit)continue;
+    const key=a.id*1000003+b.id,old=arbs.get(key),arb={a:a,b:b,nx:hit.nx,ny:hit.ny,cs:hit.pts,mu:Math.sqrt(fricOf(a)*fricOf(b)),app:0,mx:0,my:0};
+    if(old)for(const c of arb.cs)for(const o of old.cs)if(o.key===c.key){c.Pn=o.Pn;c.Pt=o.Pt;break}
+    next.set(key,arb);list.push(arb);
    }
   }
+  arbs=next;
+  // 2) pre-paso: masas efectivas, sesgo, velocidad de impacto y arrastre del impulso anterior
+  for(const arb of list){
+   const A=arb.a,B=arb.b,nx=arb.nx,ny=arb.ny,tx=ny,ty=-nx;
+   for(const c of arb.cs){
+    const r1=[c.x-bcx(A),c.y-bcy(A)],r2=[c.x-bcx(B),c.y-bcy(B)];
+    const rn1=r1[0]*nx+r1[1]*ny,rn2=r2[0]*nx+r2[1]*ny,rt1=r1[0]*tx+r1[1]*ty,rt2=r2[0]*tx+r2[1]*ty;
+    const kN=A.im+B.im+A.ii*(r1[0]*r1[0]+r1[1]*r1[1]-rn1*rn1)+B.ii*(r2[0]*r2[0]+r2[1]*r2[1]-rn2*rn2);
+    const kT=A.im+B.im+A.ii*(r1[0]*r1[0]+r1[1]*r1[1]-rt1*rt1)+B.ii*(r2[0]*r2[0]+r2[1]*r2[1]-rt2*rt2);
+    c.r1=r1;c.r2=r2;c.mN=1/kN;c.mT=1/kT;c.bias=-BIAS*Math.min(0,c.sep+SLOP);
+    const dvx=B.vx-B.av*r2[1]-A.vx+A.av*r1[1],dvy=B.vy+B.av*r2[0]-A.vy-A.av*r1[0],vn0=dvx*nx+dvy*ny;
+    if(-vn0>arb.app){arb.app=-vn0;arb.mx=c.x;arb.my=c.y}
+   }
+   // daño por choque (caídas de vigas, derrumbes, bloques que golpean el suelo...)
+   if(!settling){
+    if(A.isGround){const vi=arb.app;if(vi>FALL_SAFE&&B.alive)damageBlock(B,(vi-FALL_SAFE)*B.mass*.32/B.resist,arb.mx,ground)}
+    else if(arb.app>COLLIDE_SAFE){
+     sfx.thud(arb.app);
+     const d=(arb.app-COLLIDE_SAFE)*(1/(A.im+B.im))*.32;
+     damageBlock(A,d/A.resist,arb.mx,arb.my);damageBlock(B,d/B.resist,arb.mx,arb.my);
+    }
+   }
+   if(ny!==0){if(B.im>0&&ny<0)B.contact=true;if(A.im>0&&ny>0)A.contact=true}
+  }
+  // 2b) arrastre de impulsos del paso anterior (después de medir las velocidades de impacto)
+  for(const arb of list){
+   const tx=arb.ny,ty=-arb.nx;
+   for(const c of arb.cs){if(c.Pn>0||c.Pt!==0)applyP(arb.a,arb.b,c.r1,c.r2,c.Pn*arb.nx+c.Pt*tx,c.Pn*arb.ny+c.Pt*ty)}
+  }
+  // 3) iteraciones del solucionador
+  for(let it=0;it<SOLVER_ITERS;it++){
+   for(const arb of list){
+    const A=arb.a,B=arb.b;if(!A.alive||!B.alive)continue;
+    const nx=arb.nx,ny=arb.ny,tx=ny,ty=-nx;
+    for(const c of arb.cs){
+     const r1=c.r1,r2=c.r2;
+     let dvx=B.vx-B.av*r2[1]-A.vx+A.av*r1[1],dvy=B.vy+B.av*r2[0]-A.vy-A.av*r1[0];
+     const vn=dvx*nx+dvy*ny;let dPn=c.mN*(-vn+c.bias);
+     const Pn0=c.Pn;c.Pn=Math.max(Pn0+dPn,0);dPn=c.Pn-Pn0;
+     applyP(A,B,r1,r2,dPn*nx,dPn*ny);
+     dvx=B.vx-B.av*r2[1]-A.vx+A.av*r1[1];dvy=B.vy+B.av*r2[0]-A.vy-A.av*r1[0];
+     const vt=dvx*tx+dvy*ty;let dPt=c.mT*(-vt);
+     const maxPt=arb.mu*c.Pn,Pt0=c.Pt;c.Pt=Math.max(-maxPt,Math.min(maxPt,Pt0+dPt));dPt=c.Pt-Pt0;
+     applyP(A,B,r1,r2,dPt*tx,dPt*ty);
+    }
+   }
+  }
+  // 4) integración
+  for(const b of live){
+   if(!b.alive||b.anchored)continue;
+   const sp=Math.hypot(b.vx,b.vy);if(sp>BLK_VMAX){b.vx*=BLK_VMAX/sp;b.vy*=BLK_VMAX/sp}
+   b.av=Math.max(-BLK_AVMAX,Math.min(BLK_AVMAX,b.av));
+   b.x+=b.vx;b.y+=b.vy;b.angle+=b.av;
+   if(settling){b.av=0;b.angle=0;b.vx=0}   // al montar el nivel las piezas se asientan sin girar: la torre queda tal como se diseñó
+   b.vx*=.998;b.vy*=.999;b.av*=.99;
+   if(Math.abs(b.vx)<.01&&Math.abs(b.vy)<.01&&Math.abs(b.av)<.0005){b.vx=b.vy=b.av=0}
+  }
  }
- blocks.forEach(b=>{
-  if(!b.alive)return;
-  if(!b.anchored&&b.contact){b.angle*=.88;b.av*=.5}   // los bloques apoyados se enderezan
-  if(b.flash>0)b.flash--;
- });
+ for(const b of live)if(b.flash>0)b.flash--;
 }
 // Aterrizaje de un objetivo atrapado por la red: daño proporcional a la altura caída (true si lo gestiona)
 function fallLand(t){
@@ -1502,10 +1648,9 @@ function stepTargets(){
   }
   for(const b of blocks){
    if(!b.alive||!circleRect(t.x,t.y,t.r,b))continue;
-   const rs=Math.hypot(b.vx-t.vx,b.vy-t.vy);
+   const q=closestOnBlock(b,t.x,t.y),bv=blockVelAt(b,q.x,q.y),rs=Math.hypot(bv.x-t.vx,bv.y-t.vy);
    if(!settling&&!b.anchored&&rs>2.6&&t.cd<=0){damageTarget(t,(rs-2.2)*Math.max(.5,b.mass)*.35,'derrumbe');t.cd=12;if(!t.alive)return}
-   const cx=Math.max(b.x,Math.min(t.x,b.x+b.w)),cy=Math.max(b.y,Math.min(t.y,b.y+b.h));
-   let nx=t.x-cx,ny=t.y-cy,d=Math.hypot(nx,ny);
+let nx=t.x-q.x,ny=t.y-q.y,d=Math.hypot(nx,ny);
    if(d<.001){nx=0;ny=-1;d=1}
    t.x+=nx/d*(t.r-d);t.y+=ny/d*(t.r-d);
    if(ny/d<-.4){
@@ -1525,7 +1670,7 @@ function physics(){
  shake*=.86;if(shake<.2)shake=0;
  const left=targets.filter(t=>t.alive).length;
  if(!won&&left===0){won=true;const lv=currentLevel;if(labMode)floaters.push({x:500,y:260,text:'¡Todo derribado! Reconstruyendo…',life:80,max:80,big:true});setTimeout(()=>{if(currentLevel!==lv||!won)return;if(lv===LAB)setupLevel(LAB);else showToast(true)},labMode?1500:500)}
- if(!gameOver&&ammoLeft()===0&&left>0&&!projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!blocks.some(b=>b.alive&&b.burn>0)&&!targets.some(t=>t.alive&&t.burn>0)&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)<.15)){gameOver=true;const lv=currentLevel;setTimeout(()=>{if(currentLevel===lv&&gameOver)showToast(false)},300)}
+ if(!gameOver&&ammoLeft()===0&&left>0&&!projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!blocks.some(b=>b.alive&&b.burn>0)&&!targets.some(t=>t.alive&&t.burn>0)&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)){gameOver=true;const lv=currentLevel;setTimeout(()=>{if(currentLevel===lv&&gameOver)showToast(false)},300)}
  if(graphN!==shotLog.length){graphN=shotLog.length;drawGraph()}
  if(pendingCheck&&quiet()){pendingCheck=false;checkProgress()}
  updateHud();
@@ -1602,7 +1747,7 @@ function aimDown(e){
  const p=pointerPos(e),touch=e.pointerType==='touch'||e.pointerType==='pen'||e.pointerType==='touchfallback';
  const start=dragPos||{x:sling.x,y:sling.y},r1=touch?85:45,r2=touch?100:55;   // zona de agarre más grande para el dedo
  if(Math.hypot(p.x-start.x,p.y-start.y)<r1||Math.hypot(p.x-sling.x,p.y-sling.y)<r2){
-  dragging=true;aimId=e.pointerId;dragPos=p;cancelR=touch?CANCEL_TOUCH:CANCEL_MOUSE;
+  dragging=true;aimId=e.pointerId;dragPos=p;cancelR=touch?CANCEL_TOUCH:CANCEL_MOUSE;wasCancel=inCancel();firstExit=wasCancel;
   if(e.pointerType!=='touchfallback'){try{canvas.setPointerCapture(e.pointerId)}catch(_){}}
  }
 }
@@ -1610,7 +1755,7 @@ function aimMove(e){
  if(!dragging||e.pointerId!==aimId)return;
  const p=pointerPos(e),dx=p.x-sling.x,dy=p.y-sling.y,dist=Math.hypot(dx,dy),max=115,k=dist>max?max/dist:1;
  dragPos={x:sling.x+dx*k,y:sling.y+dy*k};
- const c=inCancel();if(c!==wasCancel){wasCancel=c;sfx.tick()}
+ const c=inCancel();if(c!==wasCancel){const salir=wasCancel&&!c;wasCancel=c;if(salir&&firstExit)firstExit=false;else sfx.tick()}   // la primera salida del círculo de cada disparo es silenciosa
 }
 function aimUp(e){
  if(e.pointerId!==aimId)return;
@@ -1653,9 +1798,8 @@ ammoSel.addEventListener('change',updateHud);
 $('reset').addEventListener('click',()=>{if(!paused)setupLevel(currentLevel)});
 $('next').addEventListener('click',()=>setupLevel(Math.min(LEVELS.length-1,currentLevel+1)));
 $('again').addEventListener('click',()=>setupLevel(currentLevel));
-$('undoBtn').addEventListener('click',undoShot);
 $('undoToast').addEventListener('click',undoShot);
-function refreshGuide(){const b=$('guideBtn');b.setAttribute('aria-pressed',windGuide?'true':'false');b.title=windGuide?'Guía de puntos CON viento (pulsa para quitarlo)':'Guía de puntos sin viento (pulsa para incluir el viento)'}
+function refreshGuide(){const b=$('guideBtn');b.setAttribute('aria-pressed',windGuide?'true':'false');b.textContent=windGuide?'🧭 Guía con viento':'🧭 Guía sin viento';b.title='Guía de puntos de la trayectoria: pulsa para cambiar (tecla G)'}
 $('guideBtn').addEventListener('click',()=>{windGuide=!windGuide;try{localStorage.setItem('catapulta-caos-guia',windGuide?'1':'0')}catch(e){}refreshGuide();sfx.tick()});
 // Laboratorio libre
 function labWindText(){return labWindN===0?'Calma':(labWindN<0?'← ':'→ ')+Math.abs(labWindN).toFixed(2)+' N'}
@@ -1672,11 +1816,11 @@ const LEVELS=[
  {t:'Piedra: masa y densidad',c:'ρ = m / V',d:'Pilares de piedra bajo vigas de madera: más densidad exige proyectiles con más masa.',diff:2,fact:'A igual volumen, un material más denso tiene más masa y transmite más energía al chocar.'},
  {t:'Torre mixta y ondas de choque',c:'R_onda ∝ v',d:'Vigas de metal y vidrio. La energía de un impacto se propaga como una onda.',diff:3,fact:'Una onda de choque propaga la energía del impacto más allá del punto de contacto.'},
  {t:'Asalto desde las alturas',c:'Ep = m·g·h',d:'Dispara desde una torre: la energía potencial se transforma en cinética al caer.',diff:4,fact:'Al caer, la energía potencial (m·g·h) se convierte en energía cinética.'},
- {t:'Fortaleza aérea',c:'F = m·a',d:'Tres torres y voladores. Estrena la red: se abre en el aire y los derriba.',diff:5,fact:'La red frena a los voladores (fuerza = masa · aceleración) y su caída les causa daño proporcional a la altura.'},
- {t:'Equilibrio y centro de masas',c:'Σ M = 0',d:'Un solo pilar sostiene una viga pesada. Golpea el apoyo y el equilibrio se rompe.',diff:3,fact:'Una estructura cae cuando su centro de masas queda fuera de su base de apoyo.'},
- {t:'Combustión de la madera',c:'C₆H₁₀O₅ + 6 O₂ → 6 CO₂ + 5 H₂O',d:'Una fortaleza de madera tras un muro de piedra. El fuego hará buena parte del trabajo.',diff:3,fact:'El fuego prende la madera: la celulosa arde al reaccionar con el oxígeno y libera calor; la piedra no es combustible.'},
+ {t:'Fortaleza aérea',c:'F = m·a',d:'Tres torres y voladores. Golpea a los voladores en pleno vuelo: la fuerza del impacto depende de masa y velocidad.',diff:5,fact:'Un impacto transmite al volador una fuerza F = m·a: a más masa y más aceleración, más daño.'},
+ {t:'La red de nailon',c:'F = m·a',d:'Solo voladores. Abre la red en el aire: los frena y su caída les causa daño según la altura.',diff:3,fact:'La red frena a los voladores (fuerza = masa · aceleración) y su caída les causa daño proporcional a la altura.'},
+ {t:'Combustión de la madera',c:'C₆H₁₀O₅ + 6 O₂ → 6 CO₂ + 5 H₂O',d:'Una fortaleza de madera tras un muro de piedra. Solo puedes usar alcohol: deja que el fuego haga el trabajo.',diff:3,fact:'El fuego prende la madera: la celulosa arde al reaccionar con el oxígeno y libera calor; la piedra no es combustible.'},
  {t:'Vidrio y fragilidad',c:'σ > σ rotura',d:'Casas de cristal, blancos al descubierto y un búnker de metal. Haz llover esquirlas.',diff:4,fact:'Un material frágil se rompe sin deformarse cuando la tensión supera su límite de rotura.'},
- {t:'Colisiones elásticas',c:'e = v₂ / v₁',d:'Un alto muro de piedra protege a los objetivos. Sobrepásalo con una parábola alta.',diff:4,fact:'En un choque elástico se conserva la energía cinética; el coeficiente e mide cuánta se conserva.'},
+ {t:'Equilibrio y centro de masas',c:'Σ M = 0',d:'Un solo pilar sostiene una viga pesada. Golpea el apoyo y el equilibrio se rompe.',diff:3,fact:'Una estructura cae cuando su centro de masas queda fuera de su base de apoyo.'},
  {t:'Gran final: el laboratorio',c:'Ec · Ep · F = m·a',d:'Torre de lanzamiento, cuatro estructuras y voladores. Usa todo lo aprendido.',diff:5,fact:'Has combinado energía, fuerzas, ondas de choque y reacciones químicas para superar todos los experimentos.'}
 ];
 for(let i=0;i<LEVELS.length;i++){setupLevel(i);LEVELS[i].tg=targets.length;LEVELS[i].am=ammoLeft();LEVELS[i].par=LEVELS[i].par||Math.max(2,Math.ceil(targets.length*.75))}
@@ -1699,9 +1843,21 @@ function buildLevels(){
   box.appendChild(b);
  });
 }
+// El menú de inicio solo se desliza si "Cómo jugar" está abierto (o si el contenido no cabe en la ventana)
+function updateMenuLock(){
+ const m=$('menu'),help=$('screenTitle').querySelector('details.help');
+ m.classList.remove('lock');
+ if(!m.classList.contains('show')||$('screenTitle').hidden)return;
+ const cabe=m.scrollHeight<=m.clientHeight+2;
+ m.classList.toggle('lock',cabe&&!help.open);
+}
+{const hp=$('screenTitle').querySelector('details.help');
+ hp.addEventListener('toggle',()=>{updateMenuLock();if(hp.open)setTimeout(()=>hp.scrollIntoView({behavior:'smooth',block:'nearest'}),60)});
+ addEventListener('resize',updateMenuLock)}
 function showScreen(name){
  paused=true;$('menu').classList.add('show');
  $('screenTitle').hidden=name!=='title';$('screenLevels').hidden=name!=='levels';
+ updateMenuLock();
  if(name==='levels'){buildLevels();$('resumeBtn').hidden=!started}
  $('toast').classList.remove('show');
 }
@@ -1726,6 +1882,7 @@ function layout(){
  while(lw*sc*lh*sc>2.6e7&&sc>.6)sc-=.1;
  if(lw!==LW||lh!==LH||Math.abs(sc-SC)>.02){LW=lw;LH=lh;OX=(lw-1000)/2;OY=lh-560;SC=sc;canvas.width=Math.round(lw*sc);canvas.height=Math.round(lh*sc);bgCache=null}
  updateCamera();
+ st.style.setProperty('--uit',Math.max(1,Math.min(1.35,Math.min(w/1100,h/620))).toFixed(3));
  st.style.setProperty('--ui',Math.max(.62,Math.min(1.9,Math.min(w/1100,h/620))).toFixed(3));
 }
 (function(){
@@ -1740,7 +1897,7 @@ function toggleFS(){
  else{const r=el.requestFullscreen||el.webkitRequestFullscreen;if(r){const pr=r.call(el);
   if(pr&&pr.then)pr.then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(e){}}).catch(()=>{})}}
 }
-function refreshFS(){const f=isFS(),b=$('fsBtn');document.body.classList.toggle('fs',f);b.textContent=f?'⤓':'⛶';b.title=f?'Salir de pantalla completa (F)':'Pantalla completa (F)';b.setAttribute('aria-pressed',f?'true':'false')}
+function refreshFS(){const f=isFS(),b=$('fsBtn');document.body.classList.toggle('fs',f);b.textContent=f?'⤓ Salir de pantalla completa':'⛶ Pantalla completa';b.title='Pantalla completa (F)';b.setAttribute('aria-pressed',f?'true':'false')}
 $('fsBtn').addEventListener('click',()=>{sfx.unlock();toggleFS()});
 document.addEventListener('fullscreenchange',refreshFS);document.addEventListener('webkitfullscreenchange',refreshFS);
 if(!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen))$('fsBtn').hidden=true;
@@ -1787,14 +1944,14 @@ function tutEnd(done){
 }
 $('coachNext').addEventListener('click',()=>tutShow(tutStep+1));
 $('coachSkip').addEventListener('click',()=>tutEnd(true));
-$('helpBtn').addEventListener('click',()=>{if(!started)startLevel(0);else if(paused)hideMenu();tutShow(0)});
+$('tutBtn').addEventListener('click',()=>{if(!started)startLevel(0);else if(paused)hideMenu();tutShow(0)});
 // ---------- Sonido: silencio (M) y desbloqueo por gesto del usuario ----------
-function refreshMute(){const b=$('muteBtn');b.textContent=sfx.isMuted()?'🔇':'🔊';b.title=sfx.isMuted()?'Sonido desactivado (M para activar)':'Sonido activado (M para silenciar)'}
+function refreshMute(){const b=$('muteBtn');b.classList.toggle('muted',sfx.isMuted());$('muteLbl').textContent=sfx.isMuted()?'Silencio':'Sonido';b.title=sfx.isMuted()?'Sonido desactivado (M para activar)':'Sonido activado (M para silenciar)'}
 $('muteBtn').addEventListener('click',()=>{sfx.unlock();sfx.toggle();refreshMute();sfx.tick()});
 if(typeof document.addEventListener==='function'){
  document.addEventListener('pointerdown',sfx.unlock,true);
  document.addEventListener('keydown',sfx.unlock,true);
- document.addEventListener('keydown',e=>{if((e.key||'').toLowerCase()==='m'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){sfx.toggle();refreshMute()}});
+ document.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const k=(e.key||'').toLowerCase();if(k==='m'){sfx.toggle();refreshMute()}else if(k==='g'&&!paused)$('guideBtn').click()});
 }
 refreshMute();
 // Service worker: siempre intenta la versión más reciente; si hay una nueva, recarga sola cuando estés en un menú.
