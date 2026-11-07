@@ -326,6 +326,30 @@
   .rcol{top:calc(84px*var(--uit,1))}
   @media (pointer:coarse) and (max-height:480px){.rcol{top:calc(84px*var(--uit,1))}}
   @media (prefers-reduced-motion:reduce){.tools button.tb.primary{animation:none}}
+
+  /* ficha de final de nivel: compacta, en dos columnas en pantallas bajas y sin deslizar salvo que no quepa */
+  .toast.lock,.toast.lock .card{overflow:hidden;overscroll-behavior:none;touch-action:none}
+  @media (max-height:480px){
+   .toast{padding:6px 10px}
+   .toast .card{width:min(780px,100%);padding:10px 16px;border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);column-gap:14px;align-content:center;text-align:left}
+   .toast .card>*{grid-column:1}
+   .toast .card .report{grid-column:2;grid-row:1/span 4;margin:0;align-self:center}
+   .toast .card:has(.report[hidden]){grid-template-columns:1fr;text-align:center}
+   .toast .card:has(.report[hidden])>*{grid-column:1}
+   .toast .card h2{font-size:1.05rem;margin:0 0 2px}
+   .toast .card .rstars{font-size:1.05rem;margin:0 0 3px}
+   .toast .card p{font-size:.78rem;line-height:1.3;margin:0 0 6px}
+   .toast .card .rbtns{margin-top:2px;justify-content:flex-start}
+   .toast .card:has(.report[hidden]) .rbtns{justify-content:center}
+   .toast .card button{padding:7px 11px;font-size:.8rem;margin:2px}
+   .toast .report{padding:7px 10px;font-size:.74rem;line-height:1.3}
+   .toast .report h3{font-size:.84rem;margin:0 0 3px}
+   .toast .report .rgrid{gap:4px;margin:4px 0;grid-template-columns:repeat(4,minmax(0,1fr))}
+   .toast .report .rbox{padding:3px 1px;border-radius:9px}
+   .toast .report .rbox b{font-size:.92rem}
+   .toast .report .rbox span{font-size:.5rem;line-height:1.15;display:block;letter-spacing:-.01em}
+   .toast .report ul{font-size:.72rem;margin:2px 0 4px}
+  }
 </style>
 </head>
 <body>
@@ -460,7 +484,7 @@ const unlockedAt=n=>UNLOCK.slice(0,n+1).flat();
 // Escala coherente con g = 9,8 m/s²: 20 px = 1 m y cada fotograma dura DT_S segundos
 const PX_M=20, G_MS2=9.8, DT_S=Math.sqrt(gravity/(PX_M*G_MS2)), V_MS=1/(PX_M*DT_S), WIND_N=1/(PX_M*DT_S*DT_S);   // V_MS: m/s por px/fotograma · WIND_N: N sobre 1 kg por px/fotograma²
 const MERGE_GAP=24, MAX_GAP=14; // huecos mayores que MAX_GAP entre grupos de estructuras se reducen a MAX_GAP
-const BURN_T=520, BLOCK_DPS=.009, TARGET_DPS=.0085, TARGET_BURN=150, PATCH_LIFE=220, DROPS=10; // fuego
+const BURN_T=520, BLOCK_DPS=.009, TARGET_DPS=.0085, TARGET_BURN=150, PATCH_LIFE=220, DROPS=8; // fuego
 const FALL_PX=110;         // píxeles de caída de un objetivo atrapado por la red por cada punto de daño
 const AIR_TARGETS=[
  [[270,170,0,12],[330,235,10,12]],   // nivel 1: el segundo volador, más bajo y casi quieto
@@ -530,8 +554,67 @@ const sfx=(()=>{
     try{const sb=ac.createBuffer(1,1,22050),ss=ac.createBufferSource();ss.buffer=sb;ss.connect(ac.destination);ss.start(0)}catch(e){}   // "despierta" el audio en iOS
    }
    if(ac.state!=='running'){const r=ac.resume&&ac.resume();if(r&&r.catch)r.catch(()=>{})}
+   startMusic();
   }catch(e){ac=null}
   }
+ // ---- Música de fondo: acordes suaves (La m · Fa · Do · Sol) y notas sueltas de pentatónica con eco. Muy baja para no tapar los efectos.
+ let mus=null,mood='calm';
+ const mf=m=>440*Math.pow(2,(m-69)/12);
+ function mnote(m,t,d,vol,type,att,dest){
+  const o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.value=mf(m);
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g);g.connect(dest);o.start(t);o.stop(t+d+.05);
+ }
+ // Tema 1 (menús): tranquilo. Acordes suaves (La m · Fa · Do · Sol) y notas sueltas de pentatónica con eco.
+ const CHORDS=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]],CHORD_S=7.6;
+ function calmBar(t){
+  const c=CHORDS[mus.bar++%CHORDS.length],d=mus.cb;
+  c.forEach((m,i)=>{mnote(m,t+i*.12,CHORD_S+1.2,.17,'sine',2.2,d);mnote(m+12,t+i*.12,CHORD_S,.05,'triangle',2.6,d)});
+  mnote(c[0]-12,t,CHORD_S,.2,'sine',1.6,d);
+  const sc=[0,2,4,7,9,12,14].map(x=>c[0]+12+x);
+  for(let i=0;i<8;i++)if(Math.random()<.62){const n=sc[Math.floor(Math.random()*sc.length)];mnote(n,t+.5+i*.92+Math.random()*.25,2.4,.11+Math.random()*.05,'sine',.012,d)}
+ }
+ // Tema 2 (partida): más animado y alegre, a 116 ppm. Do · Sol · La m · Fa con bajo saltarín, arpegio de corcheas y un ligero shaker.
+ const PCH=[[60,64,67],[55,59,62],[57,60,64],[53,57,60]],BEAT=60/116,BAR_S=BEAT*4;
+ const ARP=[[0,1,2,1,3,2,4,2],[0,2,1,3,2,4,3,5],[2,1,0,1,4,3,2,3]];
+ function hat(t,v){
+  const src=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();
+  src.buffer=nb;f.type='highpass';f.frequency.value=6500;
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(v,t+.003);g.gain.exponentialRampToValueAtTime(.0001,t+.055);
+  src.connect(f);f.connect(g);g.connect(mus.pb);src.start(t,Math.random()*1.5,.1);
+ }
+ function playBar(t){
+  const n=mus.barP++,c=PCH[n%PCH.length],d=mus.pb,r=c[0];
+  c.forEach(m=>mnote(m,t,BAR_S+.2,.05,'triangle',.25,d));                       // colchón suave
+  [[0,r-12],[1.5,r-12],[2,c[2]-12],[3.5,c[1]-12]].forEach(b=>mnote(b[1],t+b[0]*BEAT,.34,.24,'triangle',.008,d));   // bajo saltarín
+  const tones=[c[0]+12,c[1]+12,c[2]+12,c[0]+24,c[1]+24,c[2]+24],pat=ARP[(n>>1)%ARP.length];
+  for(let i=0;i<8;i++){mnote(tones[pat[i]],t+i*BEAT/2,.42,i%2?.1:.15,i%4===2?'triangle':'sine',.004,d)}   // arpegio de corcheas
+  for(let i=1;i<8;i+=2)hat(t+i*BEAT/2,.07);                                      // shaker a contratiempo
+  if(n%2===1)[0,2,4].forEach((k,i)=>mnote([72,76,79][i]+(c[0]-60)+12,t+3.5*BEAT+i*BEAT*.17,.3,.1,'sine',.004,d));   // pequeño adorno al final de cada dos compases
+ }
+ function setMood(m){
+  mood=m;if(!mus||!ac)return;const t=ac.currentTime;
+  mus.calm.gain.setTargetAtTime(m==='calm'?1:0,t,.7);mus.play.gain.setTargetAtTime(m==='play'?1:0,t,.7);
+ }
+ function startMusic(){
+  if(mus||!ac)return;
+  const dl=ac.createDelay(1.5);dl.delayTime.value=.46;const fb=ac.createGain();fb.gain.value=.4;
+  const dlp=ac.createBiquadFilter();dlp.type='lowpass';dlp.frequency.value=1600;const wet=ac.createGain();wet.gain.value=.5;
+  dl.connect(dlp);dlp.connect(fb);fb.connect(dl);dlp.connect(wet);wet.connect(master);
+  const chain=(cut,level)=>{   // fundido (gain) → filtro → salida y eco ; devuelve [bus de notas, fundido]
+   const bus=ac.createGain();bus.gain.value=level;const fade=ac.createGain();fade.gain.value=0;
+   const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=cut;
+   bus.connect(fade);fade.connect(lp);lp.connect(master);lp.connect(dl);return[bus,fade];
+  };
+  const a=chain(1500,.32),b=chain(4200,.34);
+  mus={cb:a[0],calm:a[1],pb:b[0],play:b[1],next:ac.currentTime+.4,nextP:ac.currentTime+.4,bar:0,barP:0};
+  setMood(mood);
+  const tick=()=>{if(!ac||!mus)return;try{
+   while(mus.next<ac.currentTime+2){calmBar(mus.next);mus.next+=CHORD_S}
+   while(mus.nextP<ac.currentTime+2){playBar(mus.nextP);mus.nextP+=BAR_S}
+  }catch(e){}};
+  tick();setInterval(tick,600);
+ }
  const can=(key,gap)=>{
   if(!ac||muted||settling)return false;
    if(ac.state!=='running'){try{ac.resume()}catch(e){}return false}
@@ -556,6 +639,8 @@ const sfx=(()=>{
  }
  return{
   unlock,isMuted:()=>muted,
+  mood:setMood,
+  suspend(){try{if(ac&&ac.state==='running')ac.suspend()}catch(e){}},
   toggle(){muted=!muted;if(master)master.gain.value=muted?0:.55;try{localStorage.setItem('catapulta-caos-mute',muted?'1':'0')}catch(e){}return muted},
   launch(){if(!can('launch',60))return;tone(150,.2,{type:'triangle',to:520,vol:.22});noise(.25,{type:'bandpass',freq:1200,to:350,q:.7,vol:.28,attack:.03})},
   impact(kind,vn,surf){
@@ -1675,6 +1760,8 @@ function physics(){
  if(pendingCheck&&quiet()){pendingCheck=false;checkProgress()}
  updateHud();
 }
+function updateToastLock(){const t=$('toast'),c=t.querySelector('.card');t.classList.remove('lock');t.classList.toggle('lock',t.scrollHeight<=t.clientHeight+2&&c.scrollHeight<=c.clientHeight+2)}
+addEventListener('resize',()=>{if($('toast').classList.contains('show'))updateToastLock()});
 function showToast(success){
  const L=LEVELS[currentLevel],r=evalRun();
  if(success)sfx.win();else sfx.lose();
@@ -1685,6 +1772,7 @@ function showToast(success){
  buildReport(success,r);
  $('undoToast').style.display=lastSnap?'inline-block':'none';
  $('next').style.display=success&&currentLevel<LEVELS.length-1?'inline-block':'none';$('again').textContent=success?'Repetir':'Intentar de nuevo';$('toast').classList.add('show');
+ updateToastLock();
 }
 function render(){
  ctx.save();
@@ -1783,7 +1871,7 @@ canvas.addEventListener('touchmove',e=>{if(e.cancelable)e.preventDefault()},{pas
 document.addEventListener('gesturestart',e=>e.preventDefault());   // zoom con pellizco en iOS
 // iOS solo permite activar el audio dentro de touchend/click
 ['touchend','pointerup','click'].forEach(t=>document.addEventListener(t,sfx.unlock,{capture:true,passive:true}));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)sfx.unlock()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)sfx.suspend();else sfx.unlock()});
 // pausa y cancela el apuntado al girar a vertical o al cambiar de app
 const rotMQ=window.matchMedia?matchMedia('(orientation: portrait) and (pointer: coarse) and (max-width: 900px)'):{matches:false};
 if(rotMQ.addEventListener)rotMQ.addEventListener('change',()=>{if(rotMQ.matches)cancelAim()});
@@ -1855,13 +1943,13 @@ function updateMenuLock(){
  hp.addEventListener('toggle',()=>{updateMenuLock();if(hp.open)setTimeout(()=>hp.scrollIntoView({behavior:'smooth',block:'nearest'}),60)});
  addEventListener('resize',updateMenuLock)}
 function showScreen(name){
- paused=true;$('menu').classList.add('show');
+ paused=true;$('menu').classList.add('show');sfx.mood('calm');
  $('screenTitle').hidden=name!=='title';$('screenLevels').hidden=name!=='levels';
  updateMenuLock();
  if(name==='levels'){buildLevels();$('resumeBtn').hidden=!started}
  $('toast').classList.remove('show');
 }
-function hideMenu(){$('menu').classList.remove('show');paused=false}
+function hideMenu(){$('menu').classList.remove('show');paused=false;sfx.mood('play')}
 function showToastNew(ks){const el=$('matHint');if(!el)return;el.innerHTML='<b>🔓 ¡Material desbloqueado!</b>'+ks.map(k=>materials[k].name+' ('+MATINFO[k].sym+')').join(', ');el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>{el.classList.remove('show');showHint(ks[0])},2200)}
 function startLevel(n){started=true;sfx.tick();setupLevel(n);hideMenu();{const nw=UNLOCK[n]||[];if(n>0&&nw.length){setAmmo(nw[0]);showToastNew(nw)}}if(n===0&&!tutSeen())tutShow(0);else if(tutStep>=0)tutEnd(false)}
 $('playBtn').addEventListener('click',()=>{if(!tutSeen())startLevel(0);else showScreen('levels')});
