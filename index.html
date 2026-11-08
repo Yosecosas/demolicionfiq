@@ -354,6 +354,18 @@
   /* botón de siguiente nivel: grande y llamativo en la ficha de final de nivel */
   .toast .card #next{font-size:1.25rem;padding:14px 30px;border-radius:16px;margin:6px 3px;box-shadow:0 5px 0 #b8431a,0 10px 18px #ff6b3540}
   @media (max-height:480px){.toast .card #next{font-size:1.05rem;padding:11px 20px;margin:3px 2px;white-space:nowrap}}
+
+  /* selección de mundo */
+  .worlds{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:14px 0 16px}
+  .world{display:flex;flex-direction:column;align-items:center;gap:4px;width:min(220px,28vw);min-width:150px;padding:18px 12px;border:0;border-radius:22px;color:#fff;cursor:pointer;
+   background:linear-gradient(180deg,var(--c1),var(--c2));box-shadow:0 6px 0 var(--sh),0 12px 22px #0d253f55,inset 0 2px 0 #ffffff55;transition:transform .08s,box-shadow .08s,filter .15s;font-family:inherit}
+  .world:hover{filter:brightness(1.08)}.world:active{transform:translateY(4px);box-shadow:0 2px 0 var(--sh),0 6px 12px #0d253f55,inset 0 2px 0 #ffffff55}
+  .world .wi{font-size:2.4rem;line-height:1;filter:drop-shadow(0 2px 0 #0003)}.world b{font-size:1.2rem}.world small{font-size:.78rem;opacity:.9;line-height:1.25}
+  .w1{--c1:#3cc0df;--c2:#1b86a2;--sh:#0f5f75}.w2{--c1:#9aaeb7;--c2:#667b85;--sh:#46585f}.w3{--c1:#ff9a68;--c2:#ff6b35;--sh:#b8431a}
+  #note{position:fixed;left:50%;top:max(16px,env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;z-index:50;background:#12303f;color:#fff;border:1px solid #ffffff44;
+   padding:12px 20px;border-radius:14px;font:700 .95rem system-ui,sans-serif;box-shadow:0 10px 26px #0006;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
+  #note.show{opacity:1;transform:translate(-50%,0)}
+  @media (max-height:480px){.world{padding:10px 10px;width:min(190px,28vw)}.world .wi{font-size:1.8rem}.world b{font-size:1rem}.world small{font-size:.68rem}.worlds{margin:8px 0 10px;gap:10px}}
 </style>
 </head>
 <body>
@@ -427,11 +439,21 @@
         <div class="tip">Arrastra para disparar · <kbd>A</kbd> / <kbd>D</kbd> cambian de material · <kbd>F</kbd> pantalla completa</div>
         <details class="help"><summary>❓ Cómo jugar y controles</summary><div class="hb"><strong>Cómo jugar:</strong> arrastra el proyectil hacia atrás y suelta (si antes lo devuelves a la catapulta o pulsas <strong>Esc</strong>, el disparo se cancela sin gastar munición); la guía de puntos muestra la trayectoria sin viento (el botón <strong>🧭</strong> la cambia a «con viento»). Cambia de material con <strong>A</strong> y <strong>D</strong> (o pulsando su ficha). Las estructuras están <strong>ancladas al suelo</strong> y se agrietan con cada golpe. El <strong>metal</strong> genera una onda de choque proporcional a su velocidad; el <strong>cristal</strong> se fragmenta (rómpelo sobre un volador para que llueva sobre el suelo); la <strong>red</strong> se abre en vuelo (clic, toque o Espacio) y derriba voladores, que se dañan según la altura de caída; el <strong>alcohol</strong> es una botella incendiaria que quema la madera. El <strong>viento</strong> desvía menos a los proyectiles pesados. Cada nivel tiene munición limitada. Con <strong>⏪ Deshacer</strong> (o <strong>Z</strong>) repites el último disparo con el mismo viento y recuperas la munición, pero cuenta como un disparo más en la puntuación. Tras cada nivel verás un <strong>informe</strong> con la física de tu partida, y en el <strong>🔬 Laboratorio libre</strong> puedes ajustar viento y masa. Pulsa <strong>M</strong> para silenciar el sonido y <strong>❓ Ayuda</strong> para repetir el tutorial.</div></details>
       </section>
+      <section class="screen" id="screenWorlds" hidden>
+        <div class="mk">Cuaderno de experimentos</div>
+        <h3>Elige un mundo</h3>
+        <div class="worlds">
+          <button class="world w1" id="world1"><span class="wi">🧪</span><b>Mundo 1</b><small>20 niveles de física y química</small></button>
+          <button class="world w2" id="world2"><span class="wi">🌋</span><b>Mundo 2</b><small>Próximamente</small></button>
+          <button class="world w3" id="worldLab"><span class="wi">🔬</span><b>Laboratorio libre</b><small>Experimenta sin límites</small></button>
+        </div>
+        <div class="row"><button id="worldsBack">← Inicio</button></div>
+      </section>
       <section class="screen" id="screenLevels" hidden>
         <div class="mk">Cuaderno de experimentos</div>
         <h3>Elige un nivel</h3>
         <div class="levels" id="levels"></div>
-        <div class="row"><button id="backBtn">← Inicio</button><button id="labBtn">🔬 Laboratorio libre</button><button id="tutBtn">❓ Tutorial</button><button id="guideBtn" aria-pressed="false">🧭 Guía sin viento</button><button id="fsBtn">⛶ Pantalla completa</button><button class="primary" id="resumeBtn" hidden>Continuar partida</button></div>
+        <div class="row"><button id="backBtn">← Mundos</button><button id="labBtn">🔬 Laboratorio libre</button><button id="tutBtn">❓ Tutorial</button><button id="guideBtn" aria-pressed="false">🧭 Guía sin viento</button><button id="fsBtn">⛶ Pantalla completa</button><button class="primary" id="resumeBtn" hidden>Continuar partida</button></div>
       </section>
     </div>
   </div>
@@ -485,7 +507,12 @@ const AMMO_PER_LEVEL=[
  {wood:3,stone:2,metal:1,rubber:1,glass:2,red:2},              // 12 · puente de piedra
  {wood:2,stone:2,fire:1},                                      // 13 · bosque de madera (incendio en cadena)
  {wood:3,glass:3,red:5,rubber:1,fire:1},                       // 14 · tormenta de voladores
- {wood:2,stone:2,metal:1,rubber:1,glass:2,red:2,fire:1}        // 15 · gran final
+ {wood:2,stone:2,metal:1,rubber:1,glass:2,red:2,fire:1},       // 15 · demolición total
+ {wood:2,stone:2,metal:1,fire:1},                              // 16 · torres gemelas
+ {wood:2,stone:1,metal:1,rubber:1,glass:1,fire:1},             // 17 · cascada de cristal
+ {wood:2,glass:2,rubber:1,red:5,fire:1},                       // 18 · nido de voladores
+ {wood:2,stone:2,metal:1,rubber:1,glass:1,fire:1},             // 19 · montaña de bloques
+ {wood:2,stone:2,metal:1,rubber:1,glass:2,red:3,fire:1}        // 20 · gran final
 ];
 // Materiales que se desbloquean en cada nivel (el resto de niveles acumulan los anteriores)
 const UNLOCK=[['wood','stone'],['rubber'],['metal'],['glass'],[],['red'],['fire'],[],[],[],[],[],[],[],[]];
@@ -511,12 +538,17 @@ const AIR_TARGETS=[
  [],
  [[400,390,0,10],[505,335,0,10],[465,245,0,10],[335,245,0,10],[295,335,0,10]],   // en círculo sobre la estructura
  [[250,300,0,14],[420,340,20,14],[620,310,22,14]],
+ [],
+ [],
+ [[300,340,0,12],[375,290,10,12],[450,245,0,12],[525,290,10,12],[600,340,0,12],[450,350,15,12]],   // en V
+ [],
+ [[300,300,0,12],[480,330,20,12],[640,300,0,12],[780,330,20,12]],
  [[430,210,20,14],[560,290,0,12]]
 ];
-const NEAR_SHIFT=[220,230,300,150,115,120,50,60,60,0,130,150,120,200,0,0]; // px que se acercan las estructuras a la catapulta en cada nivel (sube el valor = más fácil)
+const NEAR_SHIFT=[220,230,300,150,115,120,50,60,60,0,130,150,120,200,0,150,170,150,160,0,0]; // px que se acercan las estructuras a la catapulta en cada nivel (sube el valor = más fácil)
 let tutStep=-1, hintT=null, sheetKey='', paused=true, started=false, wind=0, windLines=[], shards=[], pendingWind=false, ammo={}, ammoBase={}, fires=[], drops=[], fireT=0;
 const NET_R=64;
-const LAB=15, STEP_MS=1000/60;   // LAB: índice del laboratorio libre · paso fijo de física (60 Hz)
+const LAB=20, STEP_MS=1000/60;   // LAB: índice del laboratorio libre · paso fijo de física (60 Hz)
 const CANCEL_MOUSE=22, CANCEL_TOUCH=44;   // radio (unidades del mundo) alrededor de la catapulta donde soltar cancela el disparo (44 con el dedo)
 let cancelR=CANCEL_MOUSE;
 let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,firstExit=false,aimId=null;
@@ -903,6 +935,45 @@ function setupLevel(n){
   block(660,ground-90,20,90,'glass');block(720,ground-90,20,90,'glass');beam(690,ground-108,100,18,'glass');target(690,ground-125);
   block(800,ground-34,34,34,'wood');block(800,ground-68,34,34,'wood');block(800,ground-102,34,34,'wood');target(817,ground-120);
   target(370,ground-22);target(620,ground-22);
+ } else if(n===15){
+  // 16 · Torres gemelas y pila de cajas
+  block(430,ground-120,24,120,'stone');block(500,ground-120,24,120,'stone');beam(477,ground-142,130,22,'wood');target(477,ground-160);
+  block(650,ground-120,24,120,'stone');block(720,ground-120,24,120,'stone');beam(697,ground-142,130,22,'wood');target(697,ground-160);
+  block(575,ground-34,34,34,'wood');block(575,ground-68,34,34,'wood');block(575,ground-102,34,34,'wood');target(592,ground-120);
+  target(477,ground-22);target(800,ground-22);
+ } else if(n===16){
+  // 17 · Cascada de cristal: torre de tres pisos de vidrio
+  block(560,ground-70,18,70,'glass');block(640,ground-70,18,70,'glass');beam(600,ground-88,110,18,'glass');target(600,ground-106);
+  block(560,ground-158,18,70,'glass');block(640,ground-158,18,70,'glass');beam(600,ground-176,110,18,'glass');target(600,ground-194);
+  block(580,ground-206,40,30,'glass');target(600,ground-224);
+  block(440,ground-40,40,40,'wood');block(440,ground-80,40,40,'wood');target(460,ground-98);
+  block(500,ground-110,26,110,'stone');target(513,ground-128);   // muro que protege la torre de los tiros rasantes
+  target(540,ground-22);target(760,ground-22);
+ } else if(n===17){
+  // 18 · Nido de voladores (los voladores van en V, en AIR_TARGETS) y un muro que protege dos blancos
+  block(560,ground-120,30,120,'stone');
+  block(650,ground-34,34,34,'wood');block(650,ground-68,34,34,'wood');target(667,ground-86);
+  target(740,ground-22);target(840,ground-22);
+ } else if(n===18){
+  // 19 · Montaña de bloques: escalera que sube y baja
+  block(450,ground-40,60,40,'stone');block(450,ground-80,60,40,'wood');target(480,ground-98);
+  block(510,ground-40,60,40,'stone');block(510,ground-80,60,40,'wood');block(510,ground-120,60,40,'wood');target(540,ground-138);
+  block(570,ground-40,60,40,'stone');block(570,ground-80,60,40,'wood');block(570,ground-120,60,40,'wood');block(570,ground-160,60,40,'wood');block(570,ground-200,60,40,'wood');target(600,ground-218);
+  block(630,ground-40,60,40,'stone');block(630,ground-80,60,40,'wood');block(630,ground-120,60,40,'wood');target(660,ground-138);
+  block(690,ground-40,60,40,'stone');block(690,ground-80,60,40,'wood');target(720,ground-98);
+  block(770,ground-130,30,130,'stone');target(785,ground-148);
+  target(410,ground-22);target(830,ground-22);target(890,ground-22);
+ } else if(n===19){
+  // 20 · Gran final: torre de lanzamiento, cinco estructuras y cuatro voladores
+  block(45,ground-300,30,300,'stone').launch=true;block(130,ground-300,30,300,'stone').launch=true;
+  block(30,ground-322,145,24,'metal').launch=true;
+  sling.x=100;sling.y=ground-358;
+  block(250,ground-40,46,40,'stone');block(296,ground-40,46,40,'stone');block(273,ground-80,46,40,'wood');target(296,ground-98);
+  block(400,ground-130,24,130,'wood');block(520,ground-130,24,130,'wood');beam(472,ground-152,170,22,'stone');block(450,ground-182,30,30,'glass');target(472,ground-170);target(500,ground-170);
+  block(610,ground-90,20,90,'glass');block(670,ground-90,20,90,'glass');beam(640,ground-108,100,18,'glass');block(625,ground-138,30,30,'glass');target(640,ground-126);
+  block(750,ground-34,34,34,'wood');block(750,ground-68,34,34,'wood');block(750,ground-102,34,34,'wood');block(750,ground-136,34,34,'wood');target(767,ground-154);
+  block(840,ground-110,30,110,'stone');target(900,ground-22);
+  target(350,ground-22);target(570,ground-22);
  } else if(n===LAB){
   // Laboratorio libre: una estructura de cada material y dos voladores para experimentar
   block(520,ground-70,22,70,'wood');block(580,ground-70,22,70,'wood');beam(551,ground-88,100,18,'wood');target(551,ground-105);
@@ -1959,7 +2030,12 @@ const LEVELS=[
  {t:'El puente de piedra',c:'τ = F · d',d:'Una viga larga sobre dos pilares y voladores a los lados. Un golpe en un apoyo la hace girar y caer.',diff:3,fact:'Una fuerza lejos del eje produce un momento (τ = F·d) que hace girar el objeto.'},
  {t:'Bosque de madera',c:'Q = m · Hc',d:'Seis pilares de madera unidos por una viga larga. Solo tienes una botella de alcohol: haz que el fuego recorra toda la estructura.',diff:4,fact:'La combustión libera calor (Q = m·Hc), que enciende los materiales vecinos y propaga el incendio.'},
  {t:'Tormenta de voladores',c:'F = m·a',d:'Cinco voladores y un muro de piedra que protege a los blancos del suelo. Usa las redes con cabeza.',diff:4,fact:'Una red reparte la fuerza del impacto en un tiempo mayor (menor aceleración), por eso los frena sin romperse.'},
- {t:'Gran final: demolición total',c:'Ec · Ep · τ · Q',d:'Torre de lanzamiento, pirámide, puente, casa de cristal y voladores. Todo lo aprendido, a la vez.',diff:5,fact:'Has combinado energía, momentos, ondas de choque y reacciones químicas para superar todos los experimentos.'}
+ {t:'Demolición total',c:'Ec · Ep · τ · Q',d:'Torre de lanzamiento, pirámide, puente, casa de cristal y voladores. Todo lo aprendido, a la vez.',diff:5,fact:'Has combinado energía, momentos, ondas de choque y reacciones químicas para superar todos los experimentos.'},
+ {t:'Torres gemelas',c:'Ep = m·g·h',d:'Dos torres altas y una pila de cajas entre ellas. Cuanto más alto cae un bloque, más energía libera.',diff:3,fact:'La energía potencial Ep = m·g·h se convierte en cinética al caer: una torre alta derrumbada golpea con más fuerza.'},
+ {t:'Cascada de cristal',c:'σ = F / A',d:'Una torre de cristal de tres pisos. El cristal es frágil: una fuerza concentrada lo rompe pronto.',diff:3,fact:'La tensión σ = F/A crece cuando la fuerza se concentra en poca superficie: por eso el cristal se rompe con golpes puntuales.'},
+ {t:'Nido de voladores',c:'F = m·a',d:'Seis voladores en V y dos blancos tras un muro. Las redes serán tus mejores aliadas.',diff:4,fact:'Una red alarga el tiempo de la frenada (F = m·Δv/Δt), así que la fuerza sobre el volador es menor.'},
+ {t:'Montaña de bloques',c:'Σ τ = 0',d:'Una escalera de bloques que sube y baja. Si golpeas la base, los pisos superiores vuelcan.',diff:4,fact:'Un cuerpo vuelca cuando el momento del peso respecto a su borde de apoyo deja de ser equilibrado (Σ τ ≠ 0).'},
+ {t:'Gran final: el gran experimento',c:'Ec · Ep · τ · Q',d:'Torre de lanzamiento, cinco estructuras y cuatro voladores. El examen definitivo del laboratorio.',diff:5,fact:'Has dominado energía, fuerzas, momentos, ondas de choque, combustión y fragilidad: ¡laboratorio completado!'}
 ];
 for(let i=0;i<LEVELS.length;i++){setupLevel(i);LEVELS[i].tg=targets.length;LEVELS[i].am=ammoLeft();LEVELS[i].par=LEVELS[i].par||Math.max(2,Math.ceil(targets.length*.75))}
 const SAVE_KEY='catapulta-caos-progreso';
@@ -1994,7 +2070,7 @@ function updateMenuLock(){
  addEventListener('resize',updateMenuLock)}
 function showScreen(name){
  paused=true;$('menu').classList.add('show');sfx.mood('calm');
- $('screenTitle').hidden=name!=='title';$('screenLevels').hidden=name!=='levels';
+ $('screenTitle').hidden=name!=='title';$('screenLevels').hidden=name!=='levels';$('screenWorlds').hidden=name!=='worlds';
  updateMenuLock();
  if(name==='levels'){buildLevels();$('resumeBtn').hidden=!started}
  $('toast').classList.remove('show');
@@ -2002,8 +2078,14 @@ function showScreen(name){
 function hideMenu(){$('menu').classList.remove('show');paused=false;sfx.mood('play')}
 function showToastNew(ks){const el=$('matHint');if(!el)return;el.innerHTML='<b>🔓 ¡Material desbloqueado!</b>'+ks.map(k=>materials[k].name+' ('+MATINFO[k].sym+')').join(', ');el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>{el.classList.remove('show');showHint(ks[0])},2200)}
 function startLevel(n){started=true;sfx.tick();setupLevel(n);hideMenu();{const nw=UNLOCK[n]||[];if(n>0&&nw.length){setAmmo(nw[0]);showToastNew(nw)}}if(n===0&&!tutSeen())tutShow(0);else if(tutStep>=0)tutEnd(false)}
-$('playBtn').addEventListener('click',()=>{if(!tutSeen())startLevel(0);else showScreen('levels')});
-$('backBtn').addEventListener('click',()=>showScreen('title'));
+$('playBtn').addEventListener('click',()=>{if(!tutSeen())startLevel(0);else showScreen('worlds')});
+$('backBtn').addEventListener('click',()=>showScreen('worlds'));
+$('worldsBack').addEventListener('click',()=>showScreen('title'));
+$('world1').addEventListener('click',()=>{sfx.tick();showScreen('levels')});
+$('worldLab').addEventListener('click',()=>$('labBtn').click());
+let noteT=0;
+function showNote(txt){let n=$('note');if(!n){n=document.createElement('div');n.id='note';n.setAttribute('role','status');document.body.appendChild(n)}n.textContent=txt;n.classList.add('show');clearTimeout(noteT);noteT=setTimeout(()=>n.classList.remove('show'),2600)}
+$('world2').addEventListener('click',()=>{sfx.tick();showNote('Leo lo pondrá cuando le apetezca')});
 $('resumeBtn').addEventListener('click',hideMenu);
 $('menuBtn').addEventListener('click',()=>showScreen('levels'));
 $('toMenu').addEventListener('click',()=>showScreen('levels'));
