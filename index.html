@@ -16,6 +16,14 @@
 <title>Demolición con FiQ · Laboratorio de Física y Química</title>
 <style>
   :root{--ink:#12303f;--teal:#1b7f99;--accent:#ff6b35;--paper:#f6faf5;--panel:#ffffffe8;--line:#2a8aa622}
+  body.theme-w2{--teal:#2f8f4e;--paper:#f3f9ee;--line:#3a9a5a22;--ink:#16341f}
+  body.theme-w2 .menu{background:radial-gradient(circle at 20% 15%,#2f9a5599,transparent 45%),radial-gradient(circle at 85% 85%,#a8d84a44,transparent 42%),#0f2a1aee}
+  body.theme-w2 .mk,body.theme-w2 .formulas,body.theme-w2 .lvl .lc,body.theme-w2 .menu details.help summary{color:#a6f0b4}
+  body.theme-w2 .mp{color:#d3f2d6}body.theme-w2 .mi{color:#bfdcc4}
+  body.theme-w2 .formulas span{border-color:#a6f0b466}
+  body.theme-w2 .lvl .ld{color:#cfe6d2}body.theme-w2 .lvl .meta{color:#a6c9ad}
+  body.theme-w2 .lvl{background:#ffffff14;border-color:#a6f0b433}
+  body.theme-w2 .lvl:hover{background:#ffffff26}
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;background-color:var(--paper);
        background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:24px 24px}
@@ -361,7 +369,7 @@
    background:linear-gradient(180deg,var(--c1),var(--c2));box-shadow:0 6px 0 var(--sh),0 12px 22px #0d253f55,inset 0 2px 0 #ffffff55;transition:transform .08s,box-shadow .08s,filter .15s;font-family:inherit}
   .world:hover{filter:brightness(1.08)}.world:active{transform:translateY(4px);box-shadow:0 2px 0 var(--sh),0 6px 12px #0d253f55,inset 0 2px 0 #ffffff55}
   .world .wi{font-size:2.4rem;line-height:1;filter:drop-shadow(0 2px 0 #0003)}.world b{font-size:1.2rem}.world small{font-size:.78rem;opacity:.9;line-height:1.25}
-  .w1{--c1:#3cc0df;--c2:#1b86a2;--sh:#0f5f75}.w2{--c1:#9aaeb7;--c2:#667b85;--sh:#46585f}.w3{--c1:#ff9a68;--c2:#ff6b35;--sh:#b8431a}
+  .w1{--c1:#3cc0df;--c2:#1b86a2;--sh:#0f5f75}.w2{--c1:#6ccf7a;--c2:#2f9a4f;--sh:#1d6a33}.w3{--c1:#ff9a68;--c2:#ff6b35;--sh:#b8431a}
   #note{position:fixed;left:50%;top:max(16px,env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;z-index:50;background:#12303f;color:#fff;border:1px solid #ffffff44;
    padding:12px 20px;border-radius:14px;font:700 .95rem system-ui,sans-serif;box-shadow:0 10px 26px #0006;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
   #note.show{opacity:1;transform:translate(-50%,0)}
@@ -444,7 +452,7 @@
         <h3>Elige un mundo</h3>
         <div class="worlds">
           <button class="world w1" id="world1"><span class="wi">🧪</span><b>Mundo 1</b><small>20 niveles de física y química</small></button>
-          <button class="world w2" id="world2"><span class="wi">🌋</span><b>Mundo 2</b><small>Próximamente</small></button>
+          <button class="world w2" id="world2"><span class="wi">🌋</span><b>Mundo 2</b><small>Agua, hielo y estructuras</small></button>
           <button class="world w3" id="worldLab"><span class="wi">🔬</span><b>Laboratorio libre</b><small>Experimenta sin límites</small></button>
         </div>
         <div class="row"><button id="worldsBack">← Inicio</button></div>
@@ -457,7 +465,7 @@
       </section>
     </div>
   </div>
-  <select id="ammo" hidden><option value="wood">wood</option><option value="stone">stone</option><option value="metal">metal</option><option value="rubber">rubber</option><option value="glass">glass</option><option value="red">red</option><option value="fire">fire</option></select>
+  <select id="ammo" hidden><option value="wood">wood</option><option value="stone">stone</option><option value="metal">metal</option><option value="rubber">rubber</option><option value="glass">glass</option><option value="red">red</option><option value="fire">fire</option><option value="ice">ice</option><option value="acid">acid</option></select>
 </main>
 <div id="rotate" role="alert"><div class="ph" aria-hidden="true">📱</div><div>Gira el móvil en horizontal<br>para jugar</div></div>
 <script>
@@ -474,15 +482,23 @@ const materials={
  glass:{name:'Cristal',mass:1.3,r:13,speed:1.0,color:'#a8ecf7',bounce:.1,damage:.55,tip:'el cristal se rompe en esquirlas: úsalo sobre un volador'},
  red:{name:'Red',mass:1.1,r:12,speed:1.0,color:'#e8d27a',bounce:.2,damage:.15,tip:'toca en vuelo para abrir la red y tirar voladores al suelo'},
  fire:{name:'Alcohol',mass:.9,r:11,speed:1.05,color:'#ff9a3c',bounce:.05,damage:.25,tip:'la botella de alcohol incendia la madera y quema a los objetivos'},
- rubber:{name:'Goma',mass:1.35,r:13,speed:1.0,color:'#a45be0',bounce:.82,damage:.45,tip:'la goma rebota mucho'}
+ rubber:{name:'Goma',mass:1.35,r:13,speed:1.0,color:'#a45be0',bounce:.82,damage:.45,tip:'la goma rebota mucho'},
+ ice:{name:'Hielo',mass:1.5,r:13,speed:.98,color:'#bfeaff',bounce:.1,damage:.6,tip:'el hielo congela el bloque que toca: lo deja frágil'},
+ acid:{name:'Ácido',mass:.9,r:11,speed:1.05,color:'#9be84a',bounce:.05,damage:.2,tip:'el ácido corroe lo que toca: debilita piedra, metal y hormigón con el tiempo'}
 };
 // strength = vida; resist = resistencia a impactos; shockResist = resistencia a ondas de choque; density = masa por área
 const blockMats={
  wood :{color:'#b87842',strength:3.2,density:.6,resist:1,  shockResist:1},
  stone:{color:'#8c9aa7',strength:6.0,density:1.4,resist:1.7,shockResist:1.6},
  glass:{color:'#8ce7f2',strength:1.8,density:.5,resist:.65,shockResist:.5},
- metal:{color:'#aab7c4',strength:8.0,density:3.0,resist:2.3,shockResist:2.5}
+ metal:{color:'#aab7c4',strength:8.0,density:3.0,resist:2.3,shockResist:2.5},
+ ice  :{color:'#bfe9f7',strength:2.6,density:.55,resist:.8,shockResist:.7,wd:.9},
+ goma :{color:'#a45be0',strength:5.0,density:.7,resist:1.2,shockResist:1.2,rest:.7,wd:.9},
+ spring:{color:'#ffb347',strength:7.0,density:1.0,resist:2.0,shockResist:2.0,rest:1.15,wd:3},
+ concrete:{color:'#a3a39a',strength:12,density:1.8,resist:3.0,shockResist:3.0,wd:2.2},
+ foam :{color:'#f1dc8a',strength:1.6,density:.2,resist:4.0,shockResist:4.0,wd:.25}
 };
+const WD={wood:.6,stone:1.4,glass:1.6,metal:3};   // densidad relativa al agua (flotan los de densidad < 1)
 const ground=500, sling={x:150,y:390}, gravity=.34;
 const ANCHOR_BREAK=.55;      // el anclaje cede cuando la vida baja de este porcentaje
 const FALL_SAFE=3.5;        // velocidad de caída sin daño
@@ -491,7 +507,7 @@ const SHOW_FULL_BARS=false; // true: barras de vida visibles también en bloques
 const WIND_BASE=.016, WIND_PER_LEVEL=.007; // viento máximo (aceleración para masa 1)
 const TARGET_HP=2;
 // Munición disponible por nivel y tipo (sube un valor para facilitar)
-const AMMO_ORDER=['wood','stone','metal','rubber','glass','red','fire'];
+const AMMO_ORDER=['wood','stone','metal','rubber','glass','red','fire','ice','acid'];
 const AMMO_PER_LEVEL=[
  {wood:5,stone:4},
  {wood:3,stone:3,rubber:2},
@@ -512,11 +528,30 @@ const AMMO_PER_LEVEL=[
  {wood:2,stone:1,metal:1,rubber:1,glass:1,fire:1},             // 17 · cascada de cristal
  {wood:2,glass:2,rubber:1,red:5,fire:1},                       // 18 · nido de voladores
  {wood:2,stone:2,metal:1,rubber:1,glass:1,fire:1},             // 19 · montaña de bloques
- {wood:2,stone:2,metal:1,rubber:1,glass:2,red:3,fire:1}        // 20 · gran final
+ {wood:2,stone:2,metal:1,rubber:1,glass:2,red:3,fire:1},       // 20 · gran final
+ // ---- Mundo 2 ----
+ {wood:3,stone:3,rubber:1},                  // W2·1 · los veteranos
+ {wood:3,stone:3,rubber:2},                  // W2·2 · muelles
+ {wood:2,stone:3,fire:2,ice:2},              // W2·3 · fortaleza helada
+ {wood:3,stone:2,rubber:1,fire:1,ice:1},     // W2·4 · torre de agua
+ {wood:3,stone:3,metal:1,fire:2,ice:1},      // W2·5 · la presa
+ {wood:2,stone:3,metal:1,acid:2},            // W2·6 · ácido y hormigón
+ {wood:2,stone:3,metal:1,acid:2},            // W2·7 · la cueva
+ {wood:3,stone:2,rubber:1,fire:1,acid:1},    // W2·8 · puente colgante
+ {wood:2,stone:3,metal:1,rubber:1,acid:1},   // W2·9 · ventiladores
+ {wood:2,stone:3,metal:1,acid:2,fire:1}      // W2·10 · la chimenea
 ];
 // Materiales que se desbloquean en cada nivel (el resto de niveles acumulan los anteriores)
-const UNLOCK=[['wood','stone'],['rubber'],['metal'],['glass'],[],['red'],['fire'],[],[],[],[],[],[],[],[]];
+const UNLOCK=[['wood','stone'],['rubber'],['metal'],['glass'],[],['red'],['fire'],[],[],[],[],[],[],[],[],[],[],[],[],[],
+ [],[],['ice'],[],[],
+ ['acid'],[],[],[],[]];   // 0-19 Mundo 1 · 20-… Mundo 2
 const unlockedAt=n=>UNLOCK.slice(0,n+1).flat();
+const isW2=n=>n>=W2_START&&n<LAB;                          // ¿es un nivel del Mundo 2?
+const LVN=n=>isW2(n)?n-W2_START+1:n+1;                      // número que ve el jugador dentro de su mundo
+const worldLast=n=>isW2(n)?W2_START+W2_COUNT-1:W2_START-1;  // último nivel disponible de ese mundo
+const W2_COUNT=10;                                           // niveles del Mundo 2 disponibles por ahora
+let W2THEME=false, menuWorld=1;
+function applyTheme(on){on=!!on;if(on===W2THEME)return;W2THEME=on;document.body.classList.toggle('theme-w2',on);bgCache=null}
 // Escala coherente con g = 9,8 m/s²: 20 px = 1 m y cada fotograma dura DT_S segundos
 const PX_M=20, G_MS2=9.8, DT_S=Math.sqrt(gravity/(PX_M*G_MS2)), V_MS=1/(PX_M*DT_S), WIND_N=1/(PX_M*DT_S*DT_S);   // V_MS: m/s por px/fotograma · WIND_N: N sobre 1 kg por px/fotograma²
 const MERGE_GAP=24, MAX_GAP=14; // huecos mayores que MAX_GAP entre grupos de estructuras se reducen a MAX_GAP
@@ -546,9 +581,180 @@ const AIR_TARGETS=[
  [[430,210,20,14],[560,290,0,12]]
 ];
 const NEAR_SHIFT=[220,230,300,150,115,120,50,60,60,0,130,150,120,200,0,150,170,150,160,0,0]; // px que se acercan las estructuras a la catapulta en cada nivel (sube el valor = más fácil)
+const W2_START=20, LAB=100;   // índice del primer nivel del Mundo 2 · índice del laboratorio libre
+AIR_TARGETS.pop();NEAR_SHIFT.pop();
+AIR_TARGETS[W2_START]=[];AIR_TARGETS[W2_START+1]=[];AIR_TARGETS[W2_START+2]=[];AIR_TARGETS[W2_START+3]=[];AIR_TARGETS[W2_START+4]=[];
+NEAR_SHIFT[W2_START]=130;NEAR_SHIFT[W2_START+1]=120;NEAR_SHIFT[W2_START+2]=130;NEAR_SHIFT[W2_START+3]=110;NEAR_SHIFT[W2_START+4]=100;
+for(let i=5;i<10;i++){AIR_TARGETS[W2_START+i]=[];NEAR_SHIFT[W2_START+i]=[120,110,110,110,100][i-5]}
+AIR_TARGETS[LAB]=[[430,210,20,14],[560,290,0,12]];NEAR_SHIFT[LAB]=0;
 let tutStep=-1, hintT=null, sheetKey='', paused=true, started=false, wind=0, windLines=[], shards=[], pendingWind=false, ammo={}, ammoBase={}, fires=[], drops=[], fireT=0;
 const NET_R=64;
-const LAB=20, STEP_MS=1000/60;   // LAB: índice del laboratorio libre · paso fijo de física (60 Hz)
+let pools=[], floods=[], POOL_ID=0, ropes=[], fans=[];
+// ---------- Cuerdas: restricción de distancia (solo tira) entre dos bloques ----------
+function ropePt(r,end){const b=blocks[end?r.bi:r.ai],l=end?r.bl:r.al,c=Math.cos(b.angle),s=Math.sin(b.angle),rx=l[0]*c-l[1]*s,ry=l[0]*s+l[1]*c;return{x:b.x+b.w/2+rx,y:b.y+b.h/2+ry,rx:rx,ry:ry}}
+function rope(A,B,bl,al){
+ const r={ai:blocks.indexOf(A),bi:blocks.indexOf(B),bl:bl||[0,-B.h/2],al:al||[0,-A.h/2],len:0,alive:true};
+ const a=ropePt(r,0),b=ropePt(r,1);r.len=Math.hypot(a.x-b.x,a.y-b.y);ropes.push(r);return r;
+}
+function solveRope(r){
+ if(!r.alive)return;const A=blocks[r.ai],B=blocks[r.bi];
+ if(!A.alive||!B.alive){r.alive=false;return}
+ const pa=ropePt(r,0),pb=ropePt(r,1),dx=pb.x-pa.x,dy=pb.y-pa.y,d=Math.hypot(dx,dy);
+ if(d<=r.len||d<.001)return;
+ const nx=dx/d,ny=dy/d,C=d-r.len,rA=[pa.rx,pa.ry],rB=[pb.rx,pb.ry];
+ const vrel=(B.vx-B.av*rB[1]-A.vx+A.av*rA[1])*nx+(B.vy+B.av*rB[0]-A.vy-A.av*rA[0])*ny;
+ const cA=rA[0]*ny-rA[1]*nx,cB=rB[0]*ny-rB[1]*nx,K=A.im+B.im+A.ii*cA*cA+B.ii*cB*cB;
+ if(!(K>0))return;
+ const lam=(vrel+.2*Math.max(0,C-.3))/K;if(lam<=0)return;
+ applyP(A,B,rA,rB,-nx*lam,-ny*lam);
+}
+function cutRope(r){if(!r.alive)return;r.alive=false;sfx.snap();const a=ropePt(r,0),b=ropePt(r,1);burst((a.x+b.x)/2,(a.y+b.y)/2,'#c9a56a',10)}
+function segDist(px,py,ax,ay,bx,by){const dx=bx-ax,dy=by-ay,l2=dx*dx+dy*dy||1;let t=((px-ax)*dx+(py-ay)*dy)/l2;t=Math.max(0,Math.min(1,t));return Math.hypot(px-(ax+t*dx),py-(ay+t*dy))}
+function ropeHit(x,y,rad,force){for(const r of ropes){if(!r.alive)continue;const a=ropePt(r,0),b=ropePt(r,1);if(segDist(x,y,a.x,a.y,b.x,b.y)<rad+2)force?cutRope(r):r.hit=1}}
+// ---------- Ventiladores ----------
+function fan(x,y,w,h,dir,pow,len){const b=block(x,y,w,h,'metal');fans.push({bi:blocks.indexOf(b),dir,pow:pow||1,len:len||170});return b}
+function fanZone(f){
+ const b=blocks[f.bi];if(!b||!b.alive)return null;
+ if(f.dir>0)return{x0:b.x+b.w,x1:b.x+b.w+f.len,y0:b.y+b.h/2-90,y1:b.y+b.h/2+90};
+ if(f.dir<0)return{x0:b.x-f.len,x1:b.x,y0:b.y+b.h/2-90,y1:b.y+b.h/2+90};
+ return{x0:b.x,x1:b.x+b.w,y0:b.y-f.len,y1:b.y};
+}
+function stepFans(){
+ for(const f of fans){
+  const z=fanZone(f);if(!z)continue;
+  const inZ=(x,y)=>x>z.x0&&x<z.x1&&y>z.y0&&y<z.y1;
+  if(projectile&&projectile.fired&&inZ(projectile.x,projectile.y)){const m=Math.max(.8,projectile.mass);if(f.dir)projectile.vx+=f.dir*f.pow*.06/m;else projectile.vy-=f.pow*.5/m}
+  for(const b of blocks){
+   if(!b.alive||b.anchored||b.launch||!inZ(b.x+b.w/2,b.y+b.h/2))continue;
+   const m=Math.max(.3,b.mass);
+   if(f.dir)b.vx=Math.max(-3,Math.min(3,b.vx+f.dir*f.pow*.03/m));else b.vy=Math.max(-4,b.vy-f.pow*.2/m);
+  }
+  for(const t of targets)if(t.alive&&!t.air&&f.dir&&inZ(t.x,t.y))t.vx+=f.dir*f.pow*.05;
+ }
+}
+// ---------- Ácido ----------
+const ACID_RATE={metal:.014,stone:.014,concrete:.012,wood:.006,glass:0,ice:.012,goma:.002,spring:.014,foam:.02};
+function acidSplash(x,y){burst(x,y,'#9be84a',14);burst(x,y,'#e8ffb0',6);sfx.snap()}
+function corrodeNear(x,y,r){for(const b of blocks){if(!b.alive||b.launch)continue;const q=closestOnBlock(b,x,y);if(q.inside||q.d2<r*r)b.corr=Math.max(b.corr||0,300)}}
+function stepAcid(){
+ for(const b of blocks){
+  if(!b.alive||!(b.corr>0))continue;
+  b.corr--;if(b.wf>.4){b.corr=0;continue}
+  b.cacc=(b.cacc||0)+(ACID_RATE[b.mat]||0);
+  if(b.cacc>=.06){const d=b.cacc;b.cacc=0;damageBlock(b,d,b.x+b.w/2,b.y);if(b.alive&&Math.random()<.5)particles.push({x:b.x+Math.random()*b.w,y:b.y+Math.random()*b.h,vx:0,vy:-.6,life:22,color:'#b6f060',r:2})}
+ }
+ for(const t of targets){
+  if(!t.alive||!(t.corr>0))continue;
+  t.corr--;if(wetAt(t.x,t.y)){t.corr=0;continue}
+  if(t.corr%6===0)damageTarget(t,.055,'acido');
+ }
+}
+// ---------- Agua: depósitos, flotabilidad e inundaciones ----------
+function pool(x,y,w,h,hold){pools.push({id:++POOL_ID,x,y,w,h,h0:h,hh:new Array(Math.ceil(w/6)+1).fill(0),vv:new Array(Math.ceil(w/6)+1).fill(0),hold:(hold||[]).map(q=>[blocks.indexOf(q[0]),q[1]]),leak:0});return pools[pools.length-1]}
+function inPool(x,y){for(const p of pools)if(x>p.x&&x<p.x+p.w&&y>p.y&&y<p.y+p.h)return p;return null}
+function inFlood(x,y){for(const f of floods){const x0=Math.min(f.x,f.x+f.dir*f.front),x1=Math.max(f.x,f.x+f.dir*f.front);if(x>x0&&x<x1&&y>ground-f.hh)return f}return null}
+function wetAt(x,y){return !!(inPool(x,y)||inFlood(x,y))}
+function wetFrac(b){
+ const bb=blockAABB(b),area=Math.max(1,(bb.r-bb.l)*(bb.b-bb.t));let f=0;
+ for(const p of pools){const ox=Math.max(0,Math.min(bb.r,p.x+p.w)-Math.max(bb.l,p.x)),oy=Math.max(0,Math.min(bb.b,p.y+p.h)-Math.max(bb.t,p.y));f+=ox*oy/area}
+ return Math.min(1,f);
+}
+function ripple(p,x,amt){
+ if(!p.hh)return;const i=Math.round((x-p.x)/6);
+ for(let k=-2;k<=2;k++){const j=i+k;if(j>=0&&j<p.vv.length)p.vv[j]+=amt*(k===0?1:k*k===1?.6:.25)}
+}
+function splashAt(x,y,vy,n){
+ for(let i=0;i<n;i++)particles.push({x:x+(Math.random()-.5)*10,y:y,vx:(Math.random()-.5)*2.4,vy:-Math.abs(vy)*.35*(.4+Math.random())-1,life:26,color:Math.random()<.5?'#cdeeff':'#7fd0ff',r:2+Math.random()*2});
+}
+function startLeak(p,side,b){
+ p.holes=p.holes||[];
+ const hx=side<0?p.x:side>0?p.x+p.w:p.x+p.w/2;
+ const yb=side===0?p.y+p.h:Math.min(p.y+p.h,b?(b.y0+b.h):p.y+p.h);   // el agua baja hasta el borde inferior del hueco
+ p.holes.push({side,x:hx,yb,hy:0,v:0,dir:side||1});
+ sfx.snap();ripple(p,hx,side===0?0:-side*7);burst(hx,Math.min(p.y+p.h-4,Math.max(p.y+4,yb-12)),'#7fd0ff',16);shake=Math.max(shake,5);
+ const hmax=Math.min(85,p.h0*.6),mk=(dir,w)=>floods.push({pid:p.id,hole:p.holes.length-1,x:hx,dir,front:0,hh:6,h0:6,hmax:hmax*(w||1),sp:w?.55:1,life:w?200:320,life0:w?200:320});
+ if(side===0){mk(-1);mk(1)}else{mk(side);mk(-side,.4)}   // la ola principal sale hacia fuera; otra más débil rebota hacia atrás
+}
+function stepWater(){
+ pools.forEach(p=>{
+  if(p.hh){const n=p.hh.length,h=p.hh,v=p.vv;for(let i=0;i<n;i++){const l=h[i>0?i-1:i],r=h[i<n-1?i+1:i];v[i]+=(l+r-2*h[i])*.3-h[i]*.025;v[i]*=.975}for(let i=0;i<n;i++)h[i]=Math.max(-8,Math.min(8,h[i]+v[i]))}
+ });
+ blocks.forEach(b=>{   // los bloques que entran, salen o se mueven en la superficie levantan olas
+  if(!b.alive||b.anchored)return;const wf=b.wf||0,was=b.wasWet||0;b.wasWet=wf;
+  const sp=Math.hypot(b.vx,b.vy);
+  if(pools.length&&((was<.05&&wf>.05)||(was>.05&&wf<.05)||(wf>.05&&wf<.95&&sp>1))){
+   const p=inPool(b.x+b.w/2,b.y+b.h/2)||pools.find(q=>b.x+b.w>q.x&&b.x<q.x+q.w&&b.y+b.h>q.y&&b.y<q.y+q.h);
+   if(p){ripple(p,b.x+b.w/2,Math.max(-5,Math.min(5,b.vy*(was<wf?.9:-.5)+b.vx*.1)));if((was<.05&&wf>.05)||(was>.05&&wf<.05)){splashAt(b.x+b.w/2,p.y,Math.max(2,sp*2),Math.min(10,3+b.w/8));sfx.thud(Math.min(6,sp+2))}}
+  }
+ });
+ pools.forEach(p=>{
+  p.bk=p.bk||{};
+  for(const [i,side] of p.hold){if(p.bk[i])continue;const b=blocks[i];if(!b||!b.alive||Math.abs(b.x-b.x0)>10||Math.abs(b.y-b.y0)>10){p.bk[i]=1;startLeak(p,side,b)}}
+  p.draining=false;
+  if(p.holes&&p.holes.length){
+   const yb=Math.max(...p.holes.map(q=>q.yb)),head=yb-p.y;
+   if(head>2){
+    const fl=p.holes.some(q=>q.side===0);
+    const rate=(.1+.075*Math.sqrt(head))*(p.holes.length>1?1.3:1)*(fl?4:1);
+    p.h-=rate;p.y+=rate;p.draining=true;
+    for(const q of p.holes){
+     if(q.side===0)continue;
+     q.hy=Math.max(p.y+3,yb-10);q.v=1.1+.3*Math.sqrt(head);q.dir=q.side;
+     const g=.12,tfall=Math.sqrt(2*Math.max(1,ground-q.hy)/g);q.land=q.x+q.dir*q.v*tfall;
+     if(Math.random()<.8)particles.push({x:q.x,y:q.hy+(Math.random()-.5)*4,vx:q.dir*q.v*(.9+Math.random()*.2),vy:-.3-Math.random()*.5,life:40,color:Math.random()<.4?'#ffffff':'#9fdcff',r:2+Math.random()*1.5});
+    }
+    if(Math.random()<.5)ripple(p,p.x+Math.random()*p.w,(Math.random()-.5)*1.4);
+   }
+   if(p.h<=4)p.dead=true;
+  }
+  if(!p.dead&&Math.random()<.05)particles.push({x:p.x+Math.random()*p.w,y:p.y+p.h-4,vx:0,vy:-.7,life:30,color:'#bfeaff',r:2});
+ });
+ pools=pools.filter(p=>!p.dead);
+ floods.forEach(f=>{
+  f.life--;
+  if(f.pid){const q=pools.find(q=>q.id===f.pid);if(q&&q.draining){f.life=Math.min(f.life0,f.life+1.1);f.h0=Math.min(f.hmax,f.h0+.45);const hole=q.holes[f.hole];if(hole&&hole.land!=null&&f.front<2)f.x=hole.land}}
+  const k=f.life/f.life0;f.hh=f.h0*(.3+.7*k);f.front+=(.8+3.2*Math.sqrt(Math.max(0,k)))*(f.sp||1);
+  const x0=Math.min(f.x,f.x+f.dir*f.front),x1=Math.max(f.x,f.x+f.dir*f.front);
+  for(const b of blocks){
+   if(!b.alive||b.launch)continue;const bb=blockAABB(b);
+   if(bb.r<x0||bb.l>x1||bb.b<ground-f.hh)continue;
+   if(b.burn>0)b.burn=0;
+   if(!b.anchored)b.vx=Math.max(-3,Math.min(3,b.vx+f.dir*.22*Math.min(1,2.5/b.mass)));
+   if(b.mat==='wood'||b.mat==='glass'||b.mat==='ice'){b.wacc=(b.wacc||0)+.02*f.hh/40;if(b.wacc>=.06){damageBlock(b,b.wacc/b.resist,b.x+b.w/2,b.y);b.wacc=0}}
+  }
+  for(const t of targets)if(t.alive&&!t.air&&t.x>x0&&t.x<x1&&t.y>ground-f.hh-t.r){t.vx+=f.dir*.25;t.burn=0}
+  fires=fires.filter(q=>!(q.x>x0&&q.x<x1&&q.y>ground-f.hh));
+  if(Math.random()<.7)particles.push({x:f.x+f.dir*f.front,y:ground-f.hh*.7,vx:f.dir*(1+Math.random()*1.5),vy:-1.5-Math.random()*2.5,life:24,color:Math.random()<.5?'#ffffff':'#cdeeff',r:2+Math.random()*2});
+ });
+ floods=floods.filter(f=>f.life>0);
+ blocks.forEach(b=>{if(b.alive&&b.burn>0&&(b.wf>.4))b.burn=0});
+ fires=fires.filter(f=>!inPool(f.x,f.y-4));
+ targets.forEach(t=>{
+  if(!t.alive||t.air)return;
+  if(wetAt(t.x,t.y)){t.wet=(t.wet||0)+1;t.burn=0;if(t.wet>45&&t.wet%6===0){damageTarget(t,.06,'agua');if(t.alive&&t.wet%24===0)particles.push({x:t.x,y:t.y-t.r,vx:0,vy:-1,life:25,color:'#bfeaff',r:3})}}
+  else if(t.wet>0)t.wet=Math.max(0,t.wet-2);
+ });
+}
+function freezeBlock(b,x,y){
+ if(!b.alive||b.mat==='ice'||b.frozen)return;
+ b.frozen=true;b.resist*=.5;b.burn=0;burst(x,y,'#d8f4ff',10);burst(x,y,'#ffffff',6);
+}
+function thawBlock(b){if(!b.frozen)return;b.frozen=false;b.resist*=2;burst(b.x+b.w/2,b.y+b.h/2,'#9fdcff',8)}
+// Enemigo veterano: patrulla de lado a lado hasta que sufre daño de cualquier fuente
+function veteran(x,y,range,spd){
+ target(x,y);const t=targets[targets.length-1];
+ t.vet=true;t.hurt=false;t.patrol={x0:x-range,x1:x+range,spd:spd||.55,dir:1};return t;
+}
+function stepPatrol(t){
+ if(!t.patrol||t.hurt||settling)return;
+ if(t.hp<t.maxhp||t.burn>0||t.flash>0||t.netted>0||(t.wet||0)>0){t.hurt=true;return}
+ if(!(t.y+t.r>=ground-1))return;                      // solo camina sobre el suelo
+ const pt=t.patrol,nx=t.x+pt.dir*pt.spd;
+ if(nx<pt.x0||nx>pt.x1){pt.dir*=-1;return}
+ for(const b of blocks)if(b.alive&&circleRect(nx,t.y,t.r,b)){pt.dir*=-1;return}
+ t.x=nx;
+}
+const STEP_MS=1000/60;   // LAB: índice del laboratorio libre · paso fijo de física (60 Hz)
 const CANCEL_MOUSE=22, CANCEL_TOUCH=44;   // radio (unidades del mundo) alrededor de la catapulta donde soltar cancela el disparo (44 con el dedo)
 let cancelR=CANCEL_MOUSE;
 let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,firstExit=false,aimId=null;
@@ -703,7 +909,7 @@ const sfx=(()=>{
   },
   breakBlock(mat){
    if(!can('brk',50))return;
-   if(mat==='glass')tinkle(8,.9);
+   if(mat==='glass'||mat==='ice')tinkle(8,.9);
    else if(mat==='metal'){tone(480,.5,{type:'triangle',vol:.3});tone(720,.35,{vol:.2});noise(.2,{type:'bandpass',freq:1500,q:1,vol:.3})}
    else if(mat==='stone'){noise(.4,{type:'lowpass',freq:600,to:120,vol:.5});tone(70,.35,{to:35,vol:.5})}
    else{for(let i=0;i<4;i++)noise(.05,{type:'bandpass',freq:900+Math.random()*1200,q:3,vol:.35,delay:i*.035});tone(120,.2,{to:60,vol:.35})}
@@ -729,7 +935,7 @@ const sfx=(()=>{
 function resetStats(){stats={maxEc:0,maxEcM:0,maxEcV:0,maxEcK:'wood',maxV:0,causes:{},blocks:0,shocks:0,retries:0}}
 function projMass(k){return labMode&&labMass>0?labMass:materials[k].mass}
 function progKey(){return targets.filter(t=>t.alive).length*1000+integrity()}
-function quiet(){return !projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!blocks.some(b=>b.alive&&b.burn>0)&&!targets.some(t=>t.alive&&t.burn>0)&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)}
+function quiet(){return !projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!floods.length&&!blocks.some(b=>b.alive&&(b.burn>0||b.corr>0))&&!targets.some(t=>t.alive&&(t.burn>0||t.corr>0))&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)}
 function nudge(msg){const el=$('matHint');if(!el)return;el.innerHTML='<b>💡 Consejo</b>'+msg;el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>el.classList.remove('show'),5200)}
 // Tras cada disparo: si no ha cambiado nada (objetivos ni estructura) se cuenta como disparo sin efecto
 function checkProgress(){
@@ -742,7 +948,7 @@ function checkProgress(){
 function takeSnap(){
  return{blocks:JSON.parse(JSON.stringify(blocks)),targets:JSON.parse(JSON.stringify(targets)),
   fires:fires.map(f=>({x:f.x,y:f.y,r:f.r,life:f.life,ox:f.ox,oy:f.oy,bi:f.b?blocks.indexOf(f.b):-1})),
-  ammo:Object.assign({},ammo),shots:shots,wind:wind,stats:JSON.parse(JSON.stringify(stats)),sel:ammoSel.value};
+  ropes:JSON.parse(JSON.stringify(ropes)),pools:JSON.parse(JSON.stringify(pools)),floods:JSON.parse(JSON.stringify(floods)),ammo:Object.assign({},ammo),shots:shots,wind:wind,stats:JSON.parse(JSON.stringify(stats)),sel:ammoSel.value};
 }
 // Ensayo: vuelve al estado previo al último disparo (mismo viento, munición recuperada); suma un ensayo a la puntuación
 function undoShot(){
@@ -750,7 +956,7 @@ function undoShot(){
  const s=lastSnap,r=(stats.retries||0)+1;lastSnap=null;
  blocks=JSON.parse(JSON.stringify(s.blocks));arbs=new Map();targets=JSON.parse(JSON.stringify(s.targets));
  fires=s.fires.map(f=>({x:f.x,y:f.y,r:f.r,life:f.life,ox:f.ox,oy:f.oy,b:f.bi>=0?blocks[f.bi]:null}));
- ammo=Object.assign({},s.ammo);shots=s.shots;wind=s.wind;stats=JSON.parse(JSON.stringify(s.stats));stats.retries=r;
+ ropes=JSON.parse(JSON.stringify(s.ropes));pools=JSON.parse(JSON.stringify(s.pools));floods=JSON.parse(JSON.stringify(s.floods));ammo=Object.assign({},s.ammo);shots=s.shots;wind=s.wind;stats=JSON.parse(JSON.stringify(s.stats));stats.retries=r;
  ammoSel.value=s.sel;
  projectile=null;shards=[];drops=[];particles=[];floaters=[];shockwaves=[];trail=[];shotLog=[];graphN=-1;
  pendingWind=false;pendingCheck=false;won=false;gameOver=false;dragging=false;dragPos=null;shake=0;
@@ -785,7 +991,7 @@ function evalRun(){
 }
 function buildReport(success,r){
  const L=LEVELS[currentLevel],f1=x=>x.toFixed(1).replace('.',',');
- const C={impacto:'Impacto directo',onda:'Onda de choque',esquirlas:'Esquirlas',derrumbe:'Derrumbe',caida:'Caída',fuego:'Fuego'};
+ const C={impacto:'Impacto directo',onda:'Onda de choque',esquirlas:'Esquirlas',derrumbe:'Derrumbe',caida:'Caída',fuego:'Fuego',agua:'Agua',acido:'Ácido'};
  const li=Object.keys(C).filter(k=>stats.causes[k]).map(k=>'<li><b>'+stats.causes[k]+'</b> × '+C[k]+'</li>').join('');
  const eq=stats.maxEc>0?'<div class="eq">⚡ Tu disparo más potente: <b>'+materials[stats.maxEcK].name+'</b>, Ec = ½·'+f1(stats.maxEcM)+'·'+f1(stats.maxEcV)+'² ≈ <b>'+Math.round(stats.maxEc)+' J</b></div>':'';
  const box=(v,l)=>'<div class="rbox"><b>'+v+'</b><span>'+l+'</span></div>';
@@ -822,7 +1028,7 @@ function block(x,y,w,h,mat='wood',target=false){
 // ---------- Viento ----------
 function newWind(){
  if(labMode){wind=labWindN/WIND_N;return}
- const max=(WIND_BASE+WIND_PER_LEVEL*currentLevel)*(currentLevel===0?.6:1);   // nivel 1: viento un 40 % más flojo
+ const lw=isW2(currentLevel)?currentLevel-W2_START+10:currentLevel;const max=(WIND_BASE+WIND_PER_LEVEL*lw)*(currentLevel===0?.6:1);   // nivel 1: viento un 40 % más flojo
  const mag=(.2+Math.random()*.8)*max;
  wind=(Math.random()<.5?-1:1)*mag;
 }
@@ -836,9 +1042,78 @@ function target(x,y){targets.push({x,y,r:14,alive:true,vx:0,vy:0,hp:TARGET_HP,ma
 // Objetivo volador: flota sin caer y se mueve en un vaivén (ax/ay = amplitud horizontal/vertical)
 function airTarget(x,y,ax=0,ay=12){targets.push({x,y,bx:x,by:y,ax,ay,ph:Math.random()*6.28,age:0,r:14,alive:true,vx:0,vy:0,hp:TARGET_HP,maxhp:TARGET_HP,cd:0,flash:0,air:true,fly:true,netted:0,burn:0});}
 
+function buildW2(k){
+ if(k===0){
+  // A1 · Los veteranos: dos estructuras y viejos enemigos que patrullan entre ellas
+  block(450,ground-70,22,70,'wood');block(520,ground-70,22,70,'wood');beam(496,ground-88,110,18,'stone');target(496,ground-105);
+  veteran(650,ground-22,45);
+  block(770,ground-100,26,100,'stone');block(840,ground-100,26,100,'stone');beam(805,ground-122,120,20,'wood');target(805,ground-140);
+  veteran(930,ground-22,30);
+ } else if(k===1){
+  // A2 · Muelles y goma: el muelle devuelve los disparos; la goma rebota
+  block(440,ground-80,22,80,'goma');block(510,ground-80,22,80,'goma');beam(486,ground-98,110,18,'wood');target(486,ground-115);
+  block(600,ground-120,18,120,'spring');
+  block(700,ground-110,24,110,'stone');block(780,ground-110,24,110,'stone');beam(742,ground-132,130,20,'wood');target(742,ground-150);
+  veteran(660,ground-22,22);target(860,ground-22);
+ } else if(k===2){
+  // A3 · Fortaleza helada: hielo, piedra y fuego
+  block(430,ground-90,26,90,'ice');block(500,ground-90,26,90,'ice');beam(478,ground-108,120,18,'wood');target(478,ground-125);
+  block(640,ground-120,28,120,'stone');block(730,ground-120,28,120,'stone');beam(694,ground-142,140,22,'stone');
+  block(665,ground-172,22,30,'wood');block(705,ground-172,22,30,'wood');target(694,ground-190);target(694,ground-22);
+  veteran(860,ground-22,35);
+ } else if(k===3){
+  // A4 · Torre de agua: depósito elevado y un estanque con balsa
+  const l1=block(440,ground-150,26,150,'stone'),l2=block(560,ground-150,26,150,'stone');
+  const fl=beam(503,ground-166,170,16,'wood'),wl=block(430,ground-256,16,90,'wood'),wr=block(570,ground-256,16,90,'wood');
+  pool(446,ground-246,124,80,[[fl,0],[wl,-1],[wr,1]]);
+  block(660,ground-60,22,60,'wood');block(730,ground-60,22,60,'wood');beam(706,ground-78,110,18,'wood');target(706,ground-95);
+  target(620,ground-22);veteran(800,ground-22,30);
+  block(860,ground-44,14,44,'stone');block(960,ground-44,14,44,'stone');pool(874,ground-40,86,40);
+  const raft=block(890,ground-30,54,14,'wood');target(917,ground-60);
+ } else if(k===4){
+  // A5 · La presa: embalse tras un muro de piedra y una aldea de madera río abajo
+  const back=block(380,ground-170,30,170,'stone');
+  const d1=block(540,ground-80,34,80,'stone'),d2=block(540,ground-160,34,80,'stone');
+  pool(410,ground-150,130,150,[[back,-1],[d1,1],[d2,1]]);
+  block(650,ground-60,20,60,'wood');block(720,ground-60,20,60,'wood');beam(695,ground-78,110,18,'wood');target(695,ground-96);
+  block(800,ground-70,20,70,'wood');block(870,ground-70,20,70,'wood');beam(845,ground-88,110,18,'wood');target(845,ground-106);
+  target(600,ground-22);veteran(940,ground-22,25);
+ } else if(k===5){
+  // B1 · Ácido y hormigón
+  block(440,ground-110,28,110,'concrete');block(540,ground-110,28,110,'concrete');beam(504,ground-132,150,22,'concrete');target(504,ground-150);
+  target(504,ground-22);
+  veteran(650,ground-22,25);
+  block(720,ground-70,22,70,'wood');block(790,ground-70,22,70,'wood');beam(766,ground-88,110,18,'wood');target(766,ground-106);
+ } else if(k===6){
+  // B2 · La cueva
+  block(430,ground-120,28,120,'stone');block(640,ground-120,30,120,'stone');beam(550,ground-144,240,24,'concrete');
+  target(520,ground-22);target(590,ground-22);target(550,ground-162);
+  veteran(760,ground-22,35);
+ } else if(k===7){
+  // B3 · Puente colgante
+  const t1=block(430,ground-170,28,170,'stone'),t2=block(700,ground-170,28,170,'stone');
+  const deck=block(468,ground-120,222,16,'wood');
+  rope(t1,deck,[-103,-8],[0,-85]);rope(t2,deck,[103,-8],[0,-85]);
+  block(560,ground-160,40,40,'stone');target(520,ground-134);target(630,ground-134);
+  target(520,ground-22);target(640,ground-22);veteran(790,ground-22,30);
+ } else if(k===8){
+  // B4 · Ventiladores
+  block(430,ground-90,24,90,'wood');block(500,ground-90,24,90,'wood');beam(477,ground-108,110,18,'stone');target(477,ground-125);
+  fan(570,ground-110,16,110,-1,1,170);
+  block(660,ground-40,40,40,'foam');block(660,ground-80,40,40,'foam');block(660,ground-120,40,40,'foam');target(680,ground-138);
+  fan(740,ground-14,44,14,0,1,150);
+  block(820,ground-100,26,100,'stone');target(833,ground-118);target(900,ground-22);
+ } else {
+  // B5 · La chimenea
+  for(let i=1;i<=4;i++)block(520,ground-62*i,26,62,'stone');
+  beam(533,ground-278,70,30,'foam');target(533,ground-296);
+  block(640,ground-60,24,60,'concrete');block(720,ground-60,24,60,'concrete');beam(692,ground-78,120,18,'concrete');target(692,ground-96);
+  target(600,ground-22);veteran(800,ground-22,30);
+ }
+}
 function setupLevel(n){
- currentLevel=n;labMode=(n===LAB);lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});pickAmmo();
- $('toast').classList.remove('show');if(typeof LEVELS!=='undefined'&&LEVELS[n])$('lvTitle').textContent='🧪 '+(n+1)+' · '+LEVELS[n].t;if(n===LAB)$('lvTitle').textContent='🔬 Laboratorio libre';
+ currentLevel=n;labMode=(n===LAB);applyTheme(isW2(n));lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];pools=[];floods=[];ropes=[];fans=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});ammoBase=Object.assign({},ammo);pickAmmo();
+ $('toast').classList.remove('show');if(typeof LEVELS!=='undefined'&&LEVELS[n])$('lvTitle').textContent=(isW2(n)?'🌿 ':'🧪 ')+LVN(n)+' · '+LEVELS[n].t;if(n===LAB)$('lvTitle').textContent='🔬 Laboratorio libre';
  if(n===0){
   block(600,ground-55,22,55,'wood');block(660,ground-55,22,55,'wood');beam(630,ground-116,105,18,'wood');
   block(615,ground-135,18,20,'glass');block(650,ground-135,18,20,'glass');target(630,ground-153);
@@ -865,7 +1140,7 @@ function setupLevel(n){
   block(410,ground-205,20,30,'glass');block(450,ground-205,20,30,'glass');target(430,ground-223);
   block(590,ground-125,24,125,'stone');block(665,ground-125,24,125,'stone');beam(627,ground-255,125,22,'metal');
   block(610,ground-285,20,30,'glass');block(650,ground-285,20,30,'glass');target(630,ground-303);
-  target(515,ground-22);target(720,ground-22);
+  veteran(542,ground-22,28);target(720,ground-22);
  } else if(n===4){
   block(45,ground-320,30,320,'stone').launch=true;block(130,ground-320,30,320,'stone').launch=true;
   block(30,ground-342,145,24,'metal').launch=true;
@@ -900,7 +1175,7 @@ function setupLevel(n){
   block(310,ground-202,20,30,'glass');block(372,ground-202,20,30,'glass');target(351,ground-195);
   block(470,ground-150,22,150,'wood');block(540,ground-150,22,150,'wood');beam(505,ground-172,120,22,'stone');
   block(494,ground-242,22,70,'wood');beam(505,ground-260,90,18,'metal');target(505,ground-285);
-  target(416,ground-22);target(516,ground-22);
+  veteran(420,ground-22,24);target(516,ground-22);
   block(640,ground-60,60,60,'stone');target(670,ground-80);
  } else if(n===10){
   // 11 · Pirámide de bloques y torre de cajas
@@ -912,7 +1187,7 @@ function setupLevel(n){
   // 12 · Puente de piedra sobre dos pilares
   block(430,ground-150,26,150,'stone');block(650,ground-150,26,150,'stone');beam(553,ground-172,300,22,'metal');
   block(480,ground-202,30,30,'glass');block(596,ground-202,30,30,'glass');target(553,ground-190);target(495,ground-220);target(611,ground-220);
-  target(553,ground-22);target(780,ground-22);
+  target(553,ground-22);veteran(790,ground-22,40);
  } else if(n===12){
   // 13 · Bosque de madera: seis pilares de madera unidos por una viga larga; una sola botella debe prender toda la estructura
   [360,430,530,600,700,770].forEach(x=>block(x,ground-110,20,110,'wood'));
@@ -923,7 +1198,7 @@ function setupLevel(n){
   // 14 · Tormenta: muro de piedra que protege dos casas de cristal (los voladores están en AIR_TARGETS)
   block(470,ground-140,30,140,'stone');
   block(580,ground-70,20,70,'glass');block(640,ground-70,20,70,'glass');beam(610,ground-88,100,18,'glass');target(610,ground-105);
-  target(540,ground-22);target(720,ground-22);
+  target(540,ground-22);veteran(725,ground-22,30);
  } else if(n===14){
   // 15 · Gran final: torre de lanzamiento, pirámide, puente, casa de cristal y voladores
   block(45,ground-320,30,320,'stone').launch=true;block(130,ground-320,30,320,'stone').launch=true;
@@ -981,6 +1256,8 @@ function setupLevel(n){
   block(810,ground-80,20,80,'glass');block(870,ground-80,20,80,'glass');beam(840,ground-98,100,18,'glass');target(840,ground-115);
   block(930,ground-60,26,60,'metal');target(943,ground-76);
   target(640,ground-22);
+ } else if(isW2(n)){
+  buildW2(n-W2_START);
  } else {
   // 10 · Gran final: torre de lanzamiento alta y cuatro estructuras
   block(45,ground-320,30,320,'stone').launch=true;block(130,ground-320,30,320,'stone').launch=true;
@@ -996,12 +1273,13 @@ function setupLevel(n){
   target(210,ground-22);target(375,ground-22);target(555,ground-22);target(700,ground-22);
  }
  // Acerca las estructuras (no la torre de lanzamiento) para regular la dificultad
- {const dx=-NEAR_SHIFT[n];blocks.forEach(b=>{if(!b.launch)b.x+=dx});targets.forEach(t=>{t.x+=dx;if(t.air)t.bx+=dx})}
+ {const dx=-NEAR_SHIFT[n];blocks.forEach(b=>{if(!b.launch)b.x+=dx});targets.forEach(t=>{t.x+=dx;if(t.air)t.bx+=dx;if(t.patrol){t.patrol.x0+=dx;t.patrol.x1+=dx}});pools.forEach(p=>p.x+=dx)}
  // Compacta los huecos grandes entre grupos de estructuras (todo queda más cerca)
  {
   const items=[];
   blocks.forEach(b=>{if(!b.launch)items.push({l:b.x,r:b.x+b.w,set:d=>{b.x+=d}})});
-  targets.forEach(t=>items.push({l:t.x-t.r,r:t.x+t.r,set:d=>{t.x+=d}}));
+  targets.forEach(t=>items.push({l:(t.patrol?t.patrol.x0:t.x)-t.r,r:(t.patrol?t.patrol.x1:t.x)+t.r,set:d=>{t.x+=d;if(t.patrol){t.patrol.x0+=d;t.patrol.x1+=d}}}));
+  pools.forEach(p=>items.push({l:p.x,r:p.x+p.w,set:d=>{p.x+=d}}));
   items.sort((a,b)=>a.l-b.l);
   const groups=[];let cur=null;
   items.forEach(it=>{if(cur&&it.l<=cur.r+MERGE_GAP){cur.items.push(it);cur.r=Math.max(cur.r,it.r)}else{cur={l:it.l,r:it.r,items:[it]};groups.push(cur)}});
@@ -1016,6 +1294,7 @@ function setupLevel(n){
  // Anclaje: todo bloque que toca el suelo queda fijado con su cimiento
  blocks.forEach(b=>{if(b.y+b.h>=ground-1){b.anchored=true;b.foundation={x:b.x-5,w:b.w+10,broken:false}}});
  settleStructures();
+ blocks.forEach(b=>{b.x0=b.x;b.y0=b.y;b.wasWet=b.wf||0});
  computeCamBox();updateCamera();
  integrityMax=blocks.filter(b=>!b.launch).reduce((s,b)=>s+b.strength,0)||1;
  prevKey=progKey();
@@ -1041,7 +1320,9 @@ const MATINFO={
  rubber:{hint:'Rebota y conserva la energía; poco daño.',fx:[['ok','Rebota (e ≈ 0,82): puede golpear varias veces.'],['ok','Buena para golpear a ras de suelo.'],['ko','Poco daño: es blanda y ligera.'],['ko','Muy sensible al viento.']],sym:'(C₅H₈)ₙ',chip:'(C₅H₈)ₙ',sub:'caucho',dens:'0,9',info:'Caucho (poliisopreno): choque casi elástico, con un coeficiente de restitución e alto. Conserva energía y rebota.'},
  glass:{hint:'Se rompe en esquirlas: úsalo sobre un volador.',fx:[['ok','Se fragmenta al chocar en esquirlas cortantes.'],['ok','Rompiéndolo sobre un volador, 20 esquirlas llueven sobre los objetivos del suelo.'],['ko','Contra un bloque solo suelta 8 esquirlas y casi no lo daña.'],['ko','Frágil: no atraviesa nada.']],sym:'SiO₂',chip:'SiO₂',sub:'vidrio',dens:'2,5',info:'Vidrio, SiO₂ amorfo: frágil. No se deforma, se fractura en esquirlas que reparten la cantidad de movimiento (p = m·v).'},
  red:{hint:'Ábrela en vuelo (clic, toque o Espacio): derriba voladores.',fx:[['ok','Se abre en vuelo con un clic, un toque o Espacio (o sola cerca de un volador).'],['ok','Los voladores atrapados caen y se dañan según la altura de caída.'],['ko','No daña bloques ni objetivos del suelo.'],['ko','Si la abres lejos, no atrapa nada.']],sym:'Nailon-6,6',chip:'Nailon',sub:'red de fibras',dens:'1,1',info:'Fibras de nailon, un polímero resistente a la tracción. Se abre en vuelo y frena por rozamiento con el aire, y arrastra a los voladores al suelo.'},
- fire:{hint:'Incendia la madera y quema a los objetivos.',fx:[['ok','Al romperse salpica gotas de alcohol ardiendo.'],['ok','La madera arde, se debilita y propaga el fuego a la vecina.'],['ok','Los objetivos que tocan las llamas se queman poco a poco.'],['ko','Piedra y metal no arden; el impacto directo hace poco daño.']],sym:'C₂H₅OH',chip:'C₂H₅OH',sub:'etanol',dens:'0,79',info:'Etanol: combustión C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O + calor. Prende la madera (celulosa), pero no la piedra ni el metal.'}
+ fire:{hint:'Incendia la madera y quema a los objetivos.',fx:[['ok','Al romperse salpica gotas de alcohol ardiendo.'],['ok','La madera arde, se debilita y propaga el fuego a la vecina.'],['ok','Los objetivos que tocan las llamas se queman poco a poco.'],['ko','Piedra y metal no arden; el impacto directo hace poco daño.']],sym:'C₂H₅OH',chip:'C₂H₅OH',sub:'etanol',dens:'0,79',info:'Etanol: combustión C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O + calor. Prende la madera (celulosa), pero no la piedra ni el metal.'},
+ ice:{hint:'Congela el bloque que toca: lo vuelve frágil. Apaga el fuego.',fx:[['ok','El bloque helado pierde la mitad de su resistencia.'],['ok','Apaga las llamas y los bloques que arden.'],['ok','El fuego descongela lo que está helado.'],['ko','Por sí solo hace poco daño.']],sym:'H₂O (s)',chip:'H₂O ❄',sub:'hielo',dens:'0,92',info:'Hielo: al enfriarse, los materiales se vuelven quebradizos. Densidad 0,92 g/cm³: flota en el agua.'},
+ acid:{hint:'Corroe lo que toca: debilita piedra, metal y hormigón con el tiempo.',fx:[['ok','El bloque corroído pierde vida poco a poco y puede soltarse de su base.'],['ok','Disuelve la espuma y corta las cuerdas.'],['ok','Daña a los objetivos que toca.'],['ko','El cristal no reacciona; el agua la diluye.']],sym:'HCl (aq)',chip:'HCl',sub:'ácido clorhídrico',dens:'1,18',info:'Ácido clorhídrico: CaCO₃ + 2 HCl → CaCl₂ + CO₂ + H₂O. Ataca la caliza y los metales, no el vidrio.'}
 };
 let chipEls={};
 function buildChips(){
@@ -1089,7 +1370,7 @@ function updateHud(){
   const hh=Math.max(0,(ground-projectile.r-projectile.y)/PX_M);$('vel').textContent=v.toFixed(1);$('ec').textContent=Math.round(.5*projectile.mass*v*v);$('ep').textContent=Math.round(projectile.mass*G_MS2*hh);$('alt').textContent=hh.toFixed(1);
  } else if(shots===0){$('vel').textContent='0.0';$('ec').textContent='0';$('ep').textContent='0';$('alt').textContent='0.0'}
  const un=unlockedAt(currentLevel),nw=UNLOCK[currentLevel]||[];
- for(const k of AMMO_ORDER){const c=chipEls[k];if(!c)continue;const n=ammo[k]||0;c.btn.hidden=!un.includes(k);c.btn.classList.toggle('new',nw.includes(k)&&currentLevel>0);c.cnt.textContent=labMode?'∞':'×'+n;c.btn.disabled=n<=0;c.btn.classList.toggle('on',k===sel);c.btn.setAttribute('aria-checked',k===sel?'true':'false')}
+ for(const k of AMMO_ORDER){const c=chipEls[k];if(!c)continue;const n=ammo[k]||0;c.btn.hidden=!un.includes(k)||(isW2(currentLevel)&&!(ammoBase[k]>0));c.btn.classList.toggle('new',nw.includes(k)&&currentLevel>0);c.cnt.textContent=labMode?'∞':'×'+n;c.btn.disabled=n<=0;c.btn.classList.toggle('on',k===sel);c.btn.setAttribute('aria-checked',k===sel?'true':'false')}
  $('labPanel').hidden=!labMode;$('netWarn').hidden=!(sel==='red'&&!targets.some(t=>t.alive&&t.air));
 }
 
@@ -1097,19 +1378,19 @@ function updateHud(){
 function roundedRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();}
 let bgCache=null,bgKey=-1;
 function paintBackground(c){
- const X0=VX0,X1=VX1,Y0=VY0;const g=c.createLinearGradient(0,Y0,0,560);g.addColorStop(0,'#f8fcf6');g.addColorStop(1,'#e2edee');c.fillStyle=g;c.fillRect(X0-4,Y0-4,(X1-X0)+8,LH/CAMZ+8);
+ const X0=VX0,X1=VX1,Y0=VY0;const g=c.createLinearGradient(0,Y0,0,560);g.addColorStop(0,(W2THEME?'#f6fbee':'#f8fcf6'));g.addColorStop(1,(W2THEME?'#dcebd6':'#e2edee'));c.fillStyle=g;c.fillRect(X0-4,Y0-4,(X1-X0)+8,LH/CAMZ+8);
  // papel milimetrado: 1 m = 20 px, cuadrícula mayor cada 5 m (alineada con la catapulta)
  const ox=((sling.x%20)+20)%20,oM=((sling.x%100)+100)%100,xs=ox+Math.floor((X0-ox)/20)*20,xM=oM+Math.floor((X0-oM)/100)*100;
- c.lineWidth=1;c.strokeStyle='rgba(27,127,153,.13)';c.beginPath();
+ c.lineWidth=1;c.strokeStyle=(W2THEME?'rgba(46,140,70,.14)':'rgba(27,127,153,.13)');c.beginPath();
  for(let x=xs;x<=X1;x+=20){c.moveTo(x+.5,Y0);c.lineTo(x+.5,ground)}
  for(let y=ground;y>=Y0;y-=20){c.moveTo(X0,y+.5);c.lineTo(X1,y+.5)}
  c.stroke();
- c.strokeStyle='rgba(27,127,153,.30)';c.beginPath();
+ c.strokeStyle=(W2THEME?'rgba(46,140,70,.32)':'rgba(27,127,153,.30)');c.beginPath();
  for(let x=xM;x<=X1;x+=100){c.moveTo(x+.5,Y0);c.lineTo(x+.5,ground)}
  for(let y=ground;y>=Y0;y-=100){c.moveTo(X0,y+.5);c.lineTo(X1,y+.5)}
  c.stroke();
  // siluetas de laboratorio
- c.save();c.strokeStyle='rgba(27,127,153,.30)';c.fillStyle='rgba(27,127,153,.10)';c.lineWidth=2.5;c.lineJoin='round';
+ c.save();c.strokeStyle=(W2THEME?'rgba(46,140,70,.32)':'rgba(27,127,153,.30)');c.fillStyle=(W2THEME?'rgba(46,140,70,.12)':'rgba(27,127,153,.10)');c.lineWidth=2.5;c.lineJoin='round';
  // matraz Erlenmeyer
  c.beginPath();c.moveTo(60,92);c.lineTo(60,128);c.lineTo(30,176);c.quadraticCurveTo(26,184,36,184);c.lineTo(94,184);c.quadraticCurveTo(104,184,100,176);c.lineTo(70,128);c.lineTo(70,92);c.stroke();
  c.beginPath();c.moveTo(42,160);c.lineTo(98,160);c.lineTo(101,176);c.quadraticCurveTo(104,184,94,184);c.lineTo(36,184);c.quadraticCurveTo(26,184,30,176);c.closePath();c.fill();
@@ -1123,22 +1404,22 @@ function paintBackground(c){
  c.beginPath();c.moveTo(250,160);c.lineTo(290,140);c.lineTo(330,160);c.stroke();
  [[250,160,9],[290,140,9],[330,160,8]].forEach(([x,y,r])=>{c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();c.stroke()});
  c.restore();
- c.fillStyle='rgba(20,100,125,.62)';c.font='700 15px ui-monospace,Menlo,Consolas,monospace';c.textAlign='left';
+ c.fillStyle=(W2THEME?'rgba(30,110,60,.62)':'rgba(20,100,125,.62)');c.font='700 15px ui-monospace,Menlo,Consolas,monospace';c.textAlign='left';
  c.fillText('Ep = m·g·h',330,48);c.fillText('Ec = ½·m·v²',120,48);c.fillText('F = m·a',810,48);
  c.font='700 13px ui-monospace,Menlo,Consolas,monospace';c.fillText('C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O',560,210);c.fillText('p = m·v',840,200);c.fillText('C₂H₅OH',262,196);
  // banco de pruebas con regla (en metros desde la catapulta)
- c.fillStyle='#35505e';c.fillRect(X0-4,ground,(X1-X0)+8,300);
- c.fillStyle='#78a0b2';c.fillRect(X0-4,ground,(X1-X0)+8,6);
- c.strokeStyle='#d9eef5';c.lineWidth=1.5;c.beginPath();
+ c.fillStyle=(W2THEME?'#2e4a32':'#35505e');c.fillRect(X0-4,ground,(X1-X0)+8,300);
+ c.fillStyle=(W2THEME?'#7fb36a':'#78a0b2');c.fillRect(X0-4,ground,(X1-X0)+8,6);
+ c.strokeStyle=(W2THEME?'#e0f2d8':'#d9eef5');c.lineWidth=1.5;c.beginPath();
  for(let x=xs;x<=X1;x+=20){c.moveTo(x+.5,ground+6);c.lineTo(x+.5,ground+((Math.round((x-sling.x)/20)%5===0)?18:11))}
  c.stroke();
- c.fillStyle='#e8f6fa';c.font='700 11px ui-monospace,Menlo,Consolas,monospace';c.textAlign='center';
+ c.fillStyle=(W2THEME?'#effaea':'#e8f6fa');c.font='700 11px ui-monospace,Menlo,Consolas,monospace';c.textAlign='center';
  for(let x=xM;x<=X1;x+=100){c.fillText(Math.round((x-sling.x)/20)+' m',x,ground+34)}
- c.textAlign='left';c.fillStyle='rgba(20,100,125,.7)';
+ c.textAlign='left';c.fillStyle=(W2THEME?'rgba(30,110,60,.7)':'rgba(20,100,125,.7)');
  for(let k=1;k<=4;k++)c.fillText((k*5)+' m',X0+6,ground-k*100+14);
 }
 function drawBackground(){
- const key=sling.x+'|'+LW+'|'+LH+'|'+SC+'|'+CAMZ+'|'+CAMTX+'|'+CAMTY;
+ const key=W2THEME+'|'+sling.x+'|'+LW+'|'+LH+'|'+SC+'|'+CAMZ+'|'+CAMTX+'|'+CAMTY;
  if(bgKey!==key){bgKey=key;bgCache=null}
  if(!bgCache&&typeof document.createElement==='function'){
   try{const cv=document.createElement('canvas');cv.width=Math.round(LW*SC);cv.height=Math.round(LH*SC);const c=cv.getContext('2d');c.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);paintBackground(c);bgCache=cv}catch(e){bgCache=null}
@@ -1178,6 +1459,13 @@ function drawBlock(b){
  if(b.mat==='wood'){ctx.strokeStyle='#74431f77';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-b.w*.3,0);ctx.lineTo(b.w*.3,0);ctx.stroke()}
  if(b.mat==='glass'){ctx.strokeStyle='#ffffffbb';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-b.w/3,-b.h/3);ctx.lineTo(b.w/3,b.h/3);ctx.stroke()}
  if(b.mat==='metal'){ctx.fillStyle='#ffffff99';ctx.fillRect(-b.w/2+3,-b.h/2+3,b.w-6,3)}
+ if(b.mat==='ice'){ctx.strokeStyle='#ffffffcc';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(-b.w/2+4,-b.h/2+8);ctx.lineTo(-b.w/2+10,-b.h/2+3);ctx.moveTo(-b.w/4,b.h/4);ctx.lineTo(b.w/5,-b.h/5);ctx.stroke()}
+ if(b.mat==='goma'){ctx.strokeStyle='#ffffff77';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,Math.min(b.w,b.h)*.28,0,Math.PI*2);ctx.stroke()}
+ if(b.mat==='spring'){ctx.strokeStyle='#7a4a10';ctx.lineWidth=3;ctx.beginPath();const v=b.h>b.w,L=v?b.h:b.w,n=Math.max(3,Math.round(L/10));for(let i=0;i<=n;i++){const u=-L/2+4+(L-8)*i/n,o=(i%2?1:-1)*Math.min(b.w,b.h)*.3;v?ctx.lineTo(o,u):ctx.lineTo(u,o)}ctx.stroke()}
+ if(b.mat==='concrete'){ctx.strokeStyle='#6d6d66';ctx.lineWidth=1.6;const v=b.h>b.w;ctx.beginPath();if(v){ctx.moveTo(-b.w/4,-b.h/2+3);ctx.lineTo(-b.w/4,b.h/2-3);ctx.moveTo(b.w/4,-b.h/2+3);ctx.lineTo(b.w/4,b.h/2-3)}else{ctx.moveTo(-b.w/2+3,-b.h/4);ctx.lineTo(b.w/2-3,-b.h/4);ctx.moveTo(-b.w/2+3,b.h/4);ctx.lineTo(b.w/2-3,b.h/4)}ctx.stroke()}
+ if(b.mat==='foam'){ctx.fillStyle='#d9c26a';[[-.25,-.2,3],[.2,.1,4],[-.1,.25,2.5],[.28,-.28,2.5]].forEach(q=>{ctx.beginPath();ctx.arc(q[0]*b.w,q[1]*b.h,q[2],0,Math.PI*2);ctx.fill()})}
+ if(b.corr>0){ctx.fillStyle='rgba(130,225,40,'+Math.min(.45,.12+b.corr/480*.33).toFixed(3)+')';ctx.fillRect(-b.w/2,-b.h/2,b.w,b.h);ctx.fillStyle='#d6ff8a';for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(Math.sin(fireT*.05+i*2+b.id)*b.w*.35,Math.cos(fireT*.04+i*3)*b.h*.35,2,0,Math.PI*2);ctx.fill()}}
+ if(b.frozen){ctx.fillStyle='rgba(200,240,255,.5)';ctx.fillRect(-b.w/2,-b.h/2,b.w,b.h);ctx.strokeStyle='#ffffffcc';ctx.lineWidth=1.5;ctx.strokeRect(-b.w/2+2,-b.h/2+2,b.w-4,b.h-4)}
  // daño acumulado: oscurecimiento y grietas
  const dmg=1-Math.max(0,b.hp)/b.strength;
  if(dmg>.05){ctx.fillStyle='rgba(20,15,10,'+(dmg*.3).toFixed(3)+')';ctx.fillRect(-b.w/2,-b.h/2,b.w,b.h)}
@@ -1188,6 +1476,81 @@ function drawBlock(b){
  }
  if(b.burn>0){ctx.fillStyle='rgba(25,10,0,'+Math.min(.38,.12+(1-b.burn/BURN_T)*.26).toFixed(3)+')';ctx.fillRect(-b.w/2,-b.h/2,b.w,b.h)}
  if(b.flash>0){ctx.fillStyle='rgba(255,255,255,'+(b.flash/6*.55).toFixed(3)+')';ctx.fillRect(-b.w/2,-b.h/2,b.w,b.h)}
+ ctx.restore();
+}
+function drawRopes(){
+ ctx.save();ctx.lineCap='round';
+ for(const r of ropes){
+  if(!r.alive)continue;const a=ropePt(r,0),b=ropePt(r,1),d=Math.hypot(b.x-a.x,b.y-a.y),sag=d<r.len?Math.sqrt(Math.max(0,r.len*r.len-d*d))*.55:0;
+  const mx=(a.x+b.x)/2,my=(a.y+b.y)/2+sag;
+  ctx.strokeStyle='#4a3318';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(mx,my,b.x,b.y);ctx.stroke();
+  ctx.strokeStyle='#caa468';ctx.lineWidth=3;ctx.stroke();
+  ctx.strokeStyle='#7d5a2a';ctx.lineWidth=3;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#4a3318';[a,b].forEach(q=>{ctx.beginPath();ctx.arc(q.x,q.y,3.5,0,Math.PI*2);ctx.fill()});
+ }
+ ctx.restore();
+}
+function drawFans(){
+ for(const f of fans){
+  const b=blocks[f.bi];if(!b||!b.alive)continue;const z=fanZone(f);if(!z)continue;
+  ctx.save();
+  // corriente de aire
+  ctx.strokeStyle='rgba(120,190,230,.35)';ctx.lineWidth=2;
+  for(let k=0;k<6;k++){
+   const ph=((fireT*2.2+k*37)%f.len)/f.len;
+   if(f.dir){const y=z.y0+(k+.5)*(z.y1-z.y0)/6,x=f.dir>0?z.x0+ph*f.len:z.x1-ph*f.len;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+f.dir*16,y);ctx.stroke()}
+   else{const x=z.x0+(k+.5)*(z.x1-z.x0)/6,y=z.y1-ph*f.len;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-16);ctx.stroke()}
+  }
+  // aspas
+  const cx=b.x+b.w/2,cy=f.dir?b.y+b.h*.3:b.y+b.h/2,R=Math.min(f.dir?b.h*.3:b.w*.4,26);
+  ctx.translate(cx,cy);ctx.fillStyle='#e8eef2';ctx.strokeStyle='#26374a';ctx.lineWidth=1.5;
+  for(let k=0;k<3;k++){ctx.save();ctx.rotate(fireT*.5+k*Math.PI*2/3);ctx.beginPath();ctx.ellipse(0,-R*.55,R*.22,R*.55,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore()}
+  ctx.fillStyle='#26374a';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+ }
+}
+function drawWater(){
+ const tt=Date.now()/400;
+ ctx.save();
+ for(const p of pools){
+  const n=p.hh?p.hh.length:0,ys=i=>p.y+Math.sin(tt+i*.55)*1.1+Math.sin(tt*1.7+i*.23)*.7+(n?p.hh[Math.min(i,n-1)]:0);
+  const g=ctx.createLinearGradient(0,p.y,0,p.y+p.h);g.addColorStop(0,'rgba(100,200,248,.55)');g.addColorStop(1,'rgba(20,95,190,.75)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(p.x,p.y+p.h);
+  const cols=Math.max(1,Math.round(p.w/6));
+  for(let i=0;i<=cols;i++)ctx.lineTo(p.x+Math.min(p.w,i*6),ys(i));
+  ctx.lineTo(p.x+p.w,p.y+p.h);ctx.closePath();ctx.fill();
+  // rayos de luz que ondulan bajo la superficie
+  ctx.save();ctx.clip();ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=5;
+  for(let k=0;k<Math.floor(p.w/28);k++){const x=p.x+14+k*28+Math.sin(tt*.8+k)*5;ctx.beginPath();ctx.moveTo(x,p.y);ctx.lineTo(x-14,p.y+p.h);ctx.stroke()}
+  ctx.restore();
+  // línea de espuma + crestas
+  ctx.strokeStyle='rgba(235,250,255,.9)';ctx.lineWidth=2;ctx.beginPath();
+  for(let i=0;i<=cols;i++){const x=p.x+Math.min(p.w,i*6);i?ctx.lineTo(x,ys(i)):ctx.moveTo(x,ys(i))}ctx.stroke();
+  if(n){ctx.fillStyle='rgba(255,255,255,.8)';for(let i=1;i<cols;i++)if(Math.abs(p.vv[i])>.6){ctx.beginPath();ctx.arc(p.x+i*6,ys(i)-1,1.8,0,Math.PI*2);ctx.fill()}}
+ }
+ for(const p of pools){
+  if(!p.draining)continue;
+  for(const q of p.holes){
+   if(q.side===0||!q.v)continue;
+   const g=.12,T=Math.sqrt(2*Math.max(1,ground-q.hy)/g);
+   const gr=ctx.createLinearGradient(q.x,q.hy,q.land,ground);gr.addColorStop(0,'rgba(120,200,250,.9)');gr.addColorStop(1,'rgba(200,235,255,.8)');
+   ctx.strokeStyle=gr;ctx.lineCap='round';ctx.lineWidth=Math.min(9,3+Math.sqrt(Math.max(0,q.yb-p.y))*.45);
+   ctx.beginPath();for(let t=0;t<=T;t+=3){const x=q.x+q.dir*q.v*t,y=q.hy+.5*g*t*t;t?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();
+   ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=1.5;ctx.stroke();
+  }
+ }
+ for(const f of floods){
+  const w=Math.abs(f.front);if(w<2)continue;
+  const x0=Math.min(f.x,f.x+f.dir*f.front);
+  const hAt=(x)=>{const d=f.dir>0?w-x:x;const base=f.hh*(.62+.38*Math.min(1,(w-d)/Math.max(1,w))),crest=f.hh*.5*Math.exp(-Math.pow((d-18)/18,2)),tip=1-Math.exp(-d/9);return (base+crest)*tip+Math.sin(tt*2.2+x*.11)*2.5+Math.sin(tt*1.3+x*.05)*2};
+  const g=ctx.createLinearGradient(0,ground-f.hh*1.4,0,ground);g.addColorStop(0,'rgba(140,215,252,.78)');g.addColorStop(1,'rgba(25,100,195,.82)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x0,ground);
+  for(let x=0;x<=w;x+=6)ctx.lineTo(x0+x,ground-Math.max(0,hAt(x)));
+  ctx.lineTo(x0+w,ground);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='rgba(240,252,255,.9)';ctx.lineWidth=2.2;ctx.beginPath();
+  for(let x=0;x<=w;x+=6){const y=ground-Math.max(0,hAt(x));x?ctx.lineTo(x0+x,y):ctx.moveTo(x0,y)}ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.55)';for(let k=0;k<6;k++){const x=x0+((k*53+tt*60*f.dir)%w+w)%w;ctx.beginPath();ctx.arc(x,ground-hAt(x-x0)*.5,2+k%3,0,Math.PI*2);ctx.fill()}
+ }
  ctx.restore();
 }
 function barColor(f){return f>.6?'#4cd964':f>.3?'#ffcc33':'#ff453a'}
@@ -1235,10 +1598,13 @@ function drawTarget(t){
   [-1,1].forEach(d=>{ctx.beginPath();ctx.ellipse(t.x+d*17,t.y-4+fl*.5,13,6+Math.abs(fl)*.4,d*(-.5-fl*.04),0,Math.PI*2);ctx.fill();ctx.stroke()});
  }
  ctx.fillStyle=t.fly?'#f2a23a':'#e84e54';ctx.beginPath();ctx.arc(t.x,t.y,t.r,0,Math.PI*2);ctx.fill();
+ if(t.vet){ctx.fillStyle='#f4f4f4';ctx.strokeStyle='#8a8a8a';ctx.lineWidth=1;[-9,-3,3,9].forEach(o=>{ctx.beginPath();ctx.arc(t.x+o,t.y-t.r+1,4.5,0,Math.PI*2);ctx.fill();ctx.stroke()})}
  ctx.fillStyle='#ffb6a8';ctx.beginPath();ctx.arc(t.x-4,t.y-5,5,0,Math.PI*2);ctx.fill();
  ctx.fillStyle='#25394b';ctx.beginPath();ctx.arc(t.x-4,t.y-1,2,0,Math.PI*2);ctx.arc(t.x+5,t.y-1,2,0,Math.PI*2);ctx.fill();
  ctx.strokeStyle='#8b2730';ctx.lineWidth=2;ctx.beginPath();ctx.arc(t.x,t.y+4,5,.2,Math.PI-.2);ctx.stroke();
+ if(t.vet){ctx.fillStyle='#f4f4f4';ctx.strokeStyle='#8a8a8a';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(t.x,t.y+3,8,3,0,0,Math.PI*2);ctx.fill();ctx.stroke();if(!t.hurt&&t.patrol){ctx.strokeStyle='#5a3b1a';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(t.x+t.patrol.dir*13,t.y+t.r);ctx.lineTo(t.x+t.patrol.dir*13,t.y-2);ctx.stroke()}}
  if(t.burn>0)flame(t.x,t.y-t.r+3,22+4*Math.sin(fireT*.4+t.x),9,fireT*.3+t.x,Math.min(1,t.burn/30));
+ if(t.corr>0){ctx.fillStyle='rgba(130,225,40,.45)';ctx.beginPath();ctx.arc(t.x,t.y,t.r,0,Math.PI*2);ctx.fill()}
  if(t.netted>0)drawNetWrap(t);
  if(t.flash>0){ctx.fillStyle='rgba(255,255,255,'+(t.flash/6*.6).toFixed(2)+')';ctx.beginPath();ctx.arc(t.x,t.y,t.r,0,Math.PI*2);ctx.fill()}
 }
@@ -1483,7 +1849,7 @@ function stepShards(){
  shards=shards.filter(s=>!s.dead);
 }
 // ---------- Fuego ----------
-function ignite(b){if(!b.alive||b.mat!=='wood')return;if(b.burn<=0){burst(b.x+b.w/2,b.y,'#ff9a3c',6);sfx.ignite()}b.burn=Math.max(b.burn,BURN_T)}
+function ignite(b){if(!b.alive)return;if(b.frozen){thawBlock(b);return}if(b.mat==='ice'){damageBlock(b,1.1,b.x+b.w/2,b.y);burst(b.x+b.w/2,b.y,'#dff6ff',4);return}if(b.mat!=='wood'||b.wf>.4)return;if(b.burn<=0){burst(b.x+b.w/2,b.y,'#ff9a3c',6);sfx.ignite()}b.burn=Math.max(b.burn,BURN_T)}
 function igniteTarget(t){if(t.alive)t.burn=Math.max(t.burn,TARGET_BURN)}
 function addFire(x,y,block,r=12){
  const q=block?closestOnBlock(block,x,y):null;   // el fuego se pega al bloque y gira con él
@@ -1515,7 +1881,7 @@ function stepDrops(){
  drops.forEach(d=>{
   d.vy+=gravity*.8;d.vx+=wind*.6;d.vx*=.995;const grace=d.g>0;if(grace)d.g--;
   for(let k=0;k<2&&!d.dead;k++){
-   d.x+=d.vx/2;d.y+=d.vy/2;
+   d.x+=d.vx/2;d.y+=d.vy/2;if(pools.length){const q=inPool(d.x,d.y);if(q){ripple(q,d.x,.8);d.dead=true;break}}
    for(const b of blocks){if(grace&&b===d.src)continue;if(b.alive&&circleRect(d.x,d.y,3,b)){addFire(d.x,d.y,b);ignite(b);d.dead=true;break}}
    if(d.dead)break;
    for(const t of targets){if(grace&&t===d.src)continue;if(t.alive&&Math.hypot(t.x-d.x,t.y-d.y)<t.r+3){igniteTarget(t);if(!t.air)addFire(t.x,t.y+t.r-4,null,10);d.dead=true;break}}
@@ -1536,6 +1902,7 @@ function stepFire(){
    if(b.mat==='wood')ignite(b);else if(b.mat==='glass')b.fireAcc+=.004;   // la madera arde; el cristal solo se resiente
   }
   for(const t of targets)if(t.alive&&Math.hypot(t.x-f.x,t.y-(f.y-4))<f.r+t.r)igniteTarget(t);
+  ropeHit(f.x,f.y-4,f.r,true);
   if(Math.random()<.18)particles.push({x:f.x+(Math.random()-.5)*f.r,y:f.y-6,vx:(Math.random()-.5)*.8,vy:-1-Math.random()*1.4,life:26,color:Math.random()<.5?'#ffb347':'#6b6b6b',r:2+Math.random()*2});
  });
  fires=fires.filter(f=>f.life>0);
@@ -1579,6 +1946,8 @@ function projectileVsBlock(p,b){
  if(vn>0){
   if(vn>1.3)sfx.impact(p.kind,vn,b.mat);
   if(p.kind==='fire'){damageBlock(b,.5*p.mass*Math.max(vn,1.4)*Math.max(vn,1.4)*.03*materials.fire.damage/b.resist,cx,cy);ignite(b);splash(p,cx,cy,false,b,nx,ny);return}
+  if(p.kind==='acid'&&vn>1.2){b.corr=Math.max(b.corr||0,480);corrodeNear(cx,cy,26);damageBlock(b,.3/b.resist,cx,cy);acidSplash(cx,cy);projectile=null;pendingWind=true;return}
+  if(p.kind==='ice'&&vn>1.6){damageBlock(b,.5*p.mass*vn*vn*.03*materials.ice.damage/b.resist,cx,cy);freezeBlock(b,cx,cy);shatter(p,cx,cy,false);return}
   if(p.kind==='glass'&&vn>2){damageBlock(b,.5*p.mass*vn*vn*.03*materials.glass.damage/b.resist,cx,cy);shatter(p,cx,cy,false);return}
   if(vn>1.3){
    const ke=.5*p.mass*vn*vn;                              // energía cinética del golpe
@@ -1589,7 +1958,8 @@ function projectileVsBlock(p,b){
   if(destroyed){p.vx*=.82;p.vy*=.82}                        // atraviesa lo que rompe, algo frenado
   else{
    const soft=p.kind==='rubber'?.3:1;   // la goma casi no empuja lo que golpea: el bloque 'pesa' más para ella y rebota mejor
-   const ia=1/p.mass,ib=b.anchored?0:soft/b.mass,ii=b.anchored?0:soft/b.I,e=p.bounce;
+   {const vt=p.vx*-ny+p.vy*nx;p.spin=p.spin*.4-vt/p.r*.55;p.spin=Math.max(-.5,Math.min(.5,p.spin))}   // el roce con el bloque cambia el giro
+   const ia=1/p.mass,ib=b.anchored?0:soft/b.mass,ii=b.anchored?0:soft/b.I,e=b.mat==='spring'?1.2:b.mat==='goma'?Math.max(p.bounce,.7):p.bounce;
    const rx=cx-q.cx,ry=cy-q.cy,rn=rx*ny-ry*nx;            // brazo de palanca del golpe
    const j=(1+e)*vn/(ia+ib+ii*rn*rn);
    p.vx+=nx*j*ia;p.vy+=ny*j*ia;
@@ -1622,11 +1992,11 @@ function launch(){
  if(dist<cancelR){cancelAim();sfx.tick();return}
  if(!(ammo[ammoSel.value]>0)){dragging=false;dragPos=null;return}
  lastSnap=takeSnap();const m=materials[ammoSel.value],scale=Math.min(1.6,dist/65)*m.speed;
- projectile={x:sling.x,y:sling.y,r:m.r,mass:projMass(ammoSel.value),vx:dx*.075*scale,vy:dy*.075*scale,kind:ammoSel.value,fired:true,bounce:m.bounce,age:0,still:0,shockCd:0,shocks:0,open:false,openT:0,netR:0,broken:false};
+ projectile={x:sling.x,y:sling.y,r:m.r,mass:projMass(ammoSel.value),vx:dx*.075*scale,vy:dy*.075*scale,kind:ammoSel.value,fired:true,bounce:m.bounce,rot:0,spin:(dx>=0?1:-1)*(.07+Math.random()*.08),age:0,still:0,shockCd:0,shocks:0,open:false,openT:0,netR:0,broken:false};
  shots++;if(!labMode)ammo[projectile.kind]--;pickAmmo();sfx.launch();if(tutStep===0)tutShow(1);trail=[];shotLog=[];graphN=-1;dragging=false;dragPos=null;updateHud();
 }
 function stepProjectile(){
- const p=projectile;p.age++;if(p.shockCd>0)p.shockCd--;
+ const p=projectile;p.age++;p.rot+=p.spin;if(p.shockCd>0)p.shockCd--;
  trail.push({x:p.x,y:p.y});if(trail.length>420)trail.shift();
  p.vy+=gravity;p.vx*=.998;p.vx+=windAccel(p);
  {const v=Math.hypot(p.vx,p.vy)*V_MS,ec=.5*p.mass*v*v,h=Math.max(0,(ground-p.r-p.y)/PX_M);
@@ -1642,6 +2012,14 @@ function stepProjectile(){
    if(p.openT>110){projectile=null;pendingWind=true;return}
   }
  }
+ if(pools.length&&inPool(p.x,p.y)){
+  if(!p.wet){p.wet=true;const q=inPool(p.x,p.y);if(q)ripple(q,p.x,Math.min(7,Math.abs(p.vy)*.9));splashAt(p.x,p.y,Math.hypot(p.vx,p.vy)*2,14)}
+  else if(Math.random()<.3){const q=inPool(p.x,p.y);if(q&&Math.abs(p.y-q.y)<20)ripple(q,p.x,Math.hypot(p.vx,p.vy)*.12)}
+  if(p.kind==='acid'){acidSplash(p.x,p.y);projectile=null;pendingWind=true;return}
+  if(p.kind==='fire'){burst(p.x,p.y,'#e8eef2',14);sfx.snap();projectile=null;pendingWind=true;return}
+  p.vx*=.94;p.vy*=.94;p.spin*=.96;
+ }
+ ropeHit(p.x,p.y,p.r,p.kind==='fire'||p.kind==='acid'||Math.hypot(p.vx,p.vy)>3.5);
  const steps=Math.max(1,Math.ceil(Math.hypot(p.vx,p.vy)/6));
  for(let s=0;s<steps;s++){
   p.x+=p.vx/steps;p.y+=p.vy/steps;
@@ -1652,17 +2030,19 @@ function stepProjectile(){
     const sp=Math.hypot(p.vx,p.vy);
     if(t.cd<=0){damageTarget(t,.5*p.mass*sp*sp*.02*materials[p.kind].damage);t.cd=12}
     p.vx*=.92;p.vy*=.92;maybeShock(p,t.x,t.y,sp);
-    if(p.kind==='glass'){shatter(p,t.x,t.y,t.air);return}
+    if(p.kind==='acid'){t.corr=Math.max(t.corr||0,300);acidSplash(t.x,t.y);projectile=null;pendingWind=true;return}
+    if(p.kind==='glass'||p.kind==='ice'){shatter(p,t.x,t.y,t.air);return}
     if(p.kind==='fire'){igniteTarget(t);const dx=p.x-t.x,dy=p.y-t.y,dl=Math.hypot(dx,dy)||1;splash(p,t.x,t.y,t.air,t,dx/dl,dy/dl);return}
    }
   }
   if(p.y+p.r>ground){
    const vi=p.vy;p.y=ground-p.r;
    if(vi>2)sfx.impact(p.kind,vi,'ground');
-   if(p.kind==='glass'&&vi>2.5){shatter(p,p.x,ground-4,false);return}
+   if(p.kind==='acid'){corrodeNear(p.x,ground-4,34);acidSplash(p.x,ground-4);projectile=null;pendingWind=true;return}
+   if((p.kind==='glass'||p.kind==='ice')&&vi>2.5){shatter(p,p.x,ground-4,false);return}
    if(p.kind==='fire'){splash(p,p.x,ground-4);return}
    if(vi>0){if(vi>4){maybeShock(p,p.x,ground,vi);dust(p.x,5)}p.vy=-vi*p.bounce}
-   p.vx*=.77;
+   p.vx*=.77;p.spin+=((p.vx/p.r)-p.spin)*.35;   // rueda por el suelo
    if(Math.abs(p.vy)<1.2){p.vy=0;p.vx*=.9}
   }
  }
@@ -1673,7 +2053,9 @@ function stepProjectile(){
 // ---------- Bloques: física, anclaje y choques ----------
 // ---------- Sólidos rígidos: cajas con rotación (colisiones SAT + impulsos secuenciales con fricción) ----------
 const BODY_SUBSTEPS=2, SOLVER_ITERS=12, BLK_VMAX=12, BLK_AVMAX=.3, SLOP=.6, BIAS=.2;
-const FRICTION={wood:.6,stone:.7,metal:.4,glass:.35};
+const FRICTION={wood:.6,stone:.7,metal:.4,glass:.35,ice:.05,goma:.9,spring:.5,concrete:.75,foam:.8};
+const restOf=b=>b.isGround?0:((blockMats[b.mat]&&blockMats[b.mat].rest)||0);
+const wdOf=b=>(blockMats[b.mat]&&blockMats[b.mat].wd)||WD[b.mat]||1;
 let arbs=new Map(), BODY_ID=3;
 const mkStatic=(id,x,y,w,h)=>({id,x,y,w,h,angle:0,vx:0,vy:0,av:0,anchored:true,alive:true,isGround:true,mass:1e9,I:1e12,im:0,ii:0});
 const STATICS=[mkStatic(1,-4000,ground,9000,1000),mkStatic(2,-1000,-4000,1000,8000),mkStatic(3,1000,-4000,1000,8000)];
@@ -1745,7 +2127,7 @@ function stepBlocks(){
   for(const b of live){
    b.contact=false;
    if(b.anchored){b.vx=b.vy=b.av=0;b.im=0;b.ii=0}                     // los bloques anclados no se mueven
-   else{b.im=1/b.mass;b.ii=settling?0:1/b.I;b.vy=Math.min(b.vy+gravity*.55,BLK_VMAX)}
+   else{b.im=1/b.mass;b.ii=settling?0:1/b.I;const wf=pools.length?wetFrac(b):0;b.wf=wf;b.vy=Math.min(b.vy+gravity*.55*(1-wf/wdOf(b)),BLK_VMAX);if(wf>0){b.vx*=1-.05*wf;b.vy*=1-.06*wf;b.av*=1-.1*wf}}
    const bb=blockAABB(b);b._l=bb.l;b._r=bb.r;b._t=bb.t;b._b=bb.b;
   }
   // 1) detección de contactos y fusión con los del paso anterior (acumulación de impulsos)
@@ -1775,6 +2157,7 @@ function stepBlocks(){
     c.r1=r1;c.r2=r2;c.mN=1/kN;c.mT=1/kT;c.bias=-BIAS*Math.min(0,c.sep+SLOP);
     const dvx=B.vx-B.av*r2[1]-A.vx+A.av*r1[1],dvy=B.vy+B.av*r2[0]-A.vy-A.av*r1[0],vn0=dvx*nx+dvy*ny;
     if(-vn0>arb.app){arb.app=-vn0;arb.mx=c.x;arb.my=c.y}
+    {const e=Math.max(restOf(A),restOf(B));if(e>0&&-vn0>1.2)c.bias=Math.max(c.bias,e*(-vn0))}
    }
    // daño por choque (caídas de vigas, derrumbes, bloques que golpean el suelo...)
    if(!settling){
@@ -1794,6 +2177,7 @@ function stepBlocks(){
   }
   // 3) iteraciones del solucionador
   for(let it=0;it<SOLVER_ITERS;it++){
+   for(const r of ropes)solveRope(r);
    for(const arb of list){
     const A=arb.a,B=arb.b;if(!A.alive||!B.alive)continue;
     const nx=arb.nx,ny=arb.ny,tx=ny,ty=-nx;
@@ -1843,7 +2227,8 @@ function stepTargets(){
    }
    return;
   }
-  t.vy+=gravity;t.x+=t.vx;t.y+=t.vy;t.vx*=.98;
+  stepPatrol(t);
+  t.vy+=gravity*(wetAt(t.x,t.y)?.35:1);if(wetAt(t.x,t.y)){t.vy*=.9;t.vx*=.9}t.x+=t.vx;t.y+=t.vy;t.vx*=.98;
   if(t.y+t.r>ground){
    const vi=t.vy;t.y=ground-t.r;t.vy=vi>1?-vi*.22:0;t.vx*=.75;
    if(Math.abs(t.vy)<.5)t.vy=0;
@@ -1865,7 +2250,7 @@ let nx=t.x-q.x,ny=t.y-q.y,d=Math.hypot(nx,ny);
 }
 function physics(){
  if(projectile&&projectile.fired)stepProjectile();
- stepBlocks();stepTargets();stepShockwaves();stepShards();stepDrops();stepFire();fireT++;if(fires.length&&Math.random()<.3)sfx.crackle();
+ stepBlocks();stepTargets();stepShockwaves();stepShards();stepDrops();stepFire();stepWater();stepFans();stepAcid();fireT++;if(fires.length&&Math.random()<.3)sfx.crackle();
  if(pendingWind&&!projectile&&!shards.length){pendingWind=false;pendingCheck=true;if(!won)newWind()}
  particles=particles.filter(p=>p.life-->0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.vx*=.98});
  floaters=floaters.filter(f=>f.life-->0);floaters.forEach(f=>{f.y-=.7});
@@ -1873,7 +2258,7 @@ function physics(){
  shake*=.86;if(shake<.2)shake=0;
  const left=targets.filter(t=>t.alive).length;
  if(!won&&left===0){won=true;const lv=currentLevel;if(labMode)floaters.push({x:500,y:260,text:'¡Todo derribado! Reconstruyendo…',life:80,max:80,big:true});setTimeout(()=>{if(currentLevel!==lv||!won)return;if(lv===LAB)setupLevel(LAB);else showToast(true)},labMode?1500:500)}
- if(!gameOver&&ammoLeft()===0&&left>0&&!projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!blocks.some(b=>b.alive&&b.burn>0)&&!targets.some(t=>t.alive&&t.burn>0)&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)){gameOver=true;const lv=currentLevel;setTimeout(()=>{if(currentLevel===lv&&gameOver)showToast(false)},300)}
+ if(!gameOver&&ammoLeft()===0&&left>0&&!projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!floods.length&&!blocks.some(b=>b.alive&&(b.burn>0||b.corr>0))&&!targets.some(t=>t.alive&&(t.burn>0||t.corr>0))&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)){gameOver=true;const lv=currentLevel;setTimeout(()=>{if(currentLevel===lv&&gameOver)showToast(false)},300)}
  if(graphN!==shotLog.length){graphN=shotLog.length;drawGraph()}
  if(pendingCheck&&quiet()){pendingCheck=false;checkProgress()}
  updateHud();
@@ -1884,11 +2269,11 @@ function showToast(success){
  const L=LEVELS[currentLevel],r=evalRun();
  if(success)sfx.win();else sfx.lose();
  if(success)saveProg(currentLevel,r);
- $('toastTitle').textContent=success?(currentLevel===LEVELS.length-1?'🏆 ¡Laboratorio completado!':'🎉 ¡Experimento superado!'):'💪 ¡Casi lo tienes!';
- $('toastText').textContent=success?(L.fact+(currentLevel===LEVELS.length-1?' Has completado los '+LEVELS.length+' niveles.':'')):'Te has quedado sin proyectiles. Combina mejor los materiales: cristal sobre voladores, metal contra los soportes, fuego contra la madera.';
+ $('toastTitle').textContent=success?(currentLevel===worldLast(currentLevel)?(isW2(currentLevel)?'🌿 ¡Bloque '+(currentLevel<W2_START+5?'A':'B')+' superado!':'🏆 ¡Laboratorio completado!'):'🎉 ¡Experimento superado!'):'💪 ¡Casi lo tienes!';
+ $('toastText').textContent=success?(L.fact+(currentLevel===worldLast(currentLevel)?(isW2(currentLevel)?' Has completado los niveles disponibles del Mundo 2. ¡Pronto habrá más!':' Has completado los '+(W2_START)+' niveles.'):'')):'Te has quedado sin proyectiles. Combina mejor los materiales: cristal sobre voladores, metal contra los soportes, fuego contra la madera.';
  $('toastStars').textContent=success?starStr(r.st,r.gold)+' · '+r.score+' pts':'';
  buildReport(success,r);
- $('next').style.display=success&&currentLevel<LEVELS.length-1?'inline-block':'none';$('again').textContent=success?'Repetir':'Intentar de nuevo';$('toast').classList.add('show');
+ $('next').style.display=success&&currentLevel<worldLast(currentLevel)?'inline-block':'none';$('again').textContent=success?'Repetir':'Intentar de nuevo';$('toast').classList.add('show');
  updateToastLock();
 }
 function render(){
@@ -1896,7 +2281,7 @@ function render(){
 ctx.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);
  if(shake>0)ctx.translate((Math.random()-.5)*shake*2,(Math.random()-.5)*shake*2);
  drawBackground();drawFoundations();
- blocks.forEach(drawBlock);targets.forEach(drawTarget);drawFires();drawBurning();drawBars();
+ blocks.forEach(drawBlock);drawFans();drawRopes();targets.forEach(drawTarget);drawWater();drawFires();drawBurning();drawBars();
  particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/35);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
  drawShards();drawDrops();drawTrail();
  drawSling();drawCancelZone();
@@ -1909,7 +2294,7 @@ ctx.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);
   ctx.strokeText('arrastra y suelta',ex-6,ey+22);ctx.fillText('arrastra y suelta',ex-6,ey+22);ctx.restore();
  }
  if(projectile&&projectile.fired&&projectile.open)drawNet(projectile);
- if(projectile&&projectile.fired){const m=materials[projectile.kind];ctx.fillStyle=m.color;ctx.beginPath();ctx.arc(projectile.x,projectile.y,projectile.r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#0c2842';ctx.lineWidth=2.2;ctx.stroke();ctx.strokeStyle='#ffffffaa';ctx.lineWidth=3;ctx.beginPath();ctx.arc(projectile.x-4,projectile.y-4,projectile.r*.4,0,Math.PI*2);ctx.stroke();
+ if(projectile&&projectile.fired){const m=materials[projectile.kind];ctx.fillStyle=m.color;ctx.beginPath();ctx.arc(projectile.x,projectile.y,projectile.r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#0c2842';ctx.lineWidth=2.2;ctx.stroke();{const q=projectile,r=q.r,c=Math.cos(q.rot),n=Math.sin(q.rot);ctx.strokeStyle='#ffffffaa';ctx.lineWidth=3;ctx.beginPath();ctx.arc(q.x+(-4*c+4*n),q.y+(-4*n-4*c),r*.4,0,Math.PI*2);ctx.stroke();}
   if(projectile.kind==='fire'){ // botella con mecha encendida
    const q=projectile,an=Math.atan2(q.vy,q.vx);ctx.save();ctx.translate(q.x,q.y);ctx.rotate(an-Math.PI/2);
    ctx.fillStyle='#7b4a1f';ctx.fillRect(-2.5,-q.r-5,5,6);flame(0,-q.r-3,24+4*Math.sin(fireT*.6),7,fireT*.5,1);ctx.restore()}
@@ -2001,7 +2386,7 @@ document.addEventListener('pointerdown',()=>{if(orientTried)return;orientTried=t
 },{once:true,capture:true});
 ammoSel.addEventListener('change',updateHud);
 $('reset').addEventListener('click',()=>{if(!paused)setupLevel(currentLevel)});
-$('next').addEventListener('click',()=>setupLevel(Math.min(LEVELS.length-1,currentLevel+1)));
+$('next').addEventListener('click',()=>setupLevel(Math.min(worldLast(currentLevel),currentLevel+1)));
 $('again').addEventListener('click',()=>setupLevel(currentLevel));
 function refreshGuide(){const b=$('guideBtn');b.setAttribute('aria-pressed',windGuide?'true':'false');b.textContent=windGuide?'🧭 Guía con viento':'🧭 Guía sin viento';b.title='Guía de puntos de la trayectoria: pulsa para cambiar (tecla G)'}
 $('guideBtn').addEventListener('click',()=>{windGuide=!windGuide;try{localStorage.setItem('catapulta-caos-guia',windGuide?'1':'0')}catch(e){}refreshGuide();sfx.tick()});
@@ -2035,7 +2420,17 @@ const LEVELS=[
  {t:'Cascada de cristal',c:'σ = F / A',d:'Una torre de cristal de tres pisos. El cristal es frágil: una fuerza concentrada lo rompe pronto.',diff:3,fact:'La tensión σ = F/A crece cuando la fuerza se concentra en poca superficie: por eso el cristal se rompe con golpes puntuales.'},
  {t:'Nido de voladores',c:'F = m·a',d:'Seis voladores en V y dos blancos tras un muro. Las redes serán tus mejores aliadas.',diff:4,fact:'Una red alarga el tiempo de la frenada (F = m·Δv/Δt), así que la fuerza sobre el volador es menor.'},
  {t:'Montaña de bloques',c:'Σ τ = 0',d:'Una escalera de bloques que sube y baja. Si golpeas la base, los pisos superiores vuelcan.',diff:4,fact:'Un cuerpo vuelca cuando el momento del peso respecto a su borde de apoyo deja de ser equilibrado (Σ τ ≠ 0).'},
- {t:'Gran final: el gran experimento',c:'Ec · Ep · τ · Q',d:'Torre de lanzamiento, cinco estructuras y cuatro voladores. El examen definitivo del laboratorio.',diff:5,fact:'Has dominado energía, fuerzas, momentos, ondas de choque, combustión y fragilidad: ¡laboratorio completado!'}
+ {t:'Gran final: el gran experimento',c:'Ec · Ep · τ · Q',d:'Torre de lanzamiento, cinco estructuras y cuatro voladores. El examen definitivo del laboratorio.',diff:5,fact:'Has dominado energía, fuerzas, momentos, ondas de choque, combustión y fragilidad: ¡laboratorio completado!'},
+ {t:'Los veteranos',c:'v = d / t',d:'Viejos enemigos patrullan de lado a lado. Solo se detienen cuando algo les hace daño.',diff:3,fact:'La velocidad media es el espacio recorrido entre el tiempo empleado: v = d / t.'},
+ {t:'Muelles y goma',c:'F = −k·x',d:'Un muelle devuelve la energía que se le comprime. Úsalo para rebotar sobre el muro.',diff:3,fact:'Ley de Hooke: la fuerza de un muelle es proporcional a su deformación, F = −k·x.'},
+ {t:'Fortaleza helada',c:'H₂O (s) → H₂O (l)',d:'Piedra helada: el hielo la vuelve frágil. El alcohol derrite; el hielo congela.',diff:4,fact:'Un material enfriado se vuelve quebradizo y se rompe con menos energía.'},
+ {t:'Torre de agua',c:'ρ = m / V',d:'Un depósito elevado sobre patas. Si cae, el agua arrastra todo lo que encuentra.',diff:4,fact:'Un cuerpo flota si su densidad es menor que la del agua (1 g/cm³).'},
+ {t:'La presa',c:'p = ρ·g·h',d:'Una presa contiene un embalse sobre una aldea de madera. Rompe el muro y deja que el agua haga el resto.',diff:5,fact:'La presión del agua crece con la profundidad: p = ρ·g·h, por eso las presas son más gruesas abajo.'},
+ {t:'Ácido y hormigón',c:'CaCO₃ + 2 HCl → CaCl₂ + CO₂ + H₂O',d:'El hormigón armado aguanta casi todo. El ácido lo corroe poco a poco hasta soltarlo de su base.',diff:4,fact:'Los ácidos reaccionan con la caliza y los metales: la corrosión debilita la estructura con el tiempo.'},
+ {t:'La cueva',c:'σ = F / A',d:'Un techo de hormigón cubre a los enemigos. Derriba un apoyo y el techo caerá sobre ellos.',diff:4,fact:'Un techo se sostiene porque sus apoyos reparten el peso: σ = F / A. Si uno falla, los demás no aguantan.'},
+ {t:'Puente colgante',c:'T = m·g',d:'Una plataforma cuelga de dos cuerdas. Córtalas y caerá con todo lo que lleva encima.',diff:4,fact:'La tensión de una cuerda que sostiene un peso en reposo es igual al peso: T = m·g.'},
+ {t:'Ventiladores',c:'F = ½·ρ·v²·A',d:'Las corrientes de aire desvían tus disparos y levantan los bloques ligeros. Elige proyectiles pesados.',diff:5,fact:'La fuerza del aire sobre un objeto crece con el cuadrado de la velocidad del viento.'},
+ {t:'La chimenea',c:'ρ = m / V',d:'Una chimenea de piedra con tapa de espuma: la espuma amortigua los golpes, pero el ácido la deshace.',diff:5,fact:'La espuma tiene mucha menos densidad que la piedra y absorbe la energía de los impactos.'}
 ];
 for(let i=0;i<LEVELS.length;i++){setupLevel(i);LEVELS[i].tg=targets.length;LEVELS[i].am=ammoLeft();LEVELS[i].par=LEVELS[i].par||Math.max(2,Math.ceil(targets.length*.75))}
 const SAVE_KEY='catapulta-caos-progreso';
@@ -2046,11 +2441,11 @@ function saveProg(n,r){try{const p=loadProg(),o=norm(p[n]),c={s:r.eff,st:r.st,g:
 function stars(sh){return sh<=3?'★★★':sh<=6?'★★☆':'★☆☆'}
 function buildLevels(){
  if(typeof document.createElement!=='function')return;
- const box=$('levels'),prog=loadProg();box.innerHTML='';
+ const box=$('levels'),prog=loadProg();box.innerHTML='';{const h=$('screenLevels').querySelector('h3');if(h)h.textContent=menuWorld===2?'Mundo 2 · Agua, hielo y química':'Elige un nivel';}
  LEVELS.forEach((L,i)=>{
   const b=document.createElement('button');b.type='button';b.className='lvl';
-  const pr=norm(prog[i]),done=pr!=null;
-  b.innerHTML='<span class="num">'+(i+1)+'</span><span class="lt">'+L.t+'</span><span class="lc">'+L.c+'</span><span class="ld">'+L.d+'</span>'+
+  if(isW2(i)!==(menuWorld===2)||i===LAB)return;const pr=norm(prog[i]),done=pr!=null;
+  b.innerHTML='<span class="num">'+LVN(i)+'</span><span class="lt">'+L.t+'</span><span class="lc">'+L.c+'</span><span class="ld">'+L.d+'</span>'+
    '<span class="meta">🎯 '+L.tg+' objetivos · 🎒 '+L.am+' proyectiles · ★★★ ≤ '+L.par+' disparos'+((UNLOCK[i]||[]).length&&i>0?'<br>🔓 Nuevo: '+UNLOCK[i].map(k=>materials[k].name).join(', '):'')+'<br>Dificultad '+'●'.repeat(L.diff)+'○'.repeat(5-L.diff)+'</span>'+
    '<span class="st">'+(done?starStr(pr.st,pr.g)+' <small style="font-size:.7rem;letter-spacing:0;color:#9fc3cf">'+(pr.sc?pr.sc+' pts · ':'')+pr.s+(pr.s===1?' disparo':' disparos')+'</small>':'')+'</span>';
   b.addEventListener('click',()=>startLevel(i));
@@ -2068,26 +2463,28 @@ function updateMenuLock(){
 {const hp=$('screenTitle').querySelector('details.help');
  hp.addEventListener('toggle',()=>{updateMenuLock();if(hp.open)setTimeout(()=>hp.scrollIntoView({behavior:'smooth',block:'nearest'}),60)});
  addEventListener('resize',updateMenuLock)}
-function showScreen(name){
+function showScreen(name,w){
+ if(name==='levels'){menuWorld=w||menuWorld}
+ applyTheme(name==='levels'&&menuWorld===2);
  paused=true;$('menu').classList.add('show');sfx.mood('calm');
  $('screenTitle').hidden=name!=='title';$('screenLevels').hidden=name!=='levels';$('screenWorlds').hidden=name!=='worlds';
  updateMenuLock();
  if(name==='levels'){buildLevels();$('resumeBtn').hidden=!started}
  $('toast').classList.remove('show');
 }
-function hideMenu(){$('menu').classList.remove('show');paused=false;sfx.mood('play')}
+function hideMenu(){$('menu').classList.remove('show');paused=false;applyTheme(isW2(currentLevel));sfx.mood('play')}
 function showToastNew(ks){const el=$('matHint');if(!el)return;el.innerHTML='<b>🔓 ¡Material desbloqueado!</b>'+ks.map(k=>materials[k].name+' ('+MATINFO[k].sym+')').join(', ');el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>{el.classList.remove('show');showHint(ks[0])},2200)}
 function startLevel(n){started=true;sfx.tick();setupLevel(n);hideMenu();{const nw=UNLOCK[n]||[];if(n>0&&nw.length){setAmmo(nw[0]);showToastNew(nw)}}if(n===0&&!tutSeen())tutShow(0);else if(tutStep>=0)tutEnd(false)}
 $('playBtn').addEventListener('click',()=>{if(!tutSeen())startLevel(0);else showScreen('worlds')});
 $('backBtn').addEventListener('click',()=>showScreen('worlds'));
 $('worldsBack').addEventListener('click',()=>showScreen('title'));
-$('world1').addEventListener('click',()=>{sfx.tick();showScreen('levels')});
+$('world1').addEventListener('click',()=>{sfx.tick();showScreen('levels',1)});
 $('worldLab').addEventListener('click',()=>$('labBtn').click());
 let noteT=0;
 function showNote(txt){let n=$('note');if(!n){n=document.createElement('div');n.id='note';n.setAttribute('role','status');document.body.appendChild(n)}n.textContent=txt;n.classList.add('show');clearTimeout(noteT);noteT=setTimeout(()=>n.classList.remove('show'),2600)}
-$('world2').addEventListener('click',()=>{sfx.tick();showNote('Leo lo pondrá cuando le apetezca')});
+$('world2').addEventListener('click',()=>{sfx.tick();showScreen('levels',2)});
 $('resumeBtn').addEventListener('click',hideMenu);
-$('menuBtn').addEventListener('click',()=>showScreen('levels'));
+$('menuBtn').addEventListener('click',()=>showScreen('levels',isW2(currentLevel)?2:1));
 $('toMenu').addEventListener('click',()=>showScreen('levels'));
 // Tamaño: el escenario cubre toda la ventana (sin barras). Se amplía el mundo visible según la proporción
 // y el lienzo se dibuja a la densidad real de píxeles de la pantalla para que se vea nítido de cerca.
@@ -2126,7 +2523,7 @@ $('keyD').addEventListener('click',()=>{if(!paused)cycleAmmo(1)});
 if(typeof document.addEventListener==='function')document.addEventListener('keydown',e=>{
  if(e.ctrlKey||e.metaKey||e.altKey)return;
  const k=(e.key||'').toLowerCase();
- if(k==='escape'){if(dragging){cancelAim();return}if(!paused)showScreen('levels');else if(started&&!$('screenLevels').hidden)hideMenu();return}
+ if(k==='escape'){if(dragging){cancelAim();return}if(!paused)showScreen('levels',isW2(currentLevel)?2:1);else if(started&&!$('screenLevels').hidden)hideMenu();return}
  if(k==='f'){e.preventDefault();toggleFS();return}
  if(paused)return;
  if(k==='a'){e.preventDefault();cycleAmmo(-1)}
