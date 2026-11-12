@@ -80,6 +80,15 @@
   /* aviso de fin de nivel */
   .toast{position:absolute;inset:0;display:none;place-items:center;background:#102c4380;padding:20px;text-align:center;z-index:4}
   .toast.show{display:grid}
+  #finale{z-index:5;background:#0b1e30d9}
+  #finale .fin{width:min(440px,100%)}
+  #finSvg{width:100%;max-height:150px;display:block;margin:0 auto 4px}
+  #finSvg .orb{transform-origin:150px 78px;animation:finspin 5s linear infinite}
+  #finSvg .o2{animation-duration:7s}#finSvg .o3{animation-duration:9s;animation-direction:reverse}
+  @keyframes finspin{to{transform:rotate(360deg)}}
+  .finfact{background:#fff4e0;border-radius:12px;padding:8px 12px;margin:8px 0;text-align:left;font-size:.88rem;line-height:1.35}
+  .finfact b{display:block;color:#c4471b;margin-bottom:2px}
+  @media (prefers-reduced-motion:reduce){#finSvg .orb{animation:none}}
   .card{background:#fff;border-radius:20px;padding:22px;max-width:420px;box-shadow:0 12px 35px #102c4340}
   .card h2{margin:0 0 8px;font-size:1.6rem}
   .card p{margin:0 0 16px;line-height:1.45}
@@ -348,6 +357,7 @@
   .toast.lock,.toast.lock .card{overflow:hidden;overscroll-behavior:none;touch-action:none}
   @media (max-height:480px){
    .toast{padding:6px 10px}
+   #finale .fin{display:block;text-align:center;padding:8px 14px}#finSvg{max-height:78px}.finfact{font-size:.74rem;padding:5px 9px;margin:4px 0}#finale .fin p{margin:2px 0;font-size:.8rem}
    .toast .card{width:min(780px,100%);padding:10px 16px;border-radius:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);column-gap:14px;align-content:center;text-align:left}
    .toast .card>*{grid-column:1}
    .toast .card .report{grid-column:2;grid-row:1/span 4;margin:0;align-self:center}
@@ -383,6 +393,10 @@
    padding:12px 20px;border-radius:14px;font:700 .95rem system-ui,sans-serif;box-shadow:0 10px 26px #0006;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
   #note.show{opacity:1;transform:translate(-50%,0)}
   @media (max-height:480px){.world{padding:10px 10px;width:min(190px,28vw)}.world .wi{font-size:1.8rem}.world b{font-size:1rem}.world small{font-size:.68rem}.worlds{margin:8px 0 10px;gap:10px}}
+#bossbar{position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;min-width:200px}
+#bossbar span{font:800 12px system-ui,sans-serif;color:#fff;background:#17324dcc;padding:2px 10px;border-radius:10px;letter-spacing:.04em}
+#bossbar i{display:block;width:100%;height:9px;background:#17324d99;border-radius:6px;overflow:hidden;border:1.5px solid #17324d}
+#bossbar u{display:block;height:100%;background:linear-gradient(90deg,#ff5a4a,#ffb02e);width:100%;transition:width .3s}
 </style>
 </head>
 <body>
@@ -442,9 +456,25 @@
       <button class="primary" id="coachNext">Siguiente →</button>
     </div>
     <div class="hint" id="matHint" aria-live="polite"></div>
+    <div id="bossbar" hidden><span id="bossname"></span><i><u id="bossfill"></u></i></div>
     <div class="toast" id="toast"><div class="card"><h2 id="toastTitle">¡Nivel superado!</h2><div class="rstars" id="toastStars"></div><p id="toastText">Has derribado todos los objetivos.</p>
       <section class="report" id="report" hidden aria-live="polite"></section>
       <div class="rbtns"><button class="primary" id="next">Siguiente nivel →</button><button id="again">Repetir</button><button id="toMenu">☰ Niveles</button></div></div></div>
+    <div class="toast" id="finale"><div class="card fin">
+      <svg id="finSvg" viewBox="0 0 300 150" aria-hidden="true">
+        <defs><radialGradient id="fg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#ff9a3c" stop-opacity=".8"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="150" cy="78" r="70" fill="url(#fg)"><animate attributeName="r" values="60;72;60" dur="2.4s" repeatCount="indefinite"/></circle>
+        <g class="orb"><ellipse cx="150" cy="78" rx="62" ry="22" fill="none" stroke="#2c7fb8" stroke-width="2"/><circle cx="212" cy="78" r="6" fill="#2c7fb8"/></g>
+        <g class="orb o2"><ellipse cx="150" cy="78" rx="62" ry="22" fill="none" stroke="#2f9e44" stroke-width="2" transform="rotate(60 150 78)"/><circle cx="119" cy="24" r="6" fill="#2f9e44"/></g>
+        <g class="orb o3"><ellipse cx="150" cy="78" rx="62" ry="22" fill="none" stroke="#e8590c" stroke-width="2" transform="rotate(120 150 78)"/><circle cx="119" cy="132" r="6" fill="#e8590c"/></g>
+        <circle cx="150" cy="78" r="14" fill="#d9480f"/><circle cx="146" cy="74" r="5" fill="#ffd8a8"/>
+        <text x="150" y="146" text-anchor="middle" font-size="11" font-weight="800" fill="#17324d">ΔG &lt; 0</text>
+      </svg>
+      <h2>🏆 ¡Reactor sobrecargado!</h2>
+      <div class="rstars" id="finStars"></div>
+      <p id="finText"></p>
+      <div class="finfact"><b>💡 Dato curioso</b><span id="finFact"></span></div>
+      <div class="rbtns"><button class="primary" id="finAgain">Repetir el jefe</button><button id="finMenu">☰ Niveles</button></div></div></div>
     <div id="wipe"></div>
     <div class="menu show" id="menu">
       <section class="screen" id="screenTitle">
@@ -549,19 +579,22 @@ const AMMO_PER_LEVEL=[
  {wood:3,stone:3,rubber:2},                  // W2·2 · muelles
  {wood:2,stone:3,fire:2,ice:2},              // W2·3 · fortaleza helada
  {wood:3,stone:2,rubber:1,fire:1,ice:1},     // W2·4 · torre de agua
- {wood:3,stone:3,metal:1,fire:2,ice:1},      // W2·5 · la presa
+ {wood:2,stone:3,metal:2,fire:3},              // W2·5 · JEFE gólem de hielo
  {wood:2,stone:3,metal:1,acid:2},            // W2·6 · ácido y hormigón
  {wood:2,stone:3,metal:1,acid:2},            // W2·7 · la cueva
  {wood:3,stone:2,rubber:1,fire:1,acid:1},    // W2·8 · puente colgante
  {wood:2,stone:3,metal:1,rubber:1,acid:1},   // W2·9 · ventiladores
- {wood:2,stone:3,metal:1,acid:2,fire:1},     // W2·10 · la chimenea
+ {wood:2,stone:2,metal:2,fire:1,acid:4},       // W2·10 · JEFE coloso de hormigón
  {wood:2,stone:3,metal:1,rubber:1,acid:1},   // W2·11 · corrientes térmicas
  {wood:2,stone:2,fire:2,balloon:3},          // W2·12 · globo de hidrógeno
  {wood:2,stone:3,metal:1,fire:2,acid:1},     // W2·13 · barriles
  {wood:2,stone:3,metal:1,fire:2,sodio:2},   // W2·14 · sodio y dinamita
- {wood:2,stone:3,metal:1,fire:3,acid:1,sodio:1},// W2·15 · planta química
+ {wood:2,stone:2,metal:2,fire:2,acid:2,sodio:2},// W2·15 · JEFE el reactor
  {wood:2,stone:3,metal:1,fire:2,ice:1},      // W2·16 · la compuerta
- {wood:2,stone:3,metal:1,fire:2,sodio:2}     // W2·17 · marineros
+ {wood:2,stone:3,metal:1,fire:2,sodio:2},    // W2·17 · marineros
+ {wood:2,stone:2,fire:3,ice:1,balloon:2},     // W2·18 · torre de vapor
+ {wood:2,stone:3,metal:1,fire:2,acid:1,sodio:1},// W2·19 · laboratorio
+ {wood:2,stone:2,metal:2,rubber:1,fire:2,acid:2,sodio:2,ice:1}// W2·20 · gran reactor
 ];
 // Materiales que se desbloquean en cada nivel (el resto de niveles acumulan los anteriores)
 const UNLOCK=[['wood','stone'],['rubber'],['metal'],['glass'],[],['red'],['fire'],[],[],[],[],[],[],[],[],[],[],[],[],[],
@@ -573,7 +606,7 @@ const unlockedAt=n=>UNLOCK.slice(0,n+1).flat();
 const isW2=n=>n>=W2_START&&n<LAB;                          // ¿es un nivel del Mundo 2?
 const LVN=n=>isW2(n)?n-W2_START+1:n+1;                      // número que ve el jugador dentro de su mundo
 const worldLast=n=>isW2(n)?W2_START+W2_COUNT-1:W2_START-1;  // último nivel disponible de ese mundo
-const W2_COUNT=17;                                           // niveles del Mundo 2 disponibles por ahora
+const W2_COUNT=20;                                           // niveles del Mundo 2 disponibles por ahora
 let W2THEME=false, W2BLK=0, menuWorld=1, pxOff=0;
 const blkOf=n=>isW2(n)?Math.min(3,Math.floor((n-W2_START)/5)):0;   // bloque del Mundo 2 (0 A · 1 B · 2 C · 3 D)
 const SKY=[['#eef9f1','#cfe9e0'],['#e4efdb','#b9d3b3'],['#f1f2e0','#d3dabf'],['#eaf5e6','#c6dcc4']];
@@ -611,7 +644,7 @@ const W2_START=20, LAB=100;   // índice del primer nivel del Mundo 2 · índice
 AIR_TARGETS.pop();NEAR_SHIFT.pop();
 AIR_TARGETS[W2_START]=[];AIR_TARGETS[W2_START+1]=[];AIR_TARGETS[W2_START+2]=[];AIR_TARGETS[W2_START+3]=[];AIR_TARGETS[W2_START+4]=[];
 NEAR_SHIFT[W2_START]=130;NEAR_SHIFT[W2_START+1]=120;NEAR_SHIFT[W2_START+2]=130;NEAR_SHIFT[W2_START+3]=110;NEAR_SHIFT[W2_START+4]=100;
-for(let i=5;i<17;i++){AIR_TARGETS[W2_START+i]=[];NEAR_SHIFT[W2_START+i]=[120,110,110,110,100,110,120,130,120,120,120,120][i-5]}
+for(let i=5;i<20;i++){AIR_TARGETS[W2_START+i]=[];NEAR_SHIFT[W2_START+i]=[120,110,110,110,100,110,120,130,120,120,120,120,120,120,120,130][i-5]}
 AIR_TARGETS[LAB]=[[430,210,20,14],[560,290,0,12]];NEAR_SHIFT[LAB]=0;
 let tutStep=-1, hintT=null, sheetKey='', paused=true, started=false, wind=0, windLines=[], shards=[], pendingWind=false, ammo={}, ammoBase={}, fires=[], drops=[], fireT=0;
 const NET_R=64;
@@ -850,6 +883,135 @@ function drawLevers(){
   ctx.fillStyle='#17324d';ctx.font='700 9px system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(L.on?'ABIERTA':'PALANCA',0,10);
   ctx.restore();
  }
+}
+
+// ---------- Jefes y máquinas ----------
+let machines=[];
+const BOSS_NAMES={golem:'Gólem de hielo',coloso:'Coloso de hormigón',reactor:'El Reactor',final:'Gran Reactor'};
+function boss(x,y,kind,hp,r){target(x,y);const t=targets[targets.length-1];t.boss=kind;t.bname=BOSS_NAMES[kind];t.r=r||34;t.hp=t.maxhp=hp;return t}
+// Máquina: cuerpo de metal indestructible con un orificio iluminado por un haz naranja. Solo hace daño lo que entra por el orificio.
+function machine(x,y,w,h,o){
+ const body=block(x,y,w,h,'metal');body.ind=true;
+ const core=boss(x+w*.62,y+h*.34,o.kind||'reactor',o.hp,24);core.mach=true;
+ machines.push({bi:blocks.indexOf(body),ti:targets.indexOf(core),mode:o.mode||'hop',ports:o.ports||[],y0:o.y0,y1:o.y1,spd:o.spd||.02,cur:0,py:o.mode==='slide'?o.y0:o.ports[0],hp:o.hp,maxhp:o.hp,last:'',pulse:0,t:0,phase:1,alive:true,pr:o.pr||26});
+ return body;
+}
+const FEED={wood:[1,'Celulosa: combustible lento'],stone:[1.2,'CaCO₃ obstruye los engranajes'],metal:[1.6,'Fe: cortocircuito'],rubber:[.8,'La goma atasca la válvula'],glass:[.9,'SiO₂: grieta en la cámara'],fire:[2,'Combustión: sobrecalentamiento'],ice:[1.2,'Choque térmico'],acid:[2.2,'HCl corroe los circuitos'],sodio:[3,'2 Na + 2 H₂O → 2 NaOH + H₂↑'],red:[.5,'La red se enreda'],balloon:[1.4,'2 H₂ + O₂ → 2 H₂O: sobrepresión']};
+function machinePort(m){const b=blocks[m.bi];return{x:b.x,y:m.py}}
+function stepMachines(){
+ for(const m of machines){
+  if(!m.alive)continue;m.t++;if(m.pulse>0)m.pulse--;
+  if(m.dying>0){
+   m.dying--;const bb=blocks[m.bi];
+   if(m.dying%6===0){const x=bb.x+Math.random()*bb.w,y=bb.y+Math.random()*bb.h;fxBoom(x,y,60+Math.random()*90,m.dying%30===0);sfx.blast(Math.random()<.5?'barril':'dinamita');shake=Math.max(shake,11);for(let i=0;i<5;i++){const a=Math.random()*6.28,v=2+Math.random()*5;drops.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2,life:90,dead:false,g:0,src:null})}}
+   if(m.dying===0)machineFinish(m);
+   continue;
+  }
+  const b=blocks[m.bi],tgt=m.mode==='slide'?m.y0+(m.y1-m.y0)*(.5+.5*Math.sin(m.t*m.spd*(m.phase===2?1.9:1))):m.ports[m.cur];
+  m.py=m.mode==='slide'?tgt:m.py+(tgt-m.py)*.12;
+  const p=projectile;if(!p||!p.fired||settling)continue;
+  const q=machinePort(m);
+  if(Math.hypot(p.x-q.x,p.y-q.y)<m.pr+4)feedMachine(m,p,q);
+ }
+}
+function feedMachine(m,p,q){
+ const F=FEED[p.kind]||[1,''];let d=F[0];if(m.last&&m.last!==p.kind)d*=1.3;   // mezclar materiales reacciona mejor
+ const mix=m.last&&m.last!==p.kind;m.last=p.kind;m.hp-=d;m.pulse=50;
+ const core=targets[m.ti];core.hp=Math.max(0,m.hp);core.flash=6;
+ projectile=null;pendingWind=true;shake=Math.max(shake,6);sfx.thud(5);sfx.hurt();
+ burst(q.x,q.y,'#ffb04a',16);burst(q.x,q.y,'#fff2b0',8);fxBoom(q.x,q.y,60,false);
+ floaters.push({x:q.x-30,y:q.y-26,text:'-'+Math.round(d*10)+(mix?' ¡mezcla!':''),life:70,max:70,big:true});
+ if(F[1])reactLabel(q.x-70,q.y-50,F[1]);
+ if(m.hp<=0){machineDie(m,q);return}
+ if(m.phase===1&&m.mode==='slide'&&m.hp<=m.maxhp*.5){m.phase=2;floaters.push({x:q.x-60,y:q.y-80,text:'¡FASE 2: sobrecarga!',life:100,max:100,big:true});sfx.crack();flashA=.4}
+ if(m.mode==='hop'){let n;do{n=Math.floor(Math.random()*m.ports.length)}while(n===m.cur&&m.ports.length>1);m.cur=n}
+}
+function machineDie(m,q){
+ m.dying=120;m.hp=0;targets[m.ti].hp=0;flashA=.5;shake=14;sfx.blast('dinamita');fxBoom(q.x,q.y,120,true);
+ reactLabel(blocks[m.bi].x+blocks[m.bi].w/2,blocks[m.bi].y,'¡Sobrecarga!');
+}
+function machineFinish(m){
+ m.alive=false;const b=blocks[m.bi],core=targets[m.ti];
+ sfx.blast('dinamita');shake=18;flashA=.8;
+ fxBoom(b.x+b.w/2,b.y+b.h/2,260,true);for(let i=0;i<4;i++)fxBoom(b.x+Math.random()*b.w,b.y+Math.random()*b.h,150,false);
+ b.alive=false;burst(b.x+b.w/2,b.y+b.h/2,'#ff9a3c',44);burst(b.x+b.w/2,b.y+b.h/2,'#fff2b0',28);
+ shockwaves.push({x:b.x+b.w/2,y:b.y+b.h/2,r:10,maxR:260,speed:9,k:1.2,hit:new Set()});
+ core.hp=0;killTarget(core,'sobrecarga');
+}
+function bossStep(t){
+ if(t.boss==='coloso'&&t.corr>0){t.corr--;t.hp-=.0045;if(t.hp<=0)killTarget(t,'acido')}
+ if(!settling&&t.alive&&t.cd<=0&&!t.mach)for(const b of blocks){if(!b.alive||b.anchored||b.launch||!circleRect(t.x,t.y,t.r,b))continue;const rs=Math.hypot(b.vx,b.vy);if(rs>2.4){damageTarget(t,(rs-2)*Math.max(.5,b.mass)*.3,'derrumbe');t.cd=14;break}}
+}
+function updateBossBar(){
+ const B=targets.find(t=>t.boss&&t.alive),bb=$('bossbar');if(!bb)return;
+ bb.hidden=!B;if(B){$('bossname').textContent=B.bname;$('bossfill').style.width=Math.max(0,B.hp/B.maxhp*100).toFixed(1)+'%'}
+}
+function drawMachines(){
+ for(const m of machines){
+  const b=blocks[m.bi];if(!m.alive||!b||!b.alive)continue;
+  const x=b.x,y=b.y,w=b.w,h=b.h,t=m.t,hot=m.pulse>0||m.dying>0;
+  ctx.save();if(m.dying>0)ctx.translate((Math.random()-.5)*5,(Math.random()-.5)*5);
+  ctx.fillStyle='#3b4856';ctx.fillRect(x+6,y+6,w-12,h-12);ctx.strokeStyle='#1d2a38';ctx.lineWidth=2;ctx.strokeRect(x+6,y+6,w-12,h-12);
+  ctx.strokeStyle='#5d6f80';ctx.lineWidth=2;for(let i=1;i<6;i++){const yy=y+h*(i/6);ctx.beginPath();ctx.moveTo(x+10,yy);ctx.lineTo(x+w-10,yy);ctx.stroke()}
+  ctx.fillStyle='#9fb0bf';[[x+10,y+10],[x+w-10,y+10],[x+10,y+h-10],[x+w-10,y+h-10]].forEach(q=>{ctx.beginPath();ctx.arc(q[0],q[1],3,0,Math.PI*2);ctx.fill()});
+  ctx.fillStyle='#e8b923';for(let i=0;i<w;i+=16){ctx.beginPath();ctx.moveTo(x+i,y+h);ctx.lineTo(x+i+8,y+h);ctx.lineTo(x+i+16,y+h-10);ctx.lineTo(x+i+8,y+h-10);ctx.fill()}   // franjas de peligro
+  // chimenea con humo
+  ctx.fillStyle='#2e3a46';ctx.fillRect(x+w-34,y-26,18,28);if(t%8===0)particles.push({x:x+w-25,y:y-28,vx:.3+Math.random()*.4,vy:-1,life:40,color:hot?'#ff9a3c':'#8a95a0',r:3+Math.random()*3});
+  // engranaje
+  ctx.save();ctx.translate(x+30,y-12);ctx.rotate(t*.04*(hot?3:1));ctx.fillStyle='#c9a227';ctx.strokeStyle='#6d5a10';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?13:18;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#3b4856';ctx.beginPath();ctx.arc(0,0,5,0,Math.PI*2);ctx.fill();ctx.restore();
+  // núcleo con luz
+  const cx=x+w*.62,cy=y+h*.34,f=m.hp/m.maxhp,pu=.6+.4*Math.sin(t*(hot?.5:.12));
+  const g=ctx.createRadialGradient(cx,cy,2,cx,cy,34);g.addColorStop(0,'rgba(255,230,150,'+(.9*pu).toFixed(2)+')');g.addColorStop(.5,'rgba(255,110,40,'+(.55*pu).toFixed(2)+')');g.addColorStop(1,'rgba(255,60,20,0)');
+  ctx.fillStyle='#101820';ctx.beginPath();ctx.arc(cx,cy,24,0,Math.PI*2);ctx.fill();ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,34,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#9fb0bf';ctx.lineWidth=3;ctx.beginPath();ctx.arc(cx,cy,24,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='#ffe9a8';ctx.beginPath();ctx.arc(cx,cy,7+3*pu,0,Math.PI*2);ctx.fill();
+  // luces de estado
+  for(let i=0;i<5;i++){ctx.fillStyle=f>i/5?(f>.5?'#4bd37b':'#ffb02e'):'#4a1c1c';ctx.beginPath();ctx.arc(x+22+i*14,y+h-24,4,0,Math.PI*2);ctx.fill()}
+  // orificios: el activo abierto y con haz; los demás tapados
+  const act=m.mode==='slide'?-1:m.cur;
+  (m.mode==='slide'?[m.py]:m.ports).forEach((py,i)=>{
+   const on=m.mode==='slide'||i===act,px=x;
+   ctx.fillStyle=on?'#0a0f14':'#56626e';ctx.beginPath();ctx.arc(px,py,on?m.pr*.8:m.pr*.7,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle=on?'#ff9a2e':'#2a3541';ctx.lineWidth=on?4:3;ctx.stroke();
+   if(!on){ctx.strokeStyle='#2a3541';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-8,py);ctx.lineTo(px+8,py);ctx.moveTo(px,py-8);ctx.lineTo(px,py+8);ctx.stroke()}
+  });
+  // haz de luz naranja saliendo del orificio activo
+  if(m.dying>0){ctx.restore();continue}
+  const q=machinePort(m),fl=.85+.15*Math.sin(t*.3);
+  ctx.globalCompositeOperation='lighter';
+  const bg=ctx.createLinearGradient(q.x,0,q.x-260,0);bg.addColorStop(0,'rgba(255,150,40,'+(.7*fl).toFixed(2)+')');bg.addColorStop(1,'rgba(255,120,20,0)');
+  ctx.fillStyle=bg;ctx.beginPath();ctx.moveTo(q.x,q.y-m.pr*.7);ctx.lineTo(q.x-260,q.y-70);ctx.lineTo(q.x-260,q.y+70);ctx.lineTo(q.x,q.y+m.pr*.7);ctx.closePath();ctx.fill();
+  const rg=ctx.createRadialGradient(q.x,q.y,0,q.x,q.y,50);rg.addColorStop(0,'rgba(255,220,140,.8)');rg.addColorStop(1,'rgba(255,140,30,0)');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(q.x,q.y,50,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,230,170,.8)';for(let i=0;i<9;i++){const u=((t*.012+i*.113)%1),yy=q.y+Math.sin(i*2.3+t*.03)*(8+u*55);ctx.beginPath();ctx.arc(q.x-u*250,yy,1.8,0,Math.PI*2);ctx.fill()}   // motas de polvo en el haz
+  ctx.globalCompositeOperation='source-over';
+  ctx.restore();
+ }
+}
+function drawBoss(t){
+ const x=t.x,y=t.y,r=t.r,hurt=1-t.hp/t.maxhp;
+ ctx.save();
+ if(t.boss==='golem'){
+  const g=ctx.createRadialGradient(x-8,y-12,4,x,y,r*1.2);g.addColorStop(0,'#f4fdff');g.addColorStop(.6,'#a9dcf2');g.addColorStop(1,'#5a9cc2');
+  ctx.fillStyle='#cfeefa';ctx.strokeStyle='#2e6f94';ctx.lineWidth=2.5;
+  [[-1,-.55],[1,-.55],[0,-1.05]].forEach(c=>{ctx.beginPath();ctx.moveTo(x+c[0]*r*.5,y+c[1]*r*.4);ctx.lineTo(x+c[0]*r*.95,y-r*1.15+c[1]*r*.2);ctx.lineTo(x+c[0]*r*.2+c[0]*r*.1,y+c[1]*r*.2);ctx.closePath();ctx.fill();ctx.stroke()});   // cristales
+  ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(x,y,r,r*1.02,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.strokeStyle='rgba(46,111,148,.7)';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(x-r*.7,y-r*.1);ctx.lineTo(x-r*.3,y+r*.1);ctx.lineTo(x-r*.2,y+r*.5);ctx.moveTo(x+r*.6,y-r*.4);ctx.lineTo(x+r*.3,y-r*.1);ctx.stroke();
+  if(hurt>.4){ctx.beginPath();ctx.moveTo(x+r*.1,y-r*.9);ctx.lineTo(x-r*.1,y-r*.4);ctx.lineTo(x+r*.15,y);ctx.stroke()}
+  ctx.fillStyle='#ff4a3a';ctx.shadowColor='#ff4a3a';ctx.shadowBlur=10;ctx.beginPath();ctx.ellipse(x-r*.32,y-r*.15,r*.14,r*.2,.2,0,Math.PI*2);ctx.ellipse(x+r*.32,y-r*.15,r*.14,r*.2,-.2,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+  ctx.strokeStyle='#1d4a66';ctx.lineWidth=3;ctx.beginPath();for(let i=0;i<=6;i++){const px=x-r*.4+i*r*.13,py=y+r*.38+(i%2?r*.1:0);i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke();
+ }else if(t.boss==='coloso'){
+  const g=ctx.createLinearGradient(x-r,y-r,x+r,y+r);g.addColorStop(0,'#c9c4b8');g.addColorStop(1,'#7d796f');
+  ctx.fillStyle=g;ctx.strokeStyle='#3f3c36';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(x-r,y-r,r*2,r*2,10);ctx.fill();ctx.stroke();
+  ctx.strokeStyle='#5d5a52';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x-r,y+r*.2);ctx.lineTo(x+r,y+r*.2);ctx.moveTo(x,y-r);ctx.lineTo(x,y-r*.5);ctx.stroke();
+  ctx.fillStyle='#555147';[[-.8,-.8],[.8,-.8],[-.8,.8],[.8,.8]].forEach(c=>{ctx.beginPath();ctx.arc(x+c[0]*r,y+c[1]*r,3.5,0,Math.PI*2);ctx.fill()});
+  ctx.fillStyle='#b6ff3a';ctx.shadowColor='#b6ff3a';ctx.shadowBlur=10;ctx.beginPath();ctx.rect(x-r*.6,y-r*.35,r*.42,r*.22);ctx.rect(x+r*.18,y-r*.35,r*.42,r*.22);ctx.fill();ctx.shadowBlur=0;
+  ctx.fillStyle='#2f2d28';ctx.fillRect(x-r*.5,y+r*.35,r,r*.3);ctx.strokeStyle='#8a867a';ctx.lineWidth=2;for(let i=1;i<5;i++){ctx.beginPath();ctx.moveTo(x-r*.5+i*r*.2,y+r*.35);ctx.lineTo(x-r*.5+i*r*.2,y+r*.65);ctx.stroke()}
+  if(hurt>.4){ctx.strokeStyle='#3f3c36';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-r*.9,y-r*.9);ctx.lineTo(x-r*.5,y-r*.5);ctx.lineTo(x-r*.6,y);ctx.stroke()}
+ }
+ if(t.corr>0){ctx.fillStyle='rgba(130,225,40,.4)';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+ if(t.burn>0)flame(x,y-r+3,34+5*Math.sin(fireT*.4+x),14,fireT*.3+x,Math.min(1,t.burn/30));
+ if(t.flash>0){ctx.fillStyle='rgba(255,255,255,'+(t.flash/6*.6).toFixed(2)+')';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+ ctx.restore();
 }
 // Enemigo veterano: patrulla de lado a lado hasta que sufre daño de cualquier fuente
 function veteran(x,y,range,spd){
@@ -1102,7 +1264,7 @@ function checkProgress(){
 function takeSnap(){
  return{blocks:JSON.parse(JSON.stringify(blocks)),targets:JSON.parse(JSON.stringify(targets)),
   fires:fires.map(f=>({x:f.x,y:f.y,r:f.r,life:f.life,ox:f.ox,oy:f.oy,bi:f.b?blocks.indexOf(f.b):-1})),
-  ropes:JSON.parse(JSON.stringify(ropes)),levers:JSON.parse(JSON.stringify(levers)),pools:JSON.parse(JSON.stringify(pools)),floods:JSON.parse(JSON.stringify(floods)),ammo:Object.assign({},ammo),shots:shots,wind:wind,stats:JSON.parse(JSON.stringify(stats)),sel:ammoSel.value};
+  ropes:JSON.parse(JSON.stringify(ropes)),levers:JSON.parse(JSON.stringify(levers)),machines:JSON.parse(JSON.stringify(machines)),pools:JSON.parse(JSON.stringify(pools)),floods:JSON.parse(JSON.stringify(floods)),ammo:Object.assign({},ammo),shots:shots,wind:wind,stats:JSON.parse(JSON.stringify(stats)),sel:ammoSel.value};
 }
 // Ensayo: vuelve al estado previo al último disparo (mismo viento, munición recuperada); suma un ensayo a la puntuación
 function undoShot(){
@@ -1110,7 +1272,7 @@ function undoShot(){
  const s=lastSnap,r=(stats.retries||0)+1;lastSnap=null;
  blocks=JSON.parse(JSON.stringify(s.blocks));arbs=new Map();targets=JSON.parse(JSON.stringify(s.targets));
  fires=s.fires.map(f=>({x:f.x,y:f.y,r:f.r,life:f.life,ox:f.ox,oy:f.oy,b:f.bi>=0?blocks[f.bi]:null}));
- ropes=JSON.parse(JSON.stringify(s.ropes));levers=JSON.parse(JSON.stringify(s.levers||[]));pools=JSON.parse(JSON.stringify(s.pools));floods=JSON.parse(JSON.stringify(s.floods));ammo=Object.assign({},s.ammo);shots=s.shots;wind=s.wind;stats=JSON.parse(JSON.stringify(s.stats));stats.retries=r;
+ ropes=JSON.parse(JSON.stringify(s.ropes));levers=JSON.parse(JSON.stringify(s.levers||[]));machines=JSON.parse(JSON.stringify(s.machines||[]));pools=JSON.parse(JSON.stringify(s.pools));floods=JSON.parse(JSON.stringify(s.floods));ammo=Object.assign({},s.ammo);shots=s.shots;wind=s.wind;stats=JSON.parse(JSON.stringify(s.stats));stats.retries=r;
  ammoSel.value=s.sel;
  projectile=null;shards=[];drops=[];particles=[];floaters=[];shockwaves=[];trail=[];shotLog=[];graphN=-1;
  pendingWind=false;pendingCheck=false;won=false;gameOver=false;dragging=false;dragPos=null;shake=0;
@@ -1225,13 +1387,10 @@ function buildW2(k){
   block(860,ground-44,14,44,'stone');block(960,ground-44,14,44,'stone');pool(874,ground-40,86,40);
   const raft=block(890,ground-30,54,14,'wood');target(917,ground-60);
  } else if(k===4){
-  // A5 · La presa: embalse tras un muro de piedra y una aldea de madera río abajo
-  const back=block(380,ground-170,30,170,'stone');
-  const d1=block(540,ground-80,34,80,'stone'),d2=block(540,ground-160,34,80,'stone');
-  pool(410,ground-150,130,150,[[back,-1],[d1,1],[d2,1]]);
-  block(650,ground-60,20,60,'wood');block(720,ground-60,20,60,'wood');beam(695,ground-78,110,18,'wood');target(695,ground-96);
-  block(800,ground-70,20,70,'wood');block(870,ground-70,20,70,'wood');beam(845,ground-88,110,18,'wood');target(845,ground-106);
-  target(600,ground-22);veteran(940,ground-22,25);
+  // A5 · JEFE: Gólem de hielo, protegido por una cueva de hielo
+  block(690,ground-110,26,110,'ice');block(830,ground-110,26,110,'ice');beam(773,ground-126,176,16,'ice');
+  boss(773,ground-34,'golem',9,34);
+  block(620,ground-70,22,70,'wood');target(560,ground-22);target(773,ground-144);
  } else if(k===5){
   // B1 · Ácido y hormigón
   block(440,ground-110,28,110,'concrete');block(540,ground-110,28,110,'concrete');beam(504,ground-132,150,22,'concrete');target(504,ground-150);
@@ -1258,11 +1417,10 @@ function buildW2(k){
   fan(740,ground-14,44,14,0,1,150);
   block(820,ground-100,26,100,'stone');target(833,ground-118);target(900,ground-22);
  } else if(k===9){
-  // B5 · La chimenea
-  for(let i=1;i<=4;i++)block(520,ground-62*i,26,62,'stone');
-  beam(533,ground-278,70,30,'foam');target(533,ground-296);
-  block(640,ground-60,24,60,'concrete');block(720,ground-60,24,60,'concrete');beam(692,ground-78,120,18,'concrete');target(692,ground-96);
-  target(600,ground-22);veteran(800,ground-22,30);
+  // B5 · JEFE: Coloso de hormigón, protegido por muros de hormigón y un escudo de espuma
+  block(690,ground-130,28,130,'concrete');block(840,ground-130,28,130,'concrete');beam(779,ground-146,190,18,'concrete');
+  boss(779,ground-34,'coloso',10,34);
+  block(600,ground-60,60,60,'foam');target(779,ground-166);target(540,ground-22);
  } else if(k===10){
   // C1 · Corrientes térmicas: una chimenea levanta los disparos hacia una torre alta
   block(440,ground-60,22,60,'wood');block(510,ground-60,22,60,'wood');beam(486,ground-78,110,18,'wood');target(486,ground-95);
@@ -1294,14 +1452,8 @@ function buildW2(k){
   block(756,ground-40,40,40,'dinamita');
   block(900,ground-80,26,80,'stone');veteran(960,ground-22,20);
  } else if(k===14){
-  // C5 · Planta química
-  block(440,ground-110,26,110,'concrete');block(560,ground-110,26,110,'concrete');beam(500,ground-128,160,18,'concrete');
-  block(474,ground-44,36,44,'barril');block(514,ground-44,36,44,'barril');target(500,ground-146);target(620,ground-22);
-  const l1=block(690,ground-120,22,120,'stone'),l2=block(790,ground-120,22,120,'stone');
-  const fl=beam(751,ground-136,128,14,'wood'),wl=block(682,ground-206,14,70,'wood'),wr=block(798,ground-206,14,70,'wood');
-  pool(696,ground-200,102,64,[[fl,0],[wl,-1],[wr,1]]);
-  block(724,ground-36,38,36,'sodio');veteran(850,ground-22,20);
-  block(935,ground-60,20,60,'wood');block(1025,ground-60,20,60,'wood');beam(985,ground-78,110,18,'wood');target(985,ground-96);block(965,ground-40,40,40,'dinamita');
+  // C5 · JEFE: El Reactor. Mete los proyectiles por el orificio iluminado por el haz naranja
+  machine(790,ground-200,130,200,{kind:'reactor',hp:10,mode:'hop',ports:[ground-160,ground-105,ground-50]});
  } else if(k===15){
   // D1 · La compuerta: una palanca suelta el agua contra los enemigos que huyen de ella
   const wall=block(560,ground-120,26,120,'stone'),gate=block(710,ground-110,18,110,'metal');
@@ -1309,17 +1461,33 @@ function buildW2(k){
   lever(440,ground-36,gate);target(500,ground-22);
   block(780,ground-50,16,50,'wood');block(860,ground-50,16,50,'wood');beam(820,ground-66,110,16,'foam');target(820,ground-84);target(820,ground-22);
   block(960,ground-80,22,80,'stone');hydrophobe(920,ground-22);
- } else {
+ } else if(k===16){
   // D2 · Marineros: balsas sobre un estanque, sodio y espuma
   const wl=block(540,ground-60,22,60,'stone'),wr=block(830,ground-60,22,60,'stone');
   pool(562,ground-50,268,50,[[wl,-1],[wr,1]]);
   block(610,ground-40,60,14,'wood');target(640,ground-68);block(730,ground-40,60,14,'wood');target(760,ground-68);
   block(420,ground-60,18,60,'wood');block(490,ground-60,18,60,'wood');beam(455,ground-76,100,16,'foam');target(455,ground-94);target(455,ground-22);
   block(910,ground-70,22,70,'stone');hydrophobe(960,ground-22);
+ } else if(k===17){
+  // D3 · Torre de vapor: hielo, fuego y corrientes
+  block(560,ground-60,60,60,'ice');block(560,ground-120,60,60,'ice');beam(590,ground-136,100,16,'wood');target(590,ground-154);
+  vent(670,ground-90,40,90,.8,240);
+  block(780,ground-60,20,60,'wood');block(860,ground-60,20,60,'wood');beam(820,ground-76,120,16,'foam');target(820,ground-94);target(820,ground-22);veteran(950,ground-22,22);
+ } else if(k===18){
+  // D4 · Laboratorio: palanca, sodio, barriles
+  const wall=block(560,ground-120,26,120,'stone'),gate=block(710,ground-110,18,110,'metal');
+  pool(586,ground-100,124,100,[[wall,-1],[gate,1]]);
+  lever(440,ground-36,gate);target(500,ground-22);
+  block(750,ground-40,40,40,'sodio');block(850,ground-44,36,44,'barril');target(800,ground-22);target(868,ground-62);
+  block(940,ground-80,22,80,'stone');hydrophobe(910,ground-22);
+ } else {
+  // D5 · JEFE FINAL: Gran Reactor, el orificio se desliza y hay una corriente que desvía los disparos
+  vent(560,ground-120,44,120,.9,280);
+  machine(790,ground-270,150,270,{kind:'final',hp:16,mode:'slide',y0:ground-250,y1:ground-45,spd:.017,pr:25});
  }
 }
-function setupLevel(n){
- currentLevel=n;labMode=(n===LAB);applyTheme(isW2(n),blkOf(n));lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];pools=[];floods=[];ropes=[];fans=[];levers=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];blasts=[];flashA=0;pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});ammoBase=Object.assign({},ammo);pickAmmo();
+function setupLevel(n){{const f=document.getElementById('finale');if(f)f.classList.remove('show')}
+ currentLevel=n;labMode=(n===LAB);applyTheme(isW2(n),blkOf(n));lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];pools=[];floods=[];ropes=[];fans=[];levers=[];machines=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];blasts=[];flashA=0;pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});ammoBase=Object.assign({},ammo);pickAmmo();
  $('toast').classList.remove('show');if(typeof LEVELS!=='undefined'&&LEVELS[n])$('lvTitle').textContent=(isW2(n)?'🌿 ':'🧪 ')+LVN(n)+' · '+LEVELS[n].t;if(n===LAB)$('lvTitle').textContent='🔬 Laboratorio libre';
  if(n===0){
   block(600,ground-55,22,55,'wood');block(660,ground-55,22,55,'wood');beam(630,ground-116,105,18,'wood');
@@ -1852,7 +2020,7 @@ function drawBars(){
   if(f>=.999&&!SHOW_FULL_BARS)return;
   const ba=blockAABB(b);drawBar((ba.l+ba.r)/2,ba.t-9,b.w,f);
  });
- targets.forEach(t=>{if(t.alive)drawBar(t.x,t.y-t.r-11,30,t.hp/t.maxhp)});
+ targets.forEach(t=>{if(t.alive&&!t.boss)drawBar(t.x,t.y-t.r-11,30,t.hp/t.maxhp)});
 }
 function drawWind(){
  const kmh=Math.abs(wind)*600,dir=wind<0?-1:1,cx=0,cy=0;
@@ -1877,6 +2045,8 @@ function drawWind(){
 }
 function drawTarget(t){
  if(!t.alive)return;
+ if(t.mach)return;
+ if(t.boss){drawBoss(t);return}
  if(t.air){ // alas que baten
   const fl=Math.sin(t.age*.35)*7;
   ctx.fillStyle='#ffffffee';ctx.strokeStyle='#17324daa';ctx.lineWidth=1.5;
@@ -2114,7 +2284,7 @@ function destroyBlock(b){
  if(b.mat==='barril'&&!b.boomed)chemBoom(b,true);
 }
 function damageBlock(b,dmg,x,y){
- if(!b.alive||settling||dmg<.05)return;
+ if(!b.alive||settling||dmg<.05||b.ind)return;
  b.hp-=dmg;b.flash=6;
  if(dmg>=.3)floaters.push({x:x+(Math.random()-.5)*14,y:y-6,text:'-'+Math.round(dmg*10),life:42,max:42,big:b.hp<=0});
  if(b.hp<=0){destroyBlock(b);return}
@@ -2127,6 +2297,8 @@ function damageBlock(b,dmg,x,y){
 function killTarget(t,cause){t.alive=false;sfx.kill();burst(t.x,t.y,'#ff655a',20);if(!settling){const c=cause||'impacto';stats.causes[c]=(stats.causes[c]||0)+1}}
 function damageTarget(t,dmg,cause){
  if(!t.alive||settling||dmg<.05)return;
+ if(t.mach&&cause!=='sobrecarga')return;
+ if(t.boss==='coloso'&&(cause==null||cause==='impacto'))dmg*=.6;
  t.hp-=dmg;t.flash=6;burst(t.x,t.y,'#ff8a80',4);if(t.hp>0)sfx.hurt();
  floaters.push({x:t.x+(Math.random()-.5)*10,y:t.y-t.r-14,text:'-'+Math.max(1,Math.round(dmg*10)),life:42,max:42,big:t.hp<=0});
  if(t.hp<=0)killTarget(t,cause);
@@ -2331,7 +2503,7 @@ function stepFire(){
   }
   if(b.fireAcc>=.06){const a=b.fireAcc;b.fireAcc=0;damageBlock(b,a,b.x+b.w/2,b.y)}
  });
- targets.forEach(t=>{if(!t.alive||t.burn<=0)return;t.burn--;t.hp-=TARGET_DPS;if(t.hp<=0)killTarget(t,'fuego')});
+ targets.forEach(t=>{if(!t.alive||t.burn<=0)return;t.burn--;t.hp-=TARGET_DPS*(t.boss==='golem'?1.6:1);if(t.hp<=0)killTarget(t,'fuego')});
 }
 // Red: se abre en el aire y tira al suelo a los voladores que atrapa
 function openNet(p){
@@ -2366,7 +2538,7 @@ function projectileVsBlock(p,b){
    const ke=.5*p.mass*vn*vn;                              // energía cinética del golpe
    damageBlock(b,ke*.03*materials[p.kind].damage/b.resist*(b.mat==='foam'?.5:1),cx,cy);
    destroyed=!b.alive;
-   maybeShock(p,cx,cy,vn);
+   if(b.mat==='foam'){if(p.kind==='metal'&&vn>2.5){burst(cx,cy,'#f1dc8a',8)}}else maybeShock(p,cx,cy,vn);   // la espuma absorbe el impacto del metal: sin onda expansiva
   }
   if(destroyed){p.vx*=.82;p.vy*=.82}                        // atraviesa lo que rompe, algo frenado
   else{
@@ -2636,9 +2808,11 @@ function fallLand(t){
  return true;
 }
 function stepTargets(){
+ updateBossBar();
  targets.forEach(t=>{
   if(!t.alive)return;
   if(t.cd>0)t.cd--;if(t.flash>0)t.flash--;if(t.netted>0)t.netted--;
+  if(t.boss){t.vx=t.vy=0;bossStep(t);return}
   if(t.air){                                    // flota: sin gravedad, vaivén suave; solo le dañan bloques lanzados a toda velocidad
    t.age++;t.x=t.bx+Math.sin(t.age*.021+t.ph)*t.ax;t.y=t.by+Math.sin(t.age*.033+t.ph*1.7)*t.ay;
    if(!settling&&t.cd<=0)for(const b of blocks){
@@ -2673,15 +2847,15 @@ let nx=t.x-q.x,ny=t.y-q.y,d=Math.hypot(nx,ny);
 function physics(){
  stepBlasts();
  if(projectile&&projectile.fired)stepProjectile();
- stepBlocks();stepTargets();stepShockwaves();stepShards();stepDrops();stepFire();stepWater();stepLevers();stepFans();stepAcid();fireT++;if(fires.length&&Math.random()<.3)sfx.crackle();
+ stepBlocks();stepTargets();stepShockwaves();stepShards();stepDrops();stepFire();stepWater();stepLevers();stepMachines();stepFans();stepAcid();fireT++;if(fires.length&&Math.random()<.3)sfx.crackle();
  if(pendingWind&&!projectile&&!shards.length){pendingWind=false;pendingCheck=true;if(!won)newWind()}
  particles=particles.filter(p=>p.life-->0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.vx*=.98});
  floaters=floaters.filter(f=>f.life-->0);floaters.forEach(f=>{f.y-=.7});
  windLines.forEach(w=>{w.x+=wind*250*w.s;if(w.x>1040+OX)w.x=-40-OX;if(w.x<-40-OX)w.x=1040+OX});
  shake*=.86;if(shake<.2)shake=0;
- const left=targets.filter(t=>t.alive).length;
+ const left=targets.filter(t=>t.alive).length+machines.filter(m=>m.dying>0).length;
  if(!won&&left===0){won=true;const lv=currentLevel;if(labMode)floaters.push({x:500,y:260,text:'¡Todo derribado! Reconstruyendo…',life:80,max:80,big:true});setTimeout(()=>{if(currentLevel!==lv||!won)return;if(lv===LAB)setupLevel(LAB);else showToast(true)},labMode?1500:500)}
- if(!gameOver&&ammoLeft()===0&&left>0&&!projectile&&!blocks.some(b=>b.alive&&b.fuse>0)&&!pools.some(p=>p.leak>0||p.draining)&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!floods.length&&!blocks.some(b=>b.alive&&(b.burn>0||b.corr>0))&&!targets.some(t=>t.alive&&(t.burn>0||t.corr>0))&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)){gameOver=true;const lv=currentLevel;setTimeout(()=>{if(currentLevel===lv&&gameOver)showToast(false)},300)}
+ if(!gameOver&&ammoLeft()===0&&left>0&&!projectile&&!blocks.some(b=>b.alive&&b.fuse>0)&&!machines.some(m=>m.dying>0)&&!pools.some(p=>p.leak>0||p.draining)&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!floods.length&&!blocks.some(b=>b.alive&&(b.burn>0||b.corr>0))&&!targets.some(t=>t.alive&&(t.burn>0||t.corr>0))&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)){gameOver=true;const lv=currentLevel;setTimeout(()=>{if(currentLevel===lv&&gameOver)showToast(false)},300)}
  if(graphN!==shotLog.length){graphN=shotLog.length;drawGraph()}
  if(pendingCheck&&quiet()){pendingCheck=false;checkProgress()}
  updateHud();
@@ -2693,10 +2867,10 @@ function showToast(success){
  if(success)sfx.win();else sfx.lose();
  if(success)saveProg(currentLevel,r);
  $('toastTitle').textContent=success?(currentLevel===worldLast(currentLevel)?(isW2(currentLevel)?'🌿 ¡Bloque '+'ABCD'[blkOf(currentLevel)]+' superado!':'🏆 ¡Laboratorio completado!'):'🎉 ¡Experimento superado!'):'💪 ¡Casi lo tienes!';
- $('toastText').textContent=success?(L.fact+(currentLevel===worldLast(currentLevel)?(isW2(currentLevel)?' Has completado los niveles disponibles del Mundo 2. ¡Pronto habrá más!':' Has completado los '+(W2_START)+' niveles.'):'')):'Te has quedado sin proyectiles. Combina mejor los materiales: cristal sobre voladores, metal contra los soportes, fuego contra la madera.';
+ $('toastText').textContent=success?(L.fact+(currentLevel===worldLast(currentLevel)?(isW2(currentLevel)?' ¡Has completado el Mundo 2!':' Has completado los '+(W2_START)+' niveles.'):'')):'Te has quedado sin proyectiles. Combina mejor los materiales: cristal sobre voladores, metal contra los soportes, fuego contra la madera.';
  $('toastStars').textContent=success?starStr(r.st,r.gold)+' · '+r.score+' pts':'';
  buildReport(success,r);
- $('next').style.display=success&&currentLevel<worldLast(currentLevel)?'inline-block':'none';$('again').textContent=success?'Repetir':'Intentar de nuevo';$('toast').classList.add('show');
+ const fin=success&&currentLevel===W2_START+W2_COUNT-1;$('next').textContent=fin?'🏆 Ver final':'Siguiente nivel →';$('next').style.display=success&&(fin||currentLevel<worldLast(currentLevel))?'inline-block':'none';$('again').textContent=success?'Repetir':'Intentar de nuevo';$('toast').classList.add('show');
  updateToastLock();
 }
 function render(){
@@ -2704,7 +2878,7 @@ function render(){
 ctx.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);
  if(shake>0)ctx.translate((Math.random()-.5)*shake*2,(Math.random()-.5)*shake*2);
  drawBackground();if(W2THEME&&!labMode)drawW2Scene();drawFoundations();
- blocks.forEach(drawBlock);drawFans();drawRopes();drawLevers();targets.forEach(drawTarget);drawWater();drawFires();drawBurning();drawBars();
+ blocks.forEach(drawBlock);drawFans();drawRopes();drawLevers();drawMachines();targets.forEach(drawTarget);drawWater();drawFires();drawBurning();drawBars();
  particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/35);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
  drawShards();drawDrops();drawTrail();
  drawSling();drawCancelZone();
@@ -2806,7 +2980,17 @@ document.addEventListener('pointerdown',()=>{if(orientTried)return;orientTried=t
 },{once:true,capture:true});
 ammoSel.addEventListener('change',updateHud);
 $('reset').addEventListener('click',()=>{if(!paused)setupLevel(currentLevel)});
-$('next').addEventListener('click',()=>setupLevel(Math.min(worldLast(currentLevel),currentLevel+1)));
+$('next').addEventListener('click',()=>{if(currentLevel===W2_START+W2_COUNT-1&&won){openFinale();return}setupLevel(Math.min(worldLast(currentLevel),currentLevel+1))});
+const FIN_FACTS=['El sodio reacciona con el agua porque cede su electrón con muchísima facilidad: 2 Na + 2 H₂O → 2 NaOH + H₂↑. Es tan violento que el hidrógeno liberado puede arder y estallar.','El hielo flota porque, al congelarse, el agua forma una red hexagonal más espaciada: su densidad baja a unos 0,92 g/cm³.','La dinamita contiene nitroglicerina estabilizada: al detonar, un sólido se convierte en gas casi al instante y su volumen se multiplica por más de mil.','Una onda de choque viaja más rápido que el sonido, y cuanto más lejos va, más se reparte su energía: por eso el daño cae con la distancia.'];
+function openFinale(){
+ const pr=loadProg();let st=0,max=0,gold=0;for(let i=0;i<W2_COUNT;i++){const o=norm(pr[W2_START+i]);max+=3;if(o){st+=o.st;gold+=o.g||0}}
+ $('finStars').textContent='★ '+st+' / '+max+(gold?'  ·  ✦ '+gold:'');
+ $('finText').textContent='Has superado los '+W2_COUNT+' niveles del Mundo 2, de los lagos helados al corazón del reactor.';
+ $('finFact').textContent=FIN_FACTS[Math.floor(Math.random()*FIN_FACTS.length)];
+ $('toast').classList.remove('show');$('bossbar').hidden=true;$('finale').classList.add('show');sfx.win();
+}
+$('finAgain').addEventListener('click',()=>{$('finale').classList.remove('show');setupLevel(currentLevel)});
+$('finMenu').addEventListener('click',()=>{$('finale').classList.remove('show');$('toMenu').click()});
 $('again').addEventListener('click',()=>setupLevel(currentLevel));
 function refreshGuide(){const b=$('guideBtn');b.setAttribute('aria-pressed',windGuide?'true':'false');b.textContent=windGuide?'🧭 Guía con viento':'🧭 Guía sin viento';b.title='Guía de puntos de la trayectoria: pulsa para cambiar (tecla G)'}
 $('guideBtn').addEventListener('click',()=>{windGuide=!windGuide;try{localStorage.setItem('catapulta-caos-guia',windGuide?'1':'0')}catch(e){}refreshGuide();sfx.tick()});
@@ -2845,19 +3029,22 @@ const LEVELS=[
  {t:'Muelles y goma',c:'F = −k·x',d:'Un muelle devuelve la energía que se le comprime. Úsalo para rebotar sobre el muro.',diff:3,fact:'Ley de Hooke: la fuerza de un muelle es proporcional a su deformación, F = −k·x.'},
  {t:'Fortaleza helada',c:'H₂O (s) → H₂O (l)',d:'Piedra helada: el hielo la vuelve frágil. El alcohol derrite; el hielo congela.',diff:4,fact:'Un material enfriado se vuelve quebradizo y se rompe con menos energía.'},
  {t:'Torre de agua',c:'ρ = m / V',d:'Un depósito elevado sobre patas. Si cae, el agua arrastra todo lo que encuentra.',diff:4,fact:'Un cuerpo flota si su densidad es menor que la del agua (1 g/cm³).'},
- {t:'La presa',c:'p = ρ·g·h',d:'Una presa contiene un embalse sobre una aldea de madera. Rompe el muro y deja que el agua haga el resto.',diff:5,fact:'La presión del agua crece con la profundidad: p = ρ·g·h, por eso las presas son más gruesas abajo.'},
+ {t:'JEFE · Gólem de hielo',c:'H₂O (s) → H₂O (l)',d:'Un gólem de hielo se esconde en su cueva. El fuego derrite su armadura y lo debilita mucho.',diff:5,fact:'El hielo funde a 0 °C absorbiendo calor latente (334 J/g) sin subir de temperatura: por eso el fuego tarda en vencerlo.'},
  {t:'Ácido y hormigón',c:'CaCO₃ + 2 HCl → CaCl₂ + CO₂ + H₂O',d:'El hormigón armado aguanta casi todo. El ácido lo corroe poco a poco hasta soltarlo de su base.',diff:4,fact:'Los ácidos reaccionan con la caliza y los metales: la corrosión debilita la estructura con el tiempo.'},
  {t:'La cueva',c:'σ = F / A',d:'Un techo de hormigón cubre a los enemigos. Derriba un apoyo y el techo caerá sobre ellos.',diff:4,fact:'Un techo se sostiene porque sus apoyos reparten el peso: σ = F / A. Si uno falla, los demás no aguantan.'},
  {t:'Puente colgante',c:'T = m·g',d:'Una plataforma cuelga de dos cuerdas. Córtalas y caerá con todo lo que lleva encima.',diff:4,fact:'La tensión de una cuerda que sostiene un peso en reposo es igual al peso: T = m·g.'},
  {t:'Ventiladores',c:'F = ½·ρ·v²·A',d:'Las corrientes de aire desvían tus disparos y levantan los bloques ligeros. Elige proyectiles pesados.',diff:5,fact:'La fuerza del aire sobre un objeto crece con el cuadrado de la velocidad del viento.'},
- {t:'La chimenea',c:'ρ = m / V',d:'Una chimenea de piedra con tapa de espuma: la espuma amortigua los golpes, pero el ácido la deshace y el fuego la quema.',diff:5,fact:'La espuma tiene mucha menos densidad que la piedra y absorbe la energía de los impactos.'},
+ {t:'JEFE · Coloso de hormigón',c:'CaCO₃ + 2 HCl → CaCl₂ + CO₂ + H₂O',d:'El hormigón aguanta los golpes. Su punto débil es el ácido, que lo corroe poco a poco.',diff:5,fact:'El hormigón contiene carbonato cálcico, que el ácido clorhídrico disuelve liberando CO₂: por eso las lluvias ácidas dañan los edificios.'},
  {t:'Corrientes térmicas',c:'ρ_aire ↓ al calentarse',d:'El aire caliente de las chimeneas sube y arrastra tus disparos. Activa la guía con viento para ver cómo se curva la trayectoria.',diff:5,fact:'El aire caliente es menos denso y asciende: así funcionan las chimeneas y las corrientes térmicas.'},
  {t:'Globo de hidrógeno',c:'2 H₂ + O₂ → 2 H₂O',d:'El globo sube solo y explota al tocar fuego. Enciende la torre con alcohol y mándale el globo.',diff:5,fact:'El hidrógeno es el gas más ligero: sube en el aire y, al mezclarse con oxígeno y una llama, explota formando agua.'},
  {t:'Barriles explosivos',c:'C₈H₁₈ + 12,5 O₂ → 8 CO₂ + 9 H₂O',d:'Los barriles de combustible explotan si se rompen o si les toca el fuego, y arrastran a los vecinos en cadena.',diff:5,fact:'Una combustión libera la energía química de golpe: el calor de un barril que explota enciende al siguiente.'},
  {t:'Sodio y dinamita',c:'2 Na + 2 H₂O → 2 NaOH + H₂↑',d:'El sodio estalla al mojarse; la dinamita solo con fuego. Libera el agua sobre el sodio y prende la mecha.',diff:5,fact:'El sodio reacciona violentamente con el agua, liberando hidrógeno y calor. Por eso se guarda bajo aceite.'},
- {t:'Planta química',c:'ΔH < 0',d:'Barriles, sodio, un depósito y dinamita en una sola instalación. Provoca la reacción en cadena correcta.',diff:5,fact:'Una reacción exotérmica (ΔH < 0) libera calor al entorno, y ese calor puede desencadenar la siguiente reacción.'},
+ {t:'JEFE · El Reactor',c:'A + B → C + calor',d:'Una máquina indestructible: solo le afecta lo que entra por el orificio iluminado por el haz naranja. Mezclar materiales distintos reacciona mejor.',diff:5,fact:'Un reactor químico mezcla reactivos en una cámara controlada. Mezclar sustancias distintas puede provocar reacciones más intensas.'},
  {t:'La compuerta',c:'p = F / A',d:'Golpea la palanca para abrir la compuerta y soltar el agua. Los enemigos con sombrero amarillo huyen de la corriente.',diff:5,fact:'Una compuerta aguanta la presión del agua repartida sobre su superficie: p = F / A. Al abrirla, la energía potencial del agua se convierte en corriente.'},
- {t:'Marineros',c:'F_empuje = ρ·g·V',d:'Dos balsas flotan en un estanque. Si el agua se agita o el sodio la hace explotar, los marineros caerán.',diff:5,fact:'El empuje de Arquímedes sostiene las balsas: F = ρ·g·V sumergido. Si el agua reacciona, la balsa deja de ser un lugar seguro.'}
+ {t:'Marineros',c:'F_empuje = ρ·g·V',d:'Dos balsas flotan en un estanque. Si el agua se agita o el sodio la hace explotar, los marineros caerán.',diff:5,fact:'El empuje de Arquímedes sostiene las balsas: F = ρ·g·V sumergido. Si el agua reacciona, la balsa deja de ser un lugar seguro.'},
+ {t:'Torre de vapor',c:'Q = m·L',d:'El fuego derrite la torre de hielo y el vapor empuja a los enemigos. Usa la corriente para colocar el tiro.',diff:5,fact:'Al fundirse, el hielo absorbe calor latente Q = m·L; al hervir, el agua se expande y puede empujar con fuerza.'},
+ {t:'Laboratorio',c:'2 Na + 2 H₂O → 2 NaOH + H₂↑',d:'Abre la compuerta con la palanca y deja que el agua llegue al sodio y a los barriles.',diff:5,fact:'Un laboratorio guarda cada sustancia lejos de lo que reacciona con ella: el sodio nunca debe tocar el agua.'},
+ {t:'JEFE FINAL · Gran Reactor',c:'ΔG < 0',d:'El orificio ahora se desliza y una corriente desvía tus disparos. Mezcla materiales para sobrecargarlo.',diff:5,fact:'Una reacción es espontánea cuando la energía libre baja (ΔG < 0). El Gran Reactor busca ese estado… hasta que lo sobrecargas.'}
 ];
 for(let i=0;i<LEVELS.length;i++){setupLevel(i);LEVELS[i].tg=targets.length;LEVELS[i].am=ammoLeft();LEVELS[i].par=LEVELS[i].par||Math.max(2,Math.ceil(targets.length*.75))}
 const SAVE_KEY='catapulta-caos-progreso';
