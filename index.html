@@ -394,6 +394,7 @@
   #note.show{opacity:1;transform:translate(-50%,0)}
   @media (max-height:480px){.world{padding:10px 10px;width:min(190px,28vw)}.world .wi{font-size:1.8rem}.world b{font-size:1rem}.world small{font-size:.68rem}.worlds{margin:8px 0 10px;gap:10px}}
 #bossbar{position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;min-width:200px}
+#bossbar[hidden]{display:none}
 #bossbar span{font:800 12px system-ui,sans-serif;color:#fff;background:#17324dcc;padding:2px 10px;border-radius:10px;letter-spacing:.04em}
 #bossbar i{display:block;width:100%;height:9px;background:#17324d99;border-radius:6px;overflow:hidden;border:1.5px solid #17324d}
 #bossbar u{display:block;height:100%;background:linear-gradient(90deg,#ff5a4a,#ffb02e);width:100%;transition:width .3s}
@@ -944,7 +945,7 @@ function bossStep(t){
 }
 function updateBossBar(){
  const B=targets.find(t=>t.boss&&t.alive),bb=$('bossbar');if(!bb)return;
- bb.hidden=!B;if(B){$('bossname').textContent=B.bname;$('bossfill').style.width=Math.max(0,B.hp/B.maxhp*100).toFixed(1)+'%'}
+ bb.hidden=!B||$('menu').classList.contains('show')||$('finale').classList.contains('show');if(B){$('bossname').textContent=B.bname;$('bossfill').style.width=Math.max(0,B.hp/B.maxhp*100).toFixed(1)+'%'}
 }
 function drawMachines(){
  for(const m of machines){
