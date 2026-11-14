@@ -26,12 +26,12 @@
   body.theme-w2 .lvl:hover{background:#ffffff26}
   body.theme-w2 .menu::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle,#ffffff55 0 3px,transparent 4px),radial-gradient(circle,#c8ffd055 0 5px,transparent 6px),radial-gradient(circle,#ffffff33 0 2px,transparent 3px);background-size:140px 190px,230px 260px,90px 120px;background-position:0 0,40px 60px,20px 30px;animation:bub 16s linear infinite}
   @keyframes bub{to{background-position:0 -190px,40px -200px,20px -90px}}
-  body.theme-w3{--teal:#6a5af0;--paper:#12102e;--line:#8a7dff22;--ink:#e6e3ff}
+  body.theme-w3{--teal:#6a5af0;--line:#8a7dff22}
   body.theme-w3 .menu{background:radial-gradient(circle at 20% 15%,#6a5af099,transparent 45%),radial-gradient(circle at 85% 85%,#ff7ab855,transparent 42%),#0a0922ee}
   body.theme-w3 .mk,body.theme-w3 .formulas,body.theme-w3 .lvl .lc,body.theme-w3 .menu details.help summary{color:#c9c2ff}
-  body.theme-w3 .mp{color:#e3e0ff}body.theme-w3 .mi{color:#cfc9ff}
-  body.theme-w3 .lvl{background:#ffffff14;border-color:#c9c2ff33}body.theme-w3 .lvl:hover{background:#ffffff26}
-  body.theme-w3 .lvl .ld{color:#ddd9ff}body.theme-w3 .lvl .meta{color:#b8b0f0}
+  body.theme-w3 .mp{color:#f4f2ff}body.theme-w3 .mi{color:#e3e0ff}
+  body.theme-w3 .lvl{background:#0b0a26e6;border-color:#c9c2ff66;color:#fff}body.theme-w3 .lvl:hover{background:#1a1745f2}
+  body.theme-w3 .lvl b,body.theme-w3 .lvl .lt{color:#fff}body.theme-w3 .lvl .ld{color:#f0eeff}body.theme-w3 .lvl .meta{color:#dcd7ff}body.theme-w3 .lvl .lc{color:#ffd9a0}
   body.theme-w3 .menu::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(circle,#ffffffcc 0 1px,transparent 2px),radial-gradient(circle,#c9c2ff99 0 1.5px,transparent 2.5px),radial-gradient(circle,#ffffff66 0 1px,transparent 2px);background-size:130px 170px,210px 240px,70px 90px;background-position:0 0,40px 60px,20px 30px;animation:stars 40s linear infinite}
   @keyframes stars{to{background-position:0 -170px,40px -180px,20px -90px}}
   body.theme-w3 .menu>*{position:relative;z-index:1}
@@ -40,6 +40,17 @@
   #wipe.go{animation:wipe .95s ease-in-out}
   #wipe.w1{transform:translateX(-100%);background:radial-gradient(circle at 25% 30%,#ffffff33 0 6px,transparent 7px),radial-gradient(circle at 70% 65%,#ffffff2a 0 10px,transparent 11px),linear-gradient(90deg,#0b3a55,#2aa7c4);border-radius:0 12% 12% 0/50% 50% 50% 50%}
   #wipe.w1.go{animation:wipeX .95s ease-in-out}
+  /* Mundo 3: salto al hiperespacio (estrellas que se estiran desde el centro y destello) */
+  #warp{position:fixed;inset:0;z-index:50;pointer-events:none;opacity:0;overflow:hidden;background:radial-gradient(circle at 50% 50%,#fff 0,#c9bcff 5%,#3b2a9a 28%,#080522 68%,#02010d 100%)}
+  #warp::before{content:'';position:absolute;inset:-60%;background:repeating-conic-gradient(from 0deg at 50% 50%,#ffffffee 0 .45deg,transparent .45deg 3.7deg,#9fe8ffcc 3.7deg 4.05deg,transparent 4.05deg 8.3deg,#ffb8f0aa 8.3deg 8.6deg,transparent 8.6deg 13deg);-webkit-mask:radial-gradient(circle,transparent 4%,#000 26%,#000 62%,transparent 86%);mask:radial-gradient(circle,transparent 4%,#000 26%,#000 62%,transparent 86%);transform:scale(.12)}
+  #warp::after{content:'';position:absolute;left:50%;top:50%;width:40vmax;height:40vmax;margin:-20vmax 0 0 -20vmax;border-radius:50%;background:radial-gradient(circle,#fff 0,#fff8 25%,transparent 65%);opacity:0;transform:scale(.2)}
+  #warp.go{animation:warpIn 1.2s ease-in-out}
+  #warp.go::before{animation:warpStreaks 1.2s cubic-bezier(.45,0,.85,.35)}
+  #warp.go::after{animation:warpFlash 1.2s ease-in-out}
+  @keyframes warpIn{0%{opacity:0}30%{opacity:1}62%{opacity:1}100%{opacity:0}}
+  @keyframes warpStreaks{0%{transform:scale(.12) rotate(0)}60%{transform:scale(1.7) rotate(9deg)}100%{transform:scale(3.4) rotate(16deg)}}
+  @keyframes warpFlash{0%,45%{opacity:0;transform:scale(.2)}58%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2.4)}}
+  @media (prefers-reduced-motion:reduce){#warp.go::before,#warp.go::after{animation:none}#warp.go{animation:warpIn 1s ease-in-out}}
   @keyframes wipeX{0%{transform:translateX(-100%)}45%,55%{transform:translateX(0)}100%{transform:translateX(110%)}}
   @keyframes wipe{0%{transform:translateY(100%)}45%,55%{transform:translateY(0)}100%{transform:translateY(-110%)}}
   *{box-sizing:border-box}
@@ -414,6 +425,10 @@
    padding:12px 20px;border-radius:14px;font:700 .95rem system-ui,sans-serif;box-shadow:0 10px 26px #0006;transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}
   #note.show{opacity:1;transform:translate(-50%,0)}
   @media (max-height:480px){.world{padding:10px 10px;width:min(190px,28vw)}.world .wi{font-size:1.8rem}.world b{font-size:1rem}.world small{font-size:.68rem}.worlds{margin:8px 0 10px;gap:10px}}
+#perfBadge{position:fixed;bottom:6px;left:8px;z-index:19;background:#14532dcc;color:#d9ffe6;font:700 .68rem system-ui,sans-serif;padding:2px 8px;border-radius:10px;pointer-events:none}#perfBadge[hidden]{display:none}
+body.ahorro .menu::before,body.ahorro .menu::after{animation:none!important}
+body.ahorro #warp.go,body.ahorro #wipe.go{animation-duration:.45s!important}body.ahorro #warp::before,body.ahorro #warp::after{animation:none!important}
+#skipHint{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:20;background:#0d1b2acc;color:#fff;font:600 .8rem system-ui,sans-serif;padding:5px 12px;border-radius:14px;pointer-events:none}#skipHint[hidden]{display:none}
 #cheatBadge{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:20;background:#c4471bcc;color:#fff;font:700 .72rem system-ui,sans-serif;padding:3px 10px;border-radius:12px;pointer-events:none;letter-spacing:.03em}#cheatBadge[hidden]{display:none}
 #bossbar{position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;min-width:200px}
 #bossbar[hidden]{display:none}
@@ -426,7 +441,7 @@
 body.nuked #stage>*:not(canvas):not(#nukeEnd):not(#wipe){visibility:hidden;pointer-events:none}
 .nkburn{animation:nkburn .75s ease-in forwards;pointer-events:none}
 @keyframes nkburn{0%{filter:brightness(3.2) sepia(1) saturate(6)}35%{filter:brightness(1.2) sepia(1) saturate(4);transform:translateY(0)}65%{filter:brightness(.35) sepia(1) grayscale(.6);opacity:1}100%{filter:blur(6px) grayscale(1) brightness(.2);opacity:0;transform:translateY(26px) rotate(6deg);visibility:hidden}}
-body.nuked #note,body.nuked #bossbar,body.nuked #wipe{display:none}
+body.nuked #note,body.nuked #bossbar,body.nuked #wipe,body.nuked #warp{display:none}
 @keyframes ashes{0%{filter:none}25%{filter:brightness(2.4) sepia(1) saturate(4);transform:translateY(0) rotate(0)}60%{filter:brightness(.4) sepia(1) grayscale(.6);opacity:1}100%{filter:blur(10px) grayscale(1) brightness(.2);opacity:0;transform:translateY(30px) rotate(4deg);visibility:hidden}}
 @media (prefers-reduced-motion:reduce){body.nuked .nkburn{animation-duration:.1s}}
 #bossbar span{font:800 12px system-ui,sans-serif;color:#fff;background:#17324dcc;padding:2px 10px;border-radius:10px;letter-spacing:.04em}
@@ -512,6 +527,7 @@ body.nuked #note,body.nuked #bossbar,body.nuked #wipe{display:none}
       <div class="finfact"><b>💡 Dato curioso</b><span id="finFact"></span></div>
       <div class="rbtns"><button class="primary" id="finAgain">Repetir el jefe</button><button id="finMenu">☰ Niveles</button></div></div></div>
     <div id="wipe"></div>
+    <div id="warp"></div>
     <div class="menu show" id="menu">
       <section class="screen" id="screenTitle">
         <div class="mk">Física · Química · Demolición</div>
@@ -551,7 +567,7 @@ body.nuked #note,body.nuked #bossbar,body.nuked #wipe{display:none}
       </section>
     </div>
   </div>
-  <select id="ammo" hidden><option value="wood">wood</option><option value="stone">stone</option><option value="metal">metal</option><option value="rubber">rubber</option><option value="glass">glass</option><option value="red">red</option><option value="fire">fire</option><option value="ice">ice</option><option value="acid">acid</option><option value="sodio">sodio</option><option value="balloon">balloon</option><option value="balon">balon</option><option value="sonda">sonda</option><option value="bola">bola</option></select>
+  <select id="ammo" hidden><option value="wood">wood</option><option value="stone">stone</option><option value="metal">metal</option><option value="rubber">rubber</option><option value="glass">glass</option><option value="red">red</option><option value="fire">fire</option><option value="ice">ice</option><option value="acid">acid</option><option value="sodio">sodio</option><option value="balloon">balloon</option><option value="cohete">cohete</option><option value="fision">fision</option><option value="inversor">inversor</option><option value="agujero">agujero</option></select>
 </main>
 <div id="rotate" role="alert"><div class="ph" aria-hidden="true">📱</div><div>Gira el móvil en horizontal<br>para jugar</div></div>
 <script>
@@ -573,9 +589,10 @@ const materials={
  acid:{name:'Ácido',mass:.9,r:13,speed:1.05,color:'#9be84a',bounce:.05,damage:.2,tip:'el ácido corroe lo que toca: debilita piedra, metal y hormigón con el tiempo'},
  sodio:{name:'Sodio',mass:1.2,r:13,speed:1.0,color:'#d5dde4',bounce:.1,damage:.5,tip:'el sodio explota al tocar el agua'},
  balloon:{name:'Globo H₂',mass:.4,r:22,speed:.85,color:'#ff7ab8',bounce:.35,damage:.12,tip:'el hidrógeno sube y es arrastrado por el aire; explota si toca fuego'},
- bola:{name:'Bola de demolición',mass:6.2,r:17,speed:.68,color:'#4b5560',bounce:.05,damage:2.3,tip:'la bola de demolición es muy pesada: mucha energía cinética'},
- balon:{name:'Balón elástico',mass:.9,r:15,speed:1.02,color:'#ff7a45',bounce:.95,damage:.5,tip:'el balón elástico casi no pierde energía al rebotar'},
- sonda:{name:'Sonda iónica',mass:1.6,r:12,speed:1.0,color:'#8ad3ff',bounce:.3,damage:.9,tip:'la sonda iónica apenas nota la gravedad: vuela casi recta'}
+ cohete:{name:'Cohete propulsado',mass:1.5,r:12,speed:.95,color:'#e8e8f0',bounce:.2,damage:1.1,tip:'toca la pantalla en vuelo para encender el motor: acción y reacción'},
+ fision:{name:'Núcleo de fisión',mass:2.4,r:14,speed:.92,color:'#7be04a',bounce:.2,damage:1.2,tip:'toca la pantalla en vuelo: se divide en 3 fragmentos y se conserva la cantidad de movimiento'},
+ inversor:{name:'Inversor de gravedad',mass:1.3,r:13,speed:1.0,color:'#ff8a3a',bounce:.25,damage:.8,tip:'toca la pantalla en vuelo: crea un campo donde la gravedad se invierte'},
+ agujero:{name:'Mini agujero negro',mass:1.2,r:13,speed:.95,color:'#3a1a6a',bounce:.1,damage:.7,tip:'toca la pantalla en vuelo: se frena y atrae todo lo que tiene cerca'}
 };
 // strength = vida; resist = resistencia a impactos; shockResist = resistencia a ondas de choque; density = masa por área
 const blockMats={
@@ -594,7 +611,7 @@ const blockMats={
 };
 const WD={wood:.6,stone:1.4,glass:1.6,metal:3};   // densidad relativa al agua (flotan los de densidad < 1)
 const ground=500, sling={x:150,y:390}, GRAV0=.34;let gravity=GRAV0;
-let lvG=1,lvWalls=false,gSeq=null,gZones=[],gWells=[],gSpec=null,wallFx=[],lvNote='';   // Mundo 3: gravedad por nivel, bordes que rebotan, zonas y pozos
+let lvG=1,lvWalls=false,gSeq=null,gZones=[],gWells=[],gSpec=null,wallFx=[],lvNote='',fields=[],frags=[];   // Mundo 3: gravedad por nivel, bordes que rebotan, zonas y pozos
 const ANCHOR_BREAK=.55;      // el anclaje cede cuando la vida baja de este porcentaje
 const FALL_SAFE=3.5;        // velocidad de caída sin daño
 const COLLIDE_SAFE=2.2;     // velocidad de choque entre bloques sin daño
@@ -602,7 +619,7 @@ const SHOW_FULL_BARS=false; // true: barras de vida visibles también en bloques
 const WIND_BASE=.016, WIND_PER_LEVEL=.007; // viento máximo (aceleración para masa 1)
 const TARGET_HP=2;
 // Munición disponible por nivel y tipo (sube un valor para facilitar)
-const AMMO_ORDER=['wood','stone','metal','rubber','glass','red','fire','ice','acid','sodio','balloon','balon','sonda','bola'];
+const AMMO_ORDER=['wood','stone','metal','rubber','glass','red','fire','ice','acid','sodio','balloon','cohete','fision','inversor','agujero'];
 const AMMO_PER_LEVEL=[
  {wood:5,stone:4},
  {wood:3,stone:3,rubber:2},
@@ -700,29 +717,29 @@ NEAR_SHIFT[W2_START]=130;NEAR_SHIFT[W2_START+1]=120;NEAR_SHIFT[W2_START+2]=130;N
 for(let i=5;i<20;i++){AIR_TARGETS[W2_START+i]=[];NEAR_SHIFT[W2_START+i]=[120,110,110,110,100,110,120,130,120,120,105,120,120,100,120,130][i-5]}
 // ---- Mundo 3 (índices 40-59): sin viento; cada nivel define su gravedad, bordes, zonas y munición ----
 for(let i=0;i<W3_COUNT;i++){AIR_TARGETS[W3_START+i]=[];NEAR_SHIFT[W3_START+i]=[130,120,120,120,110,120,120,120,120,110,120,120,120,120,110,185,185,185,185,175][i]}
-UNLOCK[W3_START+5]=['balon'];UNLOCK[W3_START+10]=['sonda'];UNLOCK[W3_START+15]=['bola'];
+UNLOCK[W3_START+5]=['cohete'];UNLOCK[W3_START+8]=['fision'];UNLOCK[W3_START+11]=['inversor'];UNLOCK[W3_START+15]=['agujero'];
 AMMO_PER_LEVEL.length=W3_START;
 AMMO_PER_LEVEL.push(
- {wood:4,stone:3,rubber:1},                                   // W3·1 Marte
- {wood:4,stone:3,rubber:2},                                   // W3·2 Luna
+ {wood:3,stone:3,rubber:1},                                   // W3·1 Marte
+ {wood:3,stone:3,rubber:2},                                   // W3·2 Luna
  {wood:3,stone:3,metal:1,rubber:1},                           // W3·3 Mercurio
  {wood:3,stone:3,rubber:2},                                   // W3·4 Titán
- {wood:2,stone:3,metal:2,rubber:1},                           // W3·5 JEFE asteroide
- {wood:2,stone:2,rubber:1,balon:3},                           // W3·6 billar
- {wood:2,stone:3,metal:1,balon:2},                            // W3·7 Venus
- {wood:2,stone:2,rubber:2,balon:3},                           // W3·8 parachoques
- {wood:2,stone:3,metal:1,balon:2},                            // W3·9 equilibrio
- {wood:2,stone:3,metal:1,rubber:2,balon:4},                   // W3·10 JEFE satélite
- {wood:3,stone:3,rubber:1,balon:1,sonda:2},                   // W3·11 pulso gravitatorio
- {wood:3,stone:3,metal:1,balon:1,sonda:2},                    // W3·12 zona ingrávida
- {wood:3,stone:3,balon:2,sonda:2},                            // W3·13 pozo gravitatorio
- {wood:3,stone:3,metal:1,rubber:1,balon:1,sonda:2},           // W3·14 marea
- {wood:2,stone:3,metal:2,balon:2,sonda:3},                    // W3·15 JEFE singularidad
- {wood:2,stone:3,metal:1,sonda:1,bola:2},                     // W3·16 planeta pesado
- {wood:2,stone:3,metal:1,balon:1,sonda:2,bola:2},             // W3·17 Saturno
- {wood:2,stone:2,metal:1,balon:2,sonda:2,bola:2},             // W3·18 Neptuno
- {wood:2,stone:3,metal:1,balon:2,sonda:2,bola:2},             // W3·19 pozo oscuro
- {wood:2,stone:3,metal:2,rubber:1,balon:5,sonda:2,bola:3}     // W3·20 JEFE nave nodriza
+ {wood:1,stone:4,metal:2,rubber:1},                           // W3·5 JEFE asteroide
+ {wood:2,stone:2,rubber:1,cohete:3},                          // W3·6 billar
+ {wood:1,stone:3,metal:1,cohete:2},                           // W3·7 Venus
+ {wood:1,stone:2,rubber:2,cohete:3},                          // W3·8 parachoques
+ {wood:1,stone:2,metal:1,cohete:1,fision:3},                  // W3·9 equilibrio
+ {stone:4,metal:1,rubber:2,cohete:2,fision:2},                // W3·10 JEFE satélite
+ {wood:2,stone:3,rubber:1,cohete:2,fision:2},                 // W3·11 pulso gravitatorio
+ {wood:2,stone:3,metal:1,cohete:1,fision:2,inversor:2},       // W3·12 zona ingrávida
+ {wood:2,stone:3,cohete:2,fision:1,inversor:2},               // W3·13 pozo gravitatorio
+ {wood:2,stone:3,metal:1,rubber:1,fision:1,inversor:2},       // W3·14 marea
+ {wood:1,stone:3,metal:2,cohete:2,fision:2,inversor:1},       // W3·15 JEFE singularidad
+ {wood:1,stone:3,metal:1,fision:2,inversor:1,agujero:2},      // W3·16 planeta pesado
+ {wood:1,stone:3,metal:1,cohete:1,inversor:1,agujero:2},      // W3·17 Saturno
+ {wood:1,stone:2,metal:1,fision:2,inversor:1,agujero:2},      // W3·18 Neptuno
+ {wood:1,stone:3,metal:1,cohete:2,inversor:1,agujero:2},      // W3·19 pozo oscuro
+ {stone:4,metal:2,rubber:1,cohete:3,fision:2,inversor:1,agujero:2} // W3·20 JEFE nave nodriza
 );
 AIR_TARGETS[LAB]=[[430,210,20,14],[560,290,0,12]];NEAR_SHIFT[LAB]=0;
 let tutStep=-1, hintT=null, sheetKey='', paused=true, started=false, wind=0, windLines=[], shards=[], pendingWind=false, ammo={}, ammoBase={}, fires=[], drops=[], fireT=0;
@@ -1143,6 +1160,8 @@ const CANCEL_MOUSE=22, CANCEL_TOUCH=44;   // radio (unidades del mundo) alrededo
 let cancelR=CANCEL_MOUSE;
 const reduceMQ=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
 let perfLow=false;try{perfLow=localStorage.getItem('catapulta-caos-ahorro')==='1'}catch(e){}
+{const sb=Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype,'shadowBlur');if(sb)Object.defineProperty(ctx,'shadowBlur',{get(){return sb.get.call(ctx)},set(v){sb.set.call(ctx,perfLow?0:v)}})}   // en modo ahorro no se dibujan resplandores
+let perfSkip=0;
 let perfAcc=0,perfN=0,perfBad=0,perfAuto=false;
 let LW=1000,LH=560,OX=0,OY=0,SC=1,wasCancel=false,firstExit=false,aimId=null;
 // Cámara: en pantallas táctiles se acerca a las estructuras cuando no ocupan la mayor parte de la pantalla.
@@ -1351,6 +1370,7 @@ const sfx=(()=>{
   rotor(){if(!can('rot',110))return;noise(.06,{type:'lowpass',freq:200,vol:.07})},
   whoosh(){if(!can('wsh',150))return;noise(.4,{type:'bandpass',freq:700,to:2600,q:.8,vol:.12,attack:.02})},
   ufo(){if(!can('ufo',500))return;tone(420,.4,{type:'sine',to:760,vol:.07});tone(760,.4,{type:'sine',to:420,vol:.07,delay:.4})},
+  warp(){tone(80,1,{type:'sawtooth',to:1000,vol:.07,attack:.6});noise(1,{type:'bandpass',freq:300,to:5200,q:.7,vol:.12,attack:.6});tone(1400,.5,{type:'sine',to:180,vol:.07,delay:.65})},
   ping(v){if(!can('png',70))return;const k=Math.min(1,(v||4)/10);tone(760+k*300,.28,{type:'sine',to:420,vol:.08+.1*k});tone(1480,.16,{type:'triangle',vol:.04+.05*k,delay:.01})},
   siren(){if(!can('sir',700))return;tone(520,.65,{type:'sawtooth',to:880,vol:.06});tone(880,.65,{type:'sawtooth',to:520,vol:.06,delay:.65})},
   beep(){if(!can('bp',300))return;tone(1400,.12,{type:'square',vol:.09})},
@@ -1372,7 +1392,7 @@ const sfx=(()=>{
 function resetStats(){stats={maxEc:0,maxEcM:0,maxEcV:0,maxEcK:'wood',maxV:0,causes:{},blocks:0,shocks:0,retries:0}}
 function projMass(k){return labMode&&labMass>0?labMass:materials[k].mass}
 function progKey(){return targets.filter(t=>t.alive).length*1000+integrity()}
-function quiet(){return !projectile&&!shards.length&&!shockwaves.length&&!fires.length&&!drops.length&&!floods.length&&!blocks.some(b=>b.alive&&(b.burn>0||b.corr>0))&&!targets.some(t=>t.alive&&(t.burn>0||t.corr>0))&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)}
+function quiet(){return !projectile&&!shards.length&&!frags.length&&!shockwaves.length&&!fires.length&&!drops.length&&!floods.length&&!blocks.some(b=>b.alive&&(b.burn>0||b.corr>0))&&!targets.some(t=>t.alive&&(t.burn>0||t.corr>0))&&targets.every(t=>!t.alive||t.air||Math.abs(t.vx)+Math.abs(t.vy)<.3)&&blocks.every(b=>!b.alive||b.anchored||Math.abs(b.vx)+Math.abs(b.vy)+Math.abs(b.av)*20<.15)}
 function nudge(msg){const el=$('matHint');if(!el)return;el.innerHTML='<b>💡 Consejo</b>'+msg;el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>el.classList.remove('show'),5200)}
 // Tras cada disparo: si no ha cambiado nada (objetivos ni estructura) se cuenta como disparo sin efecto
 function checkProgress(){
@@ -1398,7 +1418,7 @@ function undoShot(){
  projectile=null;shards=[];drops=[];particles=[];floaters=[];shockwaves=[];trail=[];shotLog=[];graphN=-1;
  pendingWind=false;pendingCheck=false;won=false;gameOver=false;dragging=false;dragPos=null;shake=0;
  $('toast').classList.remove('show');$('report').hidden=true;
- applyLevelGravity();prevKey=progKey();sfx.tick();updateHud();drawGraph();
+ fields=[];frags=[];applyLevelGravity();prevKey=progKey();sfx.tick();updateHud();drawGraph();
 }
 // Gráfica simplificada: solo Ec (naranja) y Ep (azul) a lo largo del disparo
 function drawGraph(){
@@ -1482,94 +1502,98 @@ function target(x,y){targets.push({x,y,r:14,alive:true,vx:0,vy:0,hp:TARGET_HP,ma
 function airTarget(x,y,ax=0,ay=12){targets.push({x,y,bx:x,by:y,ax,ay,ph:Math.random()*6.28,age:0,r:14,alive:true,vx:0,vy:0,hp:TARGET_HP,maxhp:TARGET_HP,cd:0,flash:0,air:true,fly:true,netted:0,burn:0});}
 
 function buildW3(k){
- // Casita: dos columnas, una viga y un enemigo encima
- const hs=(x,h,m1,m2,y2)=>{block(x,ground-h,22,h,m1);block(x+66,ground-h,22,h,m1);beam(x+44,ground-h-18,106,18,m2);target(x+44,ground-h-35)};
+ // Casita: dos columnas y una viga. Enemigo encima y otro dentro (más difícil de alcanzar)
+ const col=(x,h,m,w)=>block(x,ground-h,w||22,h,m);
+ const hs=(x,h,m1,m2,inner)=>{col(x,h,m1);col(x+66,h,m1);beam(x+44,ground-h-18,106,18,m2);target(x+44,ground-h-35);if(inner!==false)target(x+44,ground-20)};
+ // Casa de dos plantas: enemigo arriba, en la planta alta y abajo
+ const hs2=(x,h1,h2,m1,m2,m3)=>{m3=m3||m1;col(x,h1,m1);col(x+66,h1,m1);beam(x+44,ground-h1-18,106,18,m2);block(x+4,ground-h1-18-h2,20,h2,m3);block(x+62,ground-h1-18-h2,20,h2,m3);beam(x+44,ground-h1-18-h2-16,100,16,m2);target(x+44,ground-h1-18-h2-33);target(x+44,ground-h1-32);target(x+44,ground-20)};
  const wall=(x,h,w,m)=>block(x,ground-h,w||30,h,m||'stone');
  if(k===0){
   // 1 · Marte: g = 3,7 m/s². Sin bordes: solo hay que dosificar la fuerza
   lvG=.38;lvNote='En Marte g = 3,7 m/s²: todo cae más despacio y tus disparos llegan más lejos. Tira con menos fuerza.';
-  hs(520,70,'wood','wood');hs(700,95,'wood','stone');target(640,ground-22);
+  hs(520,70,'wood','wood');hs(690,95,'wood','stone');
  } else if(k===1){
   // 2 · La Luna: g = 1,6 m/s². Los bordes de la pantalla rebotan los disparos
   lvG=.165;lvWalls=true;lvNote='En la Luna g = 1,6 m/s². Los bordes de la pantalla rebotan los disparos: un tiro largo puede volver.';
-  hs(540,80,'wood','wood');hs(720,110,'stone','wood');target(640,ground-22);
+  hs(520,70,'wood','wood');hs(700,100,'stone','wood');
  } else if(k===2){
   // 3 · Mercurio: alcance R = v²·sen2θ / g
   lvG=.38;lvWalls=true;lvNote='Alcance R = v²·sen(2θ)/g: con g baja, el ángulo de 45° llega muy lejos. Prueba ángulos más cerrados.';
-  hs(520,60,'wood','wood');hs(690,100,'glass','wood');hs(850,70,'stone','stone');target(780,ground-22);
+  hs(500,60,'wood','wood');hs(650,100,'glass','wood');hs(800,70,'stone','stone',false);
  } else if(k===3){
-  // 4 · Titán: muro de piedra y enemigos detrás
-  lvG=.14;lvWalls=true;lvNote='Hay enemigos tras el muro. Con g tan baja el tiro describe una parábola muy abierta: sube alto y deja que caiga.';
-  wall(540,170,30,'stone');hs(630,70,'wood','wood');target(800,ground-22);target(860,ground-22);
+  // 4 · Titán: dos muros y una casa de dos plantas detrás
+  lvG=.14;lvWalls=true;lvNote='Dos muros protegen a los enemigos. Con g tan baja el tiro describe una parábola muy abierta: sube alto y deja que caiga.';
+  wall(510,190,30,'stone');wall(585,120,26,'stone');hs(660,70,'wood','stone');target(860,ground-22);
  } else if(k===4){
   // 5 · JEFE: asteroide. Los golpes ligeros apenas le hacen daño
   lvG=.2;lvWalls=true;lvNote='Un asteroide muy duro: los golpes ligeros apenas le dañan. Cuanta más energía cinética (½·m·v²), más daño.';
-  block(650,ground-100,34,100,'stone');block(760,ground-100,34,100,'stone');beam(722,ground-116,190,16,'stone');
-  boss(722,ground-150,'asteroide',10,34);target(570,ground-22);target(870,ground-22);
+  hs(520,80,'wood','wood');block(690,ground-110,34,110,'stone');block(790,ground-110,34,110,'stone');beam(757,ground-126,190,16,'stone');
+  boss(757,ground-160,'asteroide',10,34);target(880,ground-22);
  } else if(k===5){
-  // 6 · Billar: el balón rebota en el techo y en los bordes
-  lvG=1;lvWalls=true;lvNote='Balón elástico: rebota casi sin perder energía. Úsalo contra el techo y el borde derecho para llegar por detrás del muro.';
-  wall(520,210,30,'stone');hs(610,75,'wood','wood');target(790,ground-22);
+  // 6 · Billar: cohete propulsado
+  lvG=1;lvWalls=true;lvNote='Cohete propulsado: toca la pantalla en vuelo para encender el motor (acción y reacción) y llegar por detrás del muro.';
+  wall(500,230,30,'stone');hs(590,80,'wood','wood');hs(740,110,'stone','wood');
  } else if(k===6){
-  // 7 · Venus: refugio de hormigón
-  lvG=.9;lvWalls=true;lvNote='Ángulo de incidencia = ángulo de reflexión: el borde devuelve el disparo con el mismo ángulo.';
-  block(540,ground-70,22,70,'wood');block(690,ground-70,26,70,'concrete');beam(615,ground-90,200,20,'concrete');target(615,ground-22);
-  hs(780,70,'wood','wood');
+  // 7 · Venus: refugio de hormigón sostenido por un poste de madera
+  lvG=.9;lvWalls=true;lvNote='El techo de hormigón resiste, pero el poste de madera no: si cae, el techo aplasta a los enemigos.';
+  block(540,ground-70,22,70,'wood');block(690,ground-70,26,70,'concrete');beam(615,ground-90,200,20,'concrete');target(590,ground-22);target(650,ground-22);
+  hs(790,70,'wood','wood');
  } else if(k===7){
   // 8 · Parachoques: muelles y gomas devuelven el disparo
   lvG=1;lvWalls=true;lvNote='Los bloques de muelle rebotan el disparo (conservan la energía). Úsalos como parachoques.';
-  block(520,ground-90,22,90,'spring');hs(580,60,'wood','wood');block(740,ground-110,22,110,'spring');hs(790,80,'stone','wood');
+  block(500,ground-100,22,100,'spring');hs2(560,60,50,'wood','wood','wood');block(740,ground-120,22,120,'spring');hs(790,80,'stone','wood');
  } else if(k===8){
-  // 9 · Equilibrio: torres altas y esbeltas
-  lvG=1;lvWalls=true;lvNote='Σ M = 0: una torre cae cuando su centro de masas sale de la base. Golpea cerca de la base.';
-  block(540,ground-190,20,190,'wood');beam(550,ground-208,120,18,'stone');target(550,ground-226);
-  block(680,ground-150,20,150,'wood');block(740,ground-150,20,150,'wood');beam(710,ground-168,120,18,'wood');target(710,ground-186);target(630,ground-22);
+  // 9 · Equilibrio: torres altas y esbeltas. Núcleo de fisión
+  lvG=1;lvWalls=true;lvNote='Núcleo de fisión: toca en vuelo y se divide en tres (se conserva p = m·v). Una torre cae si su centro de masas sale de la base.';
+  block(530,ground-190,20,190,'wood');beam(540,ground-208,110,18,'stone');target(540,ground-226);
+  block(650,ground-150,20,150,'wood');block(710,ground-150,20,150,'wood');beam(680,ground-168,110,18,'wood');target(680,ground-186);target(680,ground-20);
+  block(810,ground-110,20,110,'wood');beam(820,ground-128,100,18,'wood');target(820,ground-146);
  } else if(k===9){
   // 10 · JEFE: satélite espía con escudo de energía
-  lvG=.8;lvWalls=true;lvNote='El escudo solo cede ante un disparo que haya rebotado antes en un borde. Usa el balón elástico.';
-  wall(600,200,26,'concrete');boss(770,ground-200,'satelite',4.5,36);block(745,ground-150,50,150,'stone');
-  target(560,ground-22);target(880,ground-22);
+  lvG=.8;lvWalls=true;lvNote='El escudo solo cede ante un disparo que haya rebotado antes en un borde (o ante un derrumbe).';
+  wall(600,200,26,'concrete');boss(770,ground-200,'satelite',5,36);block(745,ground-150,50,150,'stone');
+  target(540,ground-22);target(860,ground-22);target(920,ground-22);
  } else if(k===10){
   // 11 · Pulso gravitatorio: g cambia en cada disparo
-  gSeq=[1,.45];lvWalls=true;lvNote='La gravedad cambia con cada disparo (mira g arriba, y entre paréntesis la siguiente). Sonda iónica: casi no nota la gravedad.';
-  hs(540,70,'wood','wood');hs(720,100,'stone','wood');target(640,ground-22);
+  gSeq=[1,.45];lvWalls=true;lvNote='La gravedad cambia con cada disparo (mira g arriba, y entre paréntesis la siguiente).';
+  hs2(540,60,60,'wood','stone','wood');hs(720,100,'stone','wood');
  } else if(k===11){
-  // 12 · Zona ingrávida
-  lvG=1;lvWalls=true;gSpec={zones:[{a:.2,b:.55,g:.15}]};lvNote='En la zona azul la gravedad es solo el 15 %: el disparo flota y casi no cae. Sale y vuelve a caer con normalidad.';
-  hs(560,80,'wood','stone');hs(760,100,'wood','wood');target(700,ground-22);
+  // 12 · Zona ingrávida: inversor de gravedad
+  lvG=1;lvWalls=true;gSpec={zones:[{a:.2,b:.55,g:.15}]};lvNote='Inversor de gravedad: toca en vuelo y crea un campo donde los bloques sueltos «caen» hacia arriba. En la zona azul g es solo el 15 %.';
+  hs2(560,70,50,'wood','stone','wood');hs(760,100,'wood','wood');
  } else if(k===12){
   // 13 · Pozo de gravedad
-  lvG=1;lvWalls=true;gSpec={zones:[{a:.25,b:.55,g:3}]};lvNote='En la zona naranja la gravedad se triplica: el disparo se hunde. Dispara por encima o usa la sonda.';
-  hs(540,110,'wood','wood');hs(740,130,'stone','wood');target(660,ground-22);
+  lvG=1;lvWalls=true;gSpec={zones:[{a:.25,b:.55,g:3}]};lvNote='En la zona naranja la gravedad se triplica: el disparo se hunde. Dispara por encima o enciende el cohete.';
+  hs2(540,100,60,'wood','wood','wood');hs(750,130,'stone','wood');
  } else if(k===13){
   // 14 · Marea gravitatoria
   gSeq=[.5,1,1.6];lvWalls=true;gSpec={zones:[{a:.35,b:.6,g:.3}]};lvNote='g cambia en cada disparo y hay una zona ingrávida. Apunta con cabeza.';
-  hs(540,90,'wood','stone');hs(720,70,'glass','wood');hs(880,100,'wood','wood');target(800,ground-22);
+  hs(530,90,'wood','stone');hs2(690,60,50,'glass','wood','glass');hs(860,100,'wood','wood');
  } else if(k===14){
   // 15 · JEFE: la singularidad atrae los disparos
   gSeq=[1,.7];lvWalls=true;gSpec={wells:[{boss:1,r:200,k:.06}]};lvNote='La singularidad atrae los disparos (F = G·m₁·m₂/r²). Aprovecha su atracción para curvar el tiro.';
-  block(735,ground-110,50,110,'stone');boss(760,ground-146,'singular',14,36);target(600,ground-22);target(900,ground-22);
+  hs(520,90,'stone','wood');block(735,ground-110,50,110,'stone');boss(760,ground-146,'singular',12,36);target(900,ground-22);
  } else if(k===15){
-  // 16 · Planeta pesado: g mayor, bola de demolición
-  lvG=1.15;lvWalls=true;lvNote='Aquí g = 11,3 m/s²: los disparos caen antes. Bola de demolición: 6,2 kg de energía cinética.';
-  hs(540,100,'stone','stone');hs(700,120,'stone','wood');target(630,ground-22);
+  // 16 · Planeta pesado: g mayor. Mini agujero negro
+  lvG=1.15;lvWalls=true;lvNote='Aquí g = 11,3 m/s². Mini agujero negro: toca en vuelo y atraerá bloques y enemigos hacia su centro.';
+  hs2(520,80,60,'stone','stone','wood');hs(700,120,'stone','wood');
  } else if(k===16){
   // 17 · Saturno: pirámide de cajas
   lvG=1.06;lvWalls=true;lvNote='Una pirámide: golpea la base y la energía cinética hará el resto.';
-  block(560,ground-40,60,40,'wood');block(620,ground-40,60,40,'wood');block(680,ground-40,60,40,'wood');block(590,ground-80,60,40,'wood');block(650,ground-80,60,40,'wood');block(620,ground-120,60,40,'stone');target(650,ground-142);
-  hs(780,100,'stone','wood');
+  block(540,ground-40,60,40,'wood');block(600,ground-40,60,40,'wood');block(660,ground-40,60,40,'wood');block(570,ground-80,60,40,'wood');block(630,ground-80,60,40,'wood');block(600,ground-120,60,40,'stone');target(630,ground-142);target(630,ground-20);
+  hs2(780,70,50,'stone','wood','stone');
  } else if(k===17){
   // 18 · Neptuno: g variable
-  gSeq=[1.1,.6,1.3];lvWalls=true;lvNote='Tres gravedades que se repiten. Con g alta usa la sonda; con g baja, tiro cerrado.';
-  hs(530,90,'wood','stone');hs(690,110,'stone','stone');hs(850,80,'wood','wood');target(780,ground-22);
+  gSeq=[1.1,.6,1.3];lvWalls=true;lvNote='Tres gravedades que se repiten. Con g alta usa el cohete; con g baja, tiro cerrado.';
+  hs(520,90,'wood','stone');hs2(670,70,50,'stone','stone','wood');hs(840,80,'wood','wood');
  } else if(k===18){
   // 19 · Pozo oscuro: un pozo atrae el tiro
   lvG=1;lvWalls=true;gSpec={wells:[{t:1,r:170,k:.05}]};lvNote='Un pozo gravitatorio atrae tus disparos hacia su centro. Úsalo para curvar el tiro.';
-  hs(540,100,'wood','stone');hs(720,120,'stone','wood');target(630,ground-22);target(840,ground-22);
+  hs(520,100,'wood','stone');hs2(690,70,50,'stone','wood','stone');target(860,ground-22);
  } else if(k===19){
   // 20 · JEFE FINAL: nave nodriza
   gSeq=[1,.6,1.3];lvWalls=true;lvNote='La nave nodriza tiene escudo: solo la daña un disparo que haya rebotado en un borde. Aprovecha cada g.';
-  hs(530,80,'stone','wood');wall(660,170,26,'concrete');boss(790,ground-210,'nave',7,38);block(765,ground-150,50,150,'stone');target(900,ground-22);
+  hs2(520,80,50,'stone','wood','stone');wall(660,170,26,'concrete');boss(800,ground-210,'nave',8,38);block(775,ground-150,50,150,'stone');target(910,ground-22);
  }
 }
 function buildW2(k){
@@ -1705,7 +1729,7 @@ function buildW2(k){
  }
 }
 function setupLevel(n){{const f=document.getElementById('finale');if(f)f.classList.remove('show')}ufoReset();apacheReset();herd=[];stampedeCheat=false;nuke=null;nukeGhost=null;nukeCheat=false;
- currentLevel=n;labMode=(n===LAB);applyLevelTheme(n);lvG=1;lvWalls=false;gSeq=null;gZones=[];gWells=[];gSpec=null;wallFx=[];lvNote='';gravity=GRAV0;lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];pools=[];floods=[];ropes=[];fans=[];levers=[];machines=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];blasts=[];flashA=0;pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});ammoBase=Object.assign({},ammo);pickAmmo();
+ currentLevel=n;labMode=(n===LAB);applyLevelTheme(n);lvG=1;lvWalls=false;gSeq=null;gZones=[];gWells=[];gSpec=null;wallFx=[];fields=[];frags=[];lvNote='';gravity=GRAV0;lastSnap=null;shotLog=[];graphN=-1;idle=0;pendingCheck=false;$('report').hidden=true;$('reset').classList.remove('primary'); blocks=[];pools=[];floods=[];ropes=[];fans=[];levers=[];machines=[];arbs=new Map();targets=[];particles=[];shards=[];fires=[];drops=[];blasts=[];flashA=0;pendingWind=false;floaters=[];shockwaves=[];projectile=null;dragging=false;dragPos=null;trail=[];shots=0;won=false;gameOver=false;shake=0;sling.x=150;sling.y=390;newWind();initWindLines();ammo={};resetStats();unlockedAt(n).forEach(k=>{ammo[k]=labMode?99:(AMMO_PER_LEVEL[n][k]||0)});ammoBase=Object.assign({},ammo);pickAmmo();
  $('toast').classList.remove('show');if(typeof LEVELS!=='undefined'&&LEVELS[n])$('lvTitle').textContent=(isW3(n)?'🪐 β ':isW2(n)?'🌿 ':'🧪 ')+LVN(n)+' · '+LEVELS[n].t;if(n===LAB)$('lvTitle').textContent='🔬 Laboratorio libre';
  if(n===0){
   block(600,ground-55,22,55,'wood');block(660,ground-55,22,55,'wood');beam(630,ground-116,105,18,'wood');
@@ -1920,9 +1944,10 @@ const MATINFO={
  ice:{hint:'Congela el bloque que toca: lo vuelve frágil. Apaga el fuego.',fx:[['ok','El bloque helado pierde la mitad de su resistencia.'],['ok','Apaga las llamas y los bloques que arden.'],['ok','El fuego descongela lo que está helado.'],['ko','Por sí solo hace poco daño.']],sym:'H₂O (s)',chip:'H₂O ❄',sub:'hielo',dens:'0,92',info:'Hielo: al enfriarse, los materiales se vuelven quebradizos. Densidad 0,92 g/cm³: flota en el agua.'},
  acid:{hint:'Corroe lo que toca: debilita piedra, metal y hormigón con el tiempo.',fx:[['ok','El bloque corroído pierde vida poco a poco y puede soltarse de su base.'],['ok','Disuelve la espuma y corta las cuerdas.'],['ok','Daña a los objetivos que toca.'],['ko','El cristal no reacciona; el agua la diluye.']],sym:'HCl (aq)',chip:'HCl',sub:'ácido clorhídrico',dens:'1,18',info:'Ácido clorhídrico: CaCO₃ + 2 HCl → CaCl₂ + CO₂ + H₂O. Ataca la caliza y los metales, no el vidrio.'},
  sodio:{hint:'Explota al tocar el agua: lánzalo a un depósito, una inundación o un bloque mojado.',fx:[['ok','Al contacto con el agua: 2 Na + 2 H₂O → 2 NaOH + H₂↑, con fuego y onda de choque.'],['ok','Sirve para detonar un depósito lleno desde lejos.'],['ok','Los enemigos en el agua también saltan por los aires.'],['ko','En seco es solo una bola blanda y poco dañina.']],sym:'Na (s)',chip:'Na',sub:'sodio metálico',dens:'0,97',info:'El sodio flota y reacciona violentamente con el agua, liberando hidrógeno y calor: 2 Na + 2 H₂O → 2 NaOH + H₂↑.'},
- bola:{hint:'Muy pesada: mucha energía, poco alcance.',fx:[['ok','6,2 kg: Ec = ½·m·v² enorme al impactar.'],['ok','Derriba piedra y hormigón con facilidad.'],['ko','Sale lenta y cae pronto.'],['ko','Casi no rebota en el suelo ni en los bordes.']],sym:'Fe',chip:'m = 6,2 kg',sub:'acero',dens:'7,8',info:'Una bola de acero macizo. Con la misma velocidad, más masa significa más energía cinética (Ec = ½·m·v²) y más cantidad de movimiento (p = m·v).'},
- balon:{hint:'Rebota casi sin perder energía: úsalo con los bordes.',fx:[['ok','Coeficiente de restitución e ≈ 0,95.'],['ok','Rebota en los bordes y llega por detrás de los muros.'],['ko','Ligero: poco daño directo.'],['ko','Rueda lejos si toca el suelo.']],sym:'e≈0,95',chip:'e ≈ 0,95',sub:'elástico',dens:'0,1',info:'Un cuerpo muy elástico conserva casi toda su energía en cada choque: el coeficiente de restitución e = v después / v antes vale casi 1.'},
- sonda:{hint:'Casi no le afecta la gravedad: vuela recta.',fx:[['ok','Solo siente el 35 % de la gravedad.'],['ok','Perfecta en planetas pesados y zonas de gravedad alta.'],['ko','Cuesta calcular dónde caerá.'],['ko','Poco daño por masa (1,6 kg).']],sym:'Xe⁺',chip:'35 % de g',sub:'propulsión iónica',dens:'—',info:'Una sonda con motor iónico compensa buena parte de la gravedad con su empuje: su trayectoria es mucho más recta que la de una piedra.'},
+ cohete:{hint:'Toca en vuelo para encender el motor.',fx:[['ok','Empuje extra en la dirección del vuelo (3.ª ley de Newton).'],['ok','Atraviesa zonas de gravedad alta.'],['ko','El motor dura poco más de un segundo.'],['ko','Sin tocar, es un proyectil ligero.']],sym:'F = m·a',chip:'toca: motor',sub:'propulsión',dens:'—',info:'Un cohete expulsa gases hacia atrás y estos lo empujan hacia delante con una fuerza igual y opuesta (acción y reacción).'},
+ fision:{hint:'Toca en vuelo: se divide en 3.',fx:[['ok','Se reparte la cantidad de movimiento p = m·v.'],['ok','Cubre una zona más ancha.'],['ko','Cada fragmento tiene menos masa y menos daño.'],['ko','Hay que acertar el momento de dividirlo.']],sym:'U-235',chip:'toca: dividir',sub:'fisión',dens:'—',info:'Al dividirse, la cantidad de movimiento total se conserva: tres fragmentos con un tercio de la masa cada uno se reparten la velocidad.'},
+ inversor:{hint:'Toca en vuelo: invierte la gravedad en una zona.',fx:[['ok','Levanta bloques y enemigos sueltos.'],['ok','Desmonta estructuras por abajo.'],['ko','No hace daño por sí solo.'],['ko','Dura unos 2 segundos.']],sym:'−g',chip:'toca: g invertida',sub:'campo gravitatorio',dens:'—',info:'En el campo, la aceleración de la gravedad apunta hacia arriba: los cuerpos sueltos «caen» hacia arriba y después vuelven a caer.'},
+ agujero:{hint:'Toca en vuelo: atrae todo lo cercano.',fx:[['ok','Arrastra bloques y enemigos hacia su centro.'],['ok','Los choques entre bloques causan daño.'],['ko','Se detiene donde lo actives.'],['ko','Dura unos 3 segundos.']],sym:'F = G·m₁m₂/r²',chip:'toca: atraer',sub:'gravedad extrema',dens:'∞',info:'Un objeto muy masivo atrae a todo lo que tiene cerca con una fuerza que crece al acercarse (ley de gravitación universal).'},
  balloon:{hint:'Sube solo y lo arrastra el aire. Explota si toca fuego.',fx:[['ok','Si toca una llama o un bloque ardiendo explota (2 H₂ + O₂ → 2 H₂O) con onda de choque.'],['ok','Las corrientes de aire lo desvían mucho: usa la guía con viento.'],['ko','Si toca un bloque sin fuego se pincha y apenas hace daño.']],sym:'H₂',chip:'H₂ 🎈',sub:'hidrógeno',dens:'0,00009',info:'Hidrógeno: el gas más ligero (0,09 g/L frente a 1,2 g/L del aire), por eso flota. Con oxígeno y una llama reacciona: 2 H₂ + O₂ → 2 H₂O.'}
 };
 let chipEls={};
@@ -2000,13 +2025,13 @@ let bgCache=null,bgKey=-1;
  const ox=((sling.x%20)+20)%20,oM=((sling.x%100)+100)%100,xs=ox+Math.floor((X0-ox)/20)*20,xM=oM+Math.floor((X0-oM)/100)*100;
  c.lineWidth=1;c.strokeStyle='rgba(160,150,255,.09)';c.beginPath();for(let x=xs;x<=X1;x+=20){c.moveTo(x+.5,Y0);c.lineTo(x+.5,ground)}for(let y=ground;y>=Y0;y-=20){c.moveTo(X0,y+.5);c.lineTo(X1,y+.5)}c.stroke();
  c.strokeStyle='rgba(160,150,255,.22)';c.beginPath();for(let x=xM;x<=X1;x+=100){c.moveTo(x+.5,Y0);c.lineTo(x+.5,ground)}for(let y=ground;y>=Y0;y-=100){c.moveTo(X0,y+.5);c.lineTo(X1,y+.5)}c.stroke();
- c.fillStyle='rgba(200,194,255,.6)';c.font='700 14px ui-monospace,Menlo,Consolas,monospace';c.textAlign='left';c.fillText('F = m·g',120,44);c.fillText('R = v²·sen2θ / g',300,44);c.fillText('Ec = ½·m·v²',560,44);c.fillText('p = m·v',800,44);
+ c.fillStyle='rgba(200,194,255,.3)';c.font='700 14px ui-monospace,Menlo,Consolas,monospace';c.textAlign='left';c.fillText('F = m·g',120,44);c.fillText('R = v²·sen2θ / g',300,44);c.fillText('Ec = ½·m·v²',560,44);c.fillText('p = m·v',800,44);
  // suelo de regolito con regla
  c.fillStyle='#262140';c.fillRect(X0-4,ground,(X1-X0)+8,300);c.fillStyle='#8a7dff';c.fillRect(X0-4,ground,(X1-X0)+8,5);
  c.fillStyle='rgba(255,255,255,.06)';for(let i=0;i<60;i++){c.beginPath();c.arc(X0+hs(i,41)*(X1-X0),ground+14+hs(i,42)*60,2+hs(i,43)*5,0,Math.PI*2);c.fill()}
  c.strokeStyle='#cfc8ff';c.lineWidth=1.5;c.beginPath();for(let x=xs;x<=X1;x+=20){c.moveTo(x+.5,ground+5);c.lineTo(x+.5,ground+((Math.round((x-sling.x)/20)%5===0)?18:11))}c.stroke();
- c.fillStyle='#e6e3ff';c.font='700 11px ui-monospace,Menlo,Consolas,monospace';c.textAlign='center';for(let x=xM;x<=X1;x+=100){c.fillText(Math.round((x-sling.x)/20)+' m',x,ground+34)}
- c.textAlign='left';c.fillStyle='rgba(200,194,255,.7)';for(let k=1;k<=4;k++)c.fillText((k*5)+' m',X0+6,ground-k*100+14);
+ c.fillStyle='#f4f2ff';c.font='700 13px ui-monospace,Menlo,Consolas,monospace';c.textAlign='center';for(let x=xM;x<=X1;x+=100){c.fillText(Math.round((x-sling.x)/20)+' m',x,ground+34)}
+ c.textAlign='left';c.fillStyle='rgba(235,230,255,.95)';c.font='700 13px ui-monospace,Menlo,Consolas,monospace';for(let k=1;k<=4;k++)c.fillText((k*5)+' m',X0+6,ground-k*100+14);
 }
 function paintBackground(c){
  if(W2THEME&&W2BLK>=4){paintSpace(c);return}
@@ -2095,7 +2120,7 @@ function w2Plant(X0,X1,t){   // bloque C: tuberías, depósitos y chimeneas con 
 }
 function w3Scene(X0,X1,t){
  ctx.save();ctx.translate(-pxOff*.04,0);ctx.fillStyle='#fff';
- for(let i=0;i<26;i++){const x=X0+hs(i,21)*(X1-X0+120)-60,y=VY0+hs(i,22)*(ground-VY0-30);ctx.globalAlpha=.3+.7*Math.abs(Math.sin(t*(.6+hs(i,23))+i));ctx.fillRect(x,y,2,2)}
+ for(let i=0;i<(perfLow?8:26);i++){const x=X0+hs(i,21)*(X1-X0+120)-60,y=VY0+hs(i,22)*(ground-VY0-30);ctx.globalAlpha=.3+.7*Math.abs(Math.sin(t*(.6+hs(i,23))+i));ctx.fillRect(x,y,2,2)}
  ctx.globalAlpha=1;ctx.restore();
  ctx.save();ctx.translate(-pxOff*.1,0);ctx.fillStyle='rgba(130,118,170,.32)';
  for(let i=0;i<(perfLow?2:5);i++){const span=X1-X0+200,x=X0-100+((hs(i,31)*span+t*(4+i*2))%span),y=VY0+40+hs(i,32)*Math.max(60,ground-VY0-220),r=8+hs(i,33)*16;ctx.beginPath();ctx.ellipse(x,y,r,r*.75,t*.1+i,0,Math.PI*2);ctx.fill()}
@@ -2167,7 +2192,7 @@ function drawSling(){
   if(dragging&&!inCancel()){ // trayectoria prevista (sin viento): misma física que el disparo real
    const gm=materials[ammoSel.value],gdx=sling.x-p.x,gdy=sling.y-p.y,gsc=Math.min(1.6,Math.hypot(gdx,gdy)/65)*gm.speed;
    let gx=sling.x,gy=sling.y,gvx=gdx*.075*gsc,gvy=gdy*.075*gsc;ctx.fillStyle='#fff';ctx.strokeStyle='#0c2842';ctx.lineWidth=1.8;
-   const gmass=ammoSel.value==='balloon'?1.3:projMass(ammoSel.value);for(let i=0;i<(windGuide?60:isW3(currentLevel)?56:42);i++){gvy+=gravity*gzAt(gx,gy)*(ammoSel.value==='sonda'?.35:1);gvx*=.998;if(gWells.length){const wa=wellAcc(gx,gy);gvx+=wa[0];gvy+=wa[1]}if(ammoSel.value==='balloon'){gvy-=gravity*1.06;gvx*=.978;gvy*=.978}if(windGuide){gvx+=wind*(1+.2*Math.sin((i+1)*.07))/gmass;const fa=fanAccel(gx,gy,gmass);gvx+=fa[0];gvy+=fa[1]}gx+=gvx;gy+=gvy;if(lvWalls){const ge=wallE(ammoSel.value),rr=materials[ammoSel.value].r;if(gx-rr<VX0+3&&gvx<0){gx=VX0+3+rr;gvx=-gvx*ge}else if(gx+rr>VX1-3&&gvx>0){gx=VX1-3-rr;gvx=-gvx*ge}if(gy-rr<VY0+3&&gvy<0){gy=VY0+3+rr;gvy=-gvy*ge}}if(i%3===2){ctx.globalAlpha=Math.max(.3,1-i/50);ctx.beginPath();ctx.arc(gx,gy,3.8,0,Math.PI*2);ctx.fill();ctx.stroke()}}
+   const gmass=ammoSel.value==='balloon'?1.3:projMass(ammoSel.value);for(let i=0;i<(windGuide?60:isW3(currentLevel)?56:42);i++){gvy+=gravity*gzAt(gx,gy);gvx*=.998;if(gWells.length){const wa=wellAcc(gx,gy);gvx+=wa[0];gvy+=wa[1]}if(ammoSel.value==='balloon'){gvy-=gravity*1.06;gvx*=.978;gvy*=.978}if(windGuide){gvx+=wind*(1+.2*Math.sin((i+1)*.07))/gmass;const fa=fanAccel(gx,gy,gmass);gvx+=fa[0];gvy+=fa[1]}gx+=gvx;gy+=gvy;if(lvWalls){const ge=wallE(ammoSel.value),rr=materials[ammoSel.value].r;if(gx-rr<VX0+3&&gvx<0){gx=VX0+3+rr;gvx=-gvx*ge}else if(gx+rr>VX1-3&&gvx>0){gx=VX1-3-rr;gvx=-gvx*ge}if(gy-rr<VY0+3&&gvy<0){gy=VY0+3+rr;gvy=-gvy*ge}}if(i%3===2){ctx.globalAlpha=Math.max(.3,1-i/50);ctx.beginPath();ctx.arc(gx,gy,3.8,0,Math.PI*2);ctx.fill();ctx.stroke()}}
    ctx.globalAlpha=1;
   }
  }
@@ -2488,15 +2513,20 @@ function drawAmmo(k,x,y,r,rot,age){
   disc(rg('#ffffff','#c3d0da','#6a7a88'));ctx.save();clipC();ctx.strokeStyle='#52616e';ctx.lineWidth=1.6;
   ctx.beginPath();ctx.ellipse(0,0,r,r*.3,0,.08,Math.PI-.08);ctx.stroke();ctx.fillStyle='#3e4b57';
   for(let i=0;i<3;i++){const a=.55+i*.7;ctx.beginPath();ctx.arc(Math.cos(a)*r*.8,Math.sin(a)*r*.24,1.6,0,Math.PI*2);ctx.fill()}ctx.restore();
- }else if(k==='bola'){
-  disc(rg('#aab6c2','#4b5560','#161b21'));ctx.save();clipC();ctx.strokeStyle='#ffffff66';ctx.lineWidth=2.2;ctx.beginPath();ctx.arc(-r*.28,-r*.3,r*.5,3.2,4.7);ctx.stroke();ctx.fillStyle='#ffcc33';for(let i=-2;i<3;i++){ctx.save();ctx.rotate(.5);ctx.fillRect(i*r*.36-r*.1,-r,r*.2,r*2);ctx.restore()}ctx.globalAlpha=.55;ctx.fillStyle='#161b21';ctx.fillRect(-r,-r,r*2,r*2);ctx.globalAlpha=1;ctx.restore();
-  disc(rg('rgba(170,182,194,.0)','rgba(75,85,96,.55)','rgba(10,12,16,.9)'));ctx.strokeStyle='#8a96a3';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-r*1.05,r*.28,0,Math.PI*2);ctx.stroke();
- }else if(k==='balon'){
-  disc(rg('#ffc79a','#ff7a45','#b8431a'));ctx.save();clipC();ctx.strokeStyle='#5a1f08';ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(-r,0);ctx.lineTo(r,0);ctx.moveTo(0,-r);ctx.lineTo(0,r);ctx.moveTo(-r*.7,-r*.7);ctx.quadraticCurveTo(-r*.25,0,-r*.7,r*.7);ctx.moveTo(r*.7,-r*.7);ctx.quadraticCurveTo(r*.25,0,r*.7,r*.7);ctx.stroke();ctx.restore();
- }else if(k==='sonda'){
-  ctx.fillStyle='#e8c34a';ctx.strokeStyle=O;ctx.lineWidth=1.4;ctx.fillRect(-r*1.7,-r*.35,r*.9,r*.7);ctx.strokeRect(-r*1.7,-r*.35,r*.9,r*.7);ctx.fillRect(r*.8,-r*.35,r*.9,r*.7);ctx.strokeRect(r*.8,-r*.35,r*.9,r*.7);
-  disc(rg('#f2fbff','#8ad3ff','#3d7fb0'));ctx.strokeStyle=O;ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#1d3a52';ctx.beginPath();ctx.arc(0,-r*.1,r*.32,0,Math.PI*2);ctx.fill();ctx.fillStyle='#9fe8ff';ctx.beginPath();ctx.arc(-r*.08,-r*.18,r*.12,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='#d6e1e9';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(0,-r*1.5);ctx.stroke();ctx.fillStyle='#ff6b6b';ctx.beginPath();ctx.arc(0,-r*1.5,r*.12,0,Math.PI*2);ctx.fill();
+ }else if(k==='cohete'){
+  ctx.save();ctx.rotate(-ctx.getTransform?0:0);ctx.fillStyle='#d94a3a';ctx.beginPath();ctx.moveTo(-r*.5,r*.3);ctx.lineTo(-r*1.05,r*1.05);ctx.lineTo(-r*.2,r*.7);ctx.closePath();ctx.moveTo(r*.5,r*.3);ctx.lineTo(r*1.05,r*1.05);ctx.lineTo(r*.2,r*.7);ctx.closePath();ctx.fill();
+  const g=ctx.createLinearGradient(-r*.5,0,r*.5,0);g.addColorStop(0,'#cfd6de');g.addColorStop(.5,'#ffffff');g.addColorStop(1,'#9aa6b2');ctx.fillStyle=g;ctx.strokeStyle=O;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,-r*1.3);ctx.quadraticCurveTo(r*.7,-r*.5,r*.5,r*.9);ctx.lineTo(-r*.5,r*.9);ctx.quadraticCurveTo(-r*.7,-r*.5,0,-r*1.3);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#d94a3a';ctx.beginPath();ctx.moveTo(0,-r*1.3);ctx.quadraticCurveTo(r*.4,-r*.9,r*.33,-r*.6);ctx.lineTo(-r*.33,-r*.6);ctx.quadraticCurveTo(-r*.4,-r*.9,0,-r*1.3);ctx.fill();
+  ctx.fillStyle='#6ec8ff';ctx.strokeStyle=O;ctx.beginPath();ctx.arc(0,-r*.1,r*.28,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+ }else if(k==='fision'){
+  disc(rg('#efffd6','#7be04a','#1f6a12'));ctx.strokeStyle='rgba(20,70,10,.6)';ctx.lineWidth=1.6;for(let i=0;i<3;i++){ctx.beginPath();ctx.ellipse(0,0,r*.95,r*.34,i*Math.PI/3,0,Math.PI*2);ctx.stroke()}
+  ctx.fillStyle='#fff';ctx.strokeStyle='#1f6a12';ctx.lineWidth=1;for(const a of [0,2.09,4.19]){ctx.beginPath();ctx.arc(Math.cos(a)*r*.38,Math.sin(a)*r*.38,r*.2,0,Math.PI*2);ctx.fill();ctx.stroke()}
+ }else if(k==='inversor'){
+  disc(rg('#ffd6ae','#ff8a3a','#a8430a'));ctx.fillStyle='#fff';ctx.strokeStyle='#7a2f06';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(0,-r*.7);ctx.lineTo(r*.42,-r*.12);ctx.lineTo(-r*.42,-r*.12);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#2b1a4a';ctx.beginPath();ctx.moveTo(0,r*.7);ctx.lineTo(r*.42,r*.12);ctx.lineTo(-r*.42,r*.12);ctx.closePath();ctx.fill();ctx.stroke();
+ }else if(k==='agujero'){
+  ctx.strokeStyle='rgba(190,140,255,.85)';ctx.lineWidth=2.4;ctx.beginPath();ctx.ellipse(0,0,r*1.5,r*.5,.4,0,Math.PI*2);ctx.stroke();
+  disc(rg('#2a1060','#08020f','#000'));ctx.strokeStyle='#b48cff';ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke();
  }else if(k==='rubber'){
   disc(rg('#d98cff','#8a3fd6','#3f1a7a'));ctx.save();clipC();   // superbola con vetas de colores
   const bands=[['#ff6fb5',-.55,.16],['#4fd8ff',-.1,.14],['#ffe45e',.32,.15],['#ff6fb5',.7,.12]];
@@ -2895,6 +2925,60 @@ function launch(){
  projectile={x:sling.x,y:sling.y,r:m.r,mass:projMass(ammoSel.value),vx:dx*.075*scale,vy:dy*.075*scale,kind:ammoSel.value,fired:true,bounce:m.bounce,rot:0,spin:(dx>=0?1:-1)*(.07+Math.random()*.08),age:0,still:0,shockCd:0,shocks:0,open:false,openT:0,netR:0,broken:false,wb:0};
  shots++;if(!labMode)ammo[projectile.kind]--;pickAmmo();sfx.launch();if(tutStep===0)tutShow(1);trail=[];shotLog=[];graphN=-1;dragging=false;dragPos=null;updateHud();
 }
+// ---------- Mundo 3: habilidades de los proyectiles (se activan tocando la pantalla en vuelo) ----------
+const SKILL_TXT={cohete:'encender el cohete',fision:'dividirlo en 3',inversor:'invertir la gravedad aquí',agujero:'abrir el agujero negro'};
+function useAbility(p){
+ if(p.used||p.age<6||!SKILL_TXT[p.kind])return false;
+ p.used=1;const k=p.kind;
+ if(k==='cohete'){p.boost=55;sfx.whoosh();floaters.push({x:p.x,y:p.y-26,text:'🚀 ¡Motor!',life:45,max:45})}
+ else if(k==='fision'){fission(p)}
+ else if(k==='agujero'){p.hole=170;p.vx=p.vy=0;fields.push({type:'hole',x:p.x,y:p.y,r:150,t:170,max:170});sfx.ufo();floaters.push({x:p.x,y:p.y-26,text:'⚫ Agujero negro',life:45,max:45})}
+ else if(k==='inversor'){fields.push({type:'inv',x:p.x,y:p.y,r:125,t:150,max:150});sfx.ufo();floaters.push({x:p.x,y:p.y-26,text:'↑ g invertida',life:45,max:45})}
+ return true}
+function rocketBurn(p){
+ p.boost--;const sp=Math.hypot(p.vx,p.vy)||1,ux=p.vx/sp,uy=p.vy/sp;p.vx+=ux*.17;p.vy+=uy*.17-gravity*.45;
+ for(let i=0;i<2;i++)particles.push({x:p.x-ux*p.r,y:p.y-uy*p.r,vx:-ux*1.6+(Math.random()-.5)*1.2,vy:-uy*1.6+(Math.random()-.5)*1.2,life:12+Math.random()*8,color:Math.random()<.5?'#ffb347':'#fff1a8',r:3+Math.random()*2});
+ if(p.boost%8===0)sfx.rotor()}
+function fission(p){
+ // conservación de la cantidad de movimiento: tres fragmentos con un tercio de la masa cada uno, en abanico
+ const sp=Math.hypot(p.vx,p.vy)||1,a0=Math.atan2(p.vy,p.vx),m=p.mass/3;
+ for(const da of [-.42,.42])frags.push({x:p.x,y:p.y,vx:Math.cos(a0+da)*sp,vy:Math.sin(a0+da)*sp,r:9,m,life:360,wb:p.wb||0,kind:'stone',spin:0,age:0});
+ p.mass=m;p.r=9;p.vx*=1;sfx.shatter?sfx.shatter():sfx.thud(6);burst(p.x,p.y,'#9be86a',16);floaters.push({x:p.x,y:p.y-26,text:'☢ ¡Fisión!',life:45,max:45})}
+function stepFrags(){
+ for(const f of frags){
+  if(f.dead)continue;f.age++;f.vy+=gravity*gzAt(f.x,f.y);f.vx*=.998;if(gWells.length){const wa=wellAcc(f.x,f.y);f.vx+=wa[0];f.vy+=wa[1]}
+  const st=3;
+  for(let k=0;k<st&&!f.dead;k++){
+   f.x+=f.vx/st;f.y+=f.vy/st;if(lvWalls)wallBounce(f);
+   const v=Math.hypot(f.vx,f.vy),dmg=.5*f.m*v*v*.0132;
+   for(const b of blocks){if(!b.alive||!circleRect(f.x,f.y,f.r,b))continue;
+    damageBlock(b,dmg/b.resist,f.x,f.y);if(!b.anchored){b.vx+=f.vx*f.m/b.mass*.9;b.vy+=f.vy*f.m/b.mass*.9}f.dead=true;burst(f.x,f.y,'#9be86a',4);sfx.thud(3);break}
+   if(f.dead)break;
+   for(const t of targets){if(!t.alive||Math.hypot(t.x-f.x,t.y-f.y)>=t.r+f.r)continue;
+    const keep=projectile;projectile=f.wb>0?{wb:f.wb}:null;damageTarget(t,Math.max(.4,dmg*1.3),'impacto');projectile=keep;f.dead=true;burst(f.x,f.y,'#9be86a',4);break}
+   if(f.y+f.r>ground){f.y=ground-f.r;f.vy*=-.3;f.vx*=.7;if(Math.abs(f.vy)<.6&&Math.abs(f.vx)<.4)f.dead=true}
+  }
+  if(f.age>f.life||f.x<-400||f.x>1500)f.dead=true;
+ }
+ frags=frags.filter(f=>!f.dead)}
+function fieldAcc(x,y){let ax=0,ay=0;for(const f of fields){const dx=f.x-x,dy=f.y-y,d=Math.hypot(dx,dy);if(d>=f.r)continue;const u=1-d/f.r;
+ if(f.type==='hole'){if(d>8){const q=.5*u*Math.min(1,d/30)*Math.min(1,f.t/20);ax+=dx/d*q;ay+=dy/d*q}}
+ else{ay-=gravity*.55*2.5*(.5+.5*u)*Math.min(1,f.t/15)}}
+ return[ax,ay]}
+function stepFields(){for(const f of fields)f.t--;fields=fields.filter(f=>f.t>0)}
+function drawFields(){
+ const t=Date.now()/1000;
+ for(const f of fields){const k=Math.min(1,f.t/20)*Math.min(1,(f.max-f.t)/10+.2);ctx.save();ctx.globalAlpha=k;
+  if(f.type==='hole'){
+   for(let i=0;i<4;i++){const u=((t*.8+i/4)%1),r=f.r*(1-u);ctx.strokeStyle='rgba(190,140,255,'+(.6*u).toFixed(2)+')';ctx.lineWidth=2;ctx.beginPath();ctx.arc(f.x,f.y,r,0,Math.PI*2);ctx.stroke()}
+   const g=ctx.createRadialGradient(f.x,f.y,2,f.x,f.y,f.r*.55);g.addColorStop(0,'rgba(10,0,25,.85)');g.addColorStop(1,'rgba(90,40,170,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(f.x,f.y,f.r*.55,0,Math.PI*2);ctx.fill();
+  } else {
+   const g=ctx.createRadialGradient(f.x,f.y,f.r*.2,f.x,f.y,f.r);g.addColorStop(0,'rgba(255,150,60,.28)');g.addColorStop(1,'rgba(255,150,60,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='rgba(255,190,110,.75)';ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+   for(let i=0;i<7;i++){const ang=i/7*Math.PI*2,rr=f.r*.7*((i%3+1)/3),x=f.x+Math.cos(ang)*rr,ph=((t*.7+i*.31)%1),y=f.y+f.r*.7-ph*f.r*1.4;ctx.beginPath();ctx.moveTo(x-5,y+8);ctx.lineTo(x,y);ctx.lineTo(x+5,y+8);ctx.stroke()}
+  }
+  ctx.restore()}
+ for(const f of frags){ctx.save();const g=ctx.createRadialGradient(f.x,f.y,1,f.x,f.y,f.r*1.8);g.addColorStop(0,'rgba(200,255,150,.9)');g.addColorStop(1,'rgba(120,230,70,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(f.x,f.y,f.r*1.8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#7be04a';ctx.strokeStyle='#1f6a12';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore()}}
 // ---------- Mundo 3: gravedad variable, zonas, pozos y bordes que rebotan ----------
 function gzAt(x,y){let g=1;for(const z of gZones)if(x>=z.x0&&x<=z.x1&&(z.y0==null||(y>=z.y0&&y<=z.y1)))g*=z.g;return g}
 function wellAcc(x,y){let ax=0,ay=0;for(const w of gWells){const dx=w.x-x,dy=w.y-y,d=Math.hypot(dx,dy);if(d<w.r&&d>6){const f=w.k*(1-d/w.r)*(1-d/w.r*.3);ax+=dx/d*f;ay+=dy/d*f}}return[ax,ay]}
@@ -2917,8 +3001,9 @@ function resolveGravity(){
 function stepProjectile(){
  const p=projectile;p.age++;p.rot+=p.spin;if(p.shockCd>0)p.shockCd--;
  if(p.abd){p.x+=(p.abd.x-p.x)*.25;p.y+=(p.abd.y+30-p.y)*.25;p.vx=p.vy=0;return}
+ if(p.hole>0){p.hole--;p.vx=p.vy=0;if(p.age%3===0)particles.push({x:p.x+(Math.random()-.5)*150,y:p.y+(Math.random()-.5)*150,vx:0,vy:0,life:20,color:'#b48cff',r:2.5,pull:p});if(p.hole<=0){burst(p.x,p.y,'#b48cff',26);sfx.thud(9);projectile=null;pendingWind=true}return}
  trail.push({x:p.x,y:p.y});if(trail.length>420)trail.shift();
- p.vy+=gravity*gzAt(p.x,p.y)*(p.kind==='sonda'?.35:1);p.vx*=.998;p.vx+=windAccel(p);if(gWells.length){const wa=wellAcc(p.x,p.y);p.vx+=wa[0];p.vy+=wa[1]}
+ p.vy+=gravity*gzAt(p.x,p.y);if(p.boost>0)rocketBurn(p);p.vx*=.998;p.vx+=windAccel(p);if(gWells.length){const wa=wellAcc(p.x,p.y);p.vx+=wa[0];p.vy+=wa[1]}
  if(p.kind==='sodio'&&!settling&&(wetAt(p.x,p.y)||wetAt(p.x,p.y+p.r))){sodiumShot(p);return}
  if(p.kind==='balloon'){if(p.age%3===0)particles.push({x:p.x+(Math.random()-.5)*10,y:p.y+p.r,vx:(Math.random()-.5)*.4,vy:-.2,life:26,color:Math.random()<.5?'#ffb3d9':'#ffffff',r:2.5+Math.random()*2});p.vy-=gravity*1.06;p.vx*=.978;p.vy*=.978;if(!settling&&balloonNearFire(p)){balloonBoom(p);return}}
  {const v=Math.hypot(p.vx,p.vy)*V_MS,ec=.5*p.mass*v*v,h=Math.max(0,(ground-p.r-p.y)/PX_M);
@@ -2967,7 +3052,7 @@ function stepProjectile(){
    if((p.kind==='glass'||p.kind==='ice')&&vi>2.5){shatter(p,p.x,ground-4,false);return}
    if(p.kind==='fire'){splash(p,p.x,ground-4);return}
    if(vi>0){if(vi>4){maybeShock(p,p.x,ground,vi);dust(p.x,5)}p.vy=-vi*p.bounce}
-   p.vx*=(p.kind==='balon'?.97:.77);p.spin+=((p.vx/p.r)-p.spin)*.35;   // rueda por el suelo
+   p.vx*=.77;p.spin+=((p.vx/p.r)-p.spin)*.35;   // rueda por el suelo
    if(Math.abs(p.vy)<1.2){p.vy=0;p.vx*=.9}
   }
  }
@@ -3052,7 +3137,7 @@ function stepBlocks(){
   for(const b of live){
    b.contact=false;
    if(b.anchored){b.vx=b.vy=b.av=0;b.im=0;b.ii=0}                     // los bloques anclados no se mueven
-   else{b.im=1/b.mass;b.ii=settling?0:1/b.I;const wf=pools.length?wetFrac(b):0;b.wf=wf;b.vy=Math.min(b.vy+gravity*.55*(1-wf/wdOf(b)),BLK_VMAX);if(wf>0){b.vx*=1-.05*wf;b.vy*=1-.06*wf;b.av*=1-.1*wf}}
+   else{b.im=1/b.mass;b.ii=settling?0:1/b.I;const wf=pools.length?wetFrac(b):0;b.wf=wf;b.vy=Math.min(b.vy+gravity*.55*(1-wf/wdOf(b)),BLK_VMAX);if(fields.length){const fa=fieldAcc(b.x+b.w/2,b.y+b.h/2);b.vx+=fa[0];b.vy+=fa[1]}if(wf>0){b.vx*=1-.05*wf;b.vy*=1-.06*wf;b.av*=1-.1*wf}}
    const bb=blockAABB(b);b._l=bb.l;b._r=bb.r;b._t=bb.t;b._b=bb.b;
   }
   // 1) detección de contactos y fusión con los del paso anterior (acumulación de impulsos)
@@ -3158,6 +3243,7 @@ function stepTargets(){
    return;
   }
   stepPatrol(t);stepFlee(t);
+  if(fields.length){const fa=fieldAcc(t.x,t.y);t.vx+=fa[0];t.vy+=fa[1]}
   t.vy+=gravity*(wetAt(t.x,t.y)?.35:1);if(wetAt(t.x,t.y)){t.vy*=.9;t.vx*=.9}t.x+=t.vx;t.y+=t.vy;t.vx*=.98;
   if(t.x<30){t.x=30;t.vx=Math.max(0,t.vx)}else if(t.x>975){t.x=975;t.vx=Math.min(0,t.vx)}   // el borde del escenario los frena
   if(t.y+t.r>ground){
@@ -3187,8 +3273,8 @@ function physics(){
  try{stepNuke()}catch(e){nuke=null;nukeQueue=false;console.error(e)}
  try{stepStampede()}catch(e){herd=[];stampedeQueue=false;console.error(e)}
  try{stepApache()}catch(e){apacheOn=false;apacheReset();console.error(e)}
- stepBlocks();stepTargets();stepShockwaves();stepShards();stepDrops();stepFire();stepWater();stepLevers();stepMachines();stepFans();stepAcid();fireT++;if(fires.length&&Math.random()<.3)sfx.crackle();
- if(pendingWind&&!projectile&&!shards.length){pendingWind=false;pendingCheck=true;if(!won)newWind()}
+ stepFields();stepFrags();stepBlocks();stepTargets();stepShockwaves();stepShards();stepDrops();stepFire();stepWater();stepLevers();stepMachines();stepFans();stepAcid();fireT++;if(fires.length&&Math.random()<.3)sfx.crackle();
+ if(pendingWind&&!projectile&&!shards.length&&!frags.length){pendingWind=false;pendingCheck=true;if(!won)newWind()}
  particles=particles.filter(p=>p.life-->0);if(particles.length>(perfLow?140:700))particles.splice(0,particles.length-(perfLow?140:700));particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.vx*=.98});
  floaters=floaters.filter(f=>f.life-->0);floaters.forEach(f=>{f.y-=.7});
  windLines.forEach(w=>{w.x+=wind*250*w.s;if(w.x>1040+OX)w.x=-40-OX;if(w.x<-40-OX)w.x=1040+OX});
@@ -3673,6 +3759,7 @@ ctx.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);
   ctx.font='800 14px system-ui,sans-serif';ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.fillStyle='#c4471b';ctx.textAlign='center';
   ctx.strokeText('arrastra y suelta',ex-6,ey+22);ctx.fillText('arrastra y suelta',ex-6,ey+22);ctx.restore();
  }
+ drawFields();
  if(projectile&&projectile.fired&&projectile.open)drawNet(projectile);
  if(projectile&&projectile.fired){const m=materials[projectile.kind];if(projectile.kind!=='balloon')drawAmmo(projectile.kind,projectile.x,projectile.y,projectile.r,(projectile.kind==='fire'||projectile.kind==='acid')?Math.atan2(projectile.vy,projectile.vx)-Math.PI/2:projectile.rot,projectile.age);if(projectile.kind==='balloon')drawBalloon(projectile.x,projectile.y,projectile.r,projectile.age);
   if(projectile.kind==='fire'){ // botella con mecha encendida
@@ -3687,7 +3774,7 @@ ctx.setTransform(SC*CAMZ,0,0,SC*CAMZ,CAMTX*SC,CAMTY*SC);
  } else {
   ctx.fillStyle='#87552f';ctx.fillRect(sling.x-30,ground-9,60,10);
  }
- drawShockwaves();drawBlasts();drawNuke();drawWind();
+ drawShockwaves();drawBlasts();drawNuke();if(!isW3(currentLevel))drawWind();
  floaters.forEach(f=>{
   ctx.globalAlpha=Math.min(1,f.life/f.max*1.6);ctx.font=(f.big?'bold 19px':'bold 14px')+' system-ui,sans-serif';ctx.textAlign='center';
   ctx.lineWidth=3;ctx.strokeStyle='#17324d';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.big?'#ffd23f':'#fff';ctx.fillText(f.text,f.x,f.y);
@@ -3703,7 +3790,8 @@ function loop(ts){
  const dt=Math.min(100,(ts||0)-lastTs);lastTs=ts||0;
  if(!paused&&!perfLow&&dt>0){perfAcc+=dt;perfN++;if(perfN>=120){const avg=perfAcc/perfN;perfAcc=perfN=0;if(avg>30){if(++perfBad>=3){perfAuto=true;setPerf(true,true)}}else perfBad=0}}
  if(paused||(typeof rotMQ!=='undefined'&&rotMQ.matches))acc=0;else{acc+=dt;let n=0;while(acc>=STEP_MS-.5&&n<5){physics();acc-=STEP_MS;n++}if(n>=5)acc=0}
- render();requestAnimationFrame(loop);
+ if(!perfLow||(perfSkip^=1))render();   // en modo ahorro se dibuja a la mitad de fotogramas (la física no cambia)
+ requestAnimationFrame(loop);
 }
 function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/r.width*LW-CAMTX)/CAMZ,y:((e.clientY-r.top)/r.height*LH-CAMTY)/CAMZ}}
 // ---------- Apuntado: ratón, dedo y lápiz ----------
@@ -3712,6 +3800,10 @@ function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:((e.clien
 function aimDown(e){
  if(nukeDead||paused||aimId!==null)return;
  if(projectile?.fired&&projectile.kind==='red'&&!projectile.open){openNet(projectile);return}
+ if(projectile?.fired&&!won&&!gameOver){   // tocar la pantalla con el disparo en vuelo lo da por terminado
+  if(useAbility(projectile))return;
+  if(projectile.age>25){floaters.push({x:projectile.x,y:projectile.y-24,text:'⏭ Disparo terminado',life:45,max:45});projectile=null;pendingWind=true;sfx.tick()}
+  return}
  if(won||gameOver||projectile?.fired||ammoLeft()===0)return;
  const p=pointerPos(e),touch=e.pointerType==='touch'||e.pointerType==='pen'||e.pointerType==='touchfallback';
  const start=dragPos||{x:sling.x,y:sling.y},r1=touch?85:45,r2=touch?100:55;   // zona de agarre más grande para el dedo
@@ -3839,19 +3931,19 @@ LEVELS.push(
  {t:'Mercurio · el alcance',c:'R = v²·sen(2θ) / g',d:'Tres casitas y un enemigo en el suelo. El alcance depende del ángulo y de g.',diff:2,fact:'El alcance de un proyectil es R = v²·sen(2θ)/g: es máximo con 45° y crece cuando disminuye g.'},
  {t:'Titán · tras el muro',c:'t = 2·v·senθ / g',d:'Un muro de piedra protege a los enemigos. Con g muy baja, el tiempo de vuelo es larguísimo.',diff:2,fact:'El tiempo de vuelo es t = 2·v·senθ/g: con g pequeña, el proyectil tarda mucho en caer.'},
  {t:'JEFE · Asteroide Ceres',c:'Ec = ½·m·v²',d:'Una roca enorme que casi ignora los golpes ligeros. Necesitas proyectiles pesados y rápidos.',diff:3,fact:'La energía cinética Ec = ½·m·v² crece con la masa y con el cuadrado de la velocidad: por eso los impactos de asteroides son tan destructivos.'},
- {t:'Billar espacial',c:'e = v₂ / v₁',d:'Un muro alto protege a los enemigos. Usa los rebotes para llegar por detrás.',diff:2,fact:'El coeficiente de restitución e = v después / v antes mide cuánta energía conserva un choque: e = 1 sería perfectamente elástico.'},
+ {t:'Billar espacial',c:'e = v₂ / v₁',d:'Un muro alto protege a los enemigos. Estrena el cohete propulsado.',diff:2,fact:'El coeficiente de restitución e = v después / v antes mide cuánta energía conserva un choque: e = 1 sería perfectamente elástico.'},
  {t:'Venus · el refugio',c:'θ_incidencia = θ_reflexión',d:'Un refugio de hormigón y una casita. Los bordes devuelven el disparo con el mismo ángulo con el que llega.',diff:2,fact:'En un rebote elástico el ángulo de incidencia es igual al de reflexión, como la luz en un espejo.'},
  {t:'Parachoques de muelle',c:'E_p,elást = ½·k·x²',d:'Los bloques de muelle devuelven el golpe. Úsalos para rebotar tu disparo.',diff:3,fact:'Un muelle comprimido almacena energía elástica E = ½·k·x² y la devuelve al soltarse.'},
- {t:'Equilibrio de torres',c:'Σ M = 0',d:'Torres altas con una carga arriba. Un buen golpe en la base basta.',diff:3,fact:'Una torre cae cuando su centro de masas queda fuera de su base: por eso las más altas y estrechas son más inestables.'},
+ {t:'Equilibrio de torres',c:'Σ M = 0',d:'Torres altas con una carga arriba. Estrena el núcleo de fisión.',diff:3,fact:'Una torre cae cuando su centro de masas queda fuera de su base: por eso las más altas y estrechas son más inestables.'},
  {t:'JEFE · Satélite espía',c:'p = m·v',d:'Un escudo de energía lo protege de los disparos directos. Solo cede ante uno que ya haya rebotado.',diff:3,fact:'En un rebote en una pared, la componente de la cantidad de movimiento perpendicular a la pared se invierte (p = m·v).'},
- {t:'Pulso gravitatorio',c:'g = G·M / r²',d:'La gravedad cambia en cada disparo. Mira la g actual y la siguiente, y estrena la sonda iónica.',diff:3,fact:'La gravedad en un astro es g = G·M/r²: depende de su masa M y de su radio r.'},
- {t:'Zona ingrávida',c:'a = g·(zona)',d:'Una zona con gravedad casi nula: el disparo flota al cruzarla.',diff:3,fact:'En caída libre y sin otras fuerzas, un cuerpo mantiene su velocidad: es la primera ley de Newton.'},
- {t:'Pozo de gravedad',c:'P = m·g',d:'Una zona con gravedad triple hunde los disparos. Dispara por encima o usa la sonda.',diff:3,fact:'El peso P = m·g es la fuerza con que un astro atrae a un cuerpo: cambia con g, pero la masa no.'},
+ {t:'Pulso gravitatorio',c:'g = G·M / r²',d:'La gravedad cambia en cada disparo. Mira la g actual y la siguiente.',diff:3,fact:'La gravedad en un astro es g = G·M/r²: depende de su masa M y de su radio r.'},
+ {t:'Zona ingrávida',c:'a = g·(zona)',d:'Una zona con gravedad casi nula. Estrena el inversor de gravedad.',diff:3,fact:'En caída libre y sin otras fuerzas, un cuerpo mantiene su velocidad: es la primera ley de Newton.'},
+ {t:'Pozo de gravedad',c:'P = m·g',d:'Una zona con gravedad triple hunde los disparos. Dispara por encima o enciende el cohete.',diff:3,fact:'El peso P = m·g es la fuerza con que un astro atrae a un cuerpo: cambia con g, pero la masa no.'},
  {t:'Marea gravitatoria',c:'Δg ∝ 1 / r³',d:'La gravedad cambia en cada disparo y hay una zona ingrávida. Combina todo lo aprendido.',diff:4,fact:'Las mareas se deben a que la gravedad de la Luna es algo distinta en cada punto de la Tierra: la diferencia decrece con 1/r³.'},
  {t:'JEFE · Singularidad',c:'F = G·m₁·m₂ / r²',d:'Un núcleo oscuro atrae los disparos. Aprovecha su atracción para curvar el tiro.',diff:4,fact:'La ley de gravitación universal F = G·m₁·m₂/r² explica por qué un objeto muy masivo curva las trayectorias que pasan cerca.'},
- {t:'Planeta pesado',c:'Ec = ½·m·v²',d:'Con g mayor los disparos caen antes. Estrena la bola de demolición.',diff:3,fact:'Con más gravedad, el tiempo de vuelo y el alcance disminuyen; la bola de demolición compensa con su gran masa.'},
+ {t:'Planeta pesado',c:'Ec = ½·m·v²',d:'Con g mayor los disparos caen antes. Estrena el mini agujero negro.',diff:3,fact:'Con más gravedad, el tiempo de vuelo y el alcance disminuyen; un cohete o un campo de gravedad compensan esa pérdida.'},
  {t:'Saturno · pirámide',c:'ρ = m / V',d:'Una pirámide de cajas: la energía de un impacto se reparte por toda la estructura.',diff:3,fact:'Saturno es menos denso que el agua (ρ ≈ 0,7 g/cm³): flotaría en una bañera suficientemente grande.'},
- {t:'Neptuno · tres gravedades',c:'v = √(2·g·h)',d:'Tres valores de g que se repiten. Usa la sonda cuando g sea alta y un tiro cerrado cuando sea baja.',diff:4,fact:'Un cuerpo que cae desde una altura h llega con v = √(2·g·h): a más g, más velocidad.'},
+ {t:'Neptuno · tres gravedades',c:'v = √(2·g·h)',d:'Tres valores de g que se repiten. Usa el cohete cuando g sea alta y un tiro cerrado cuando sea baja.',diff:4,fact:'Un cuerpo que cae desde una altura h llega con v = √(2·g·h): a más g, más velocidad.'},
  {t:'Pozo oscuro',c:'F = G·m₁·m₂ / r²',d:'Un pozo gravitatorio curva tus disparos hacia su centro.',diff:4,fact:'Un cuerpo en órbita está en caída libre alrededor del astro: su velocidad lateral evita que choque con él.'},
  {t:'JEFE FINAL · Nave nodriza',c:'F₁₂ = −F₂₁',d:'Escudo de energía, gravedad cambiante y bordes que rebotan. Solo un disparo que haya rebotado la dañará.',diff:4,fact:'Tercera ley de Newton: a toda acción corresponde una reacción igual y opuesta; por eso los cohetes avanzan expulsando gases.'}
 );
@@ -3899,6 +3991,7 @@ function hideMenu(){$('menu').classList.remove('show');paused=false;applyLevelTh
 function showToastNew(ks){const el=$('matHint');if(!el)return;el.innerHTML='<b>🔓 ¡Material desbloqueado!</b>'+ks.map(k=>materials[k].name+' ('+MATINFO[k].sym+')').join(', ');el.classList.add('show');clearTimeout(hintT);hintT=setTimeout(()=>{el.classList.remove('show');showHint(ks[0])},2200)}
 function startLevel(n){started=true;sfx.tick();setupLevel(n);hideMenu();if(isW3(n)&&lvNote){const m=lvNote,w=(UNLOCK[n]||[]).length?2800:400;setTimeout(()=>{if(currentLevel===n&&!paused)showNote(m)},w)}{const nw=UNLOCK[n]||[];if(n>0&&nw.length){setAmmo(nw[0]);showToastNew(nw)}}if(n===0&&!tutSeen())tutShow(0);else if(tutStep>=0)tutEnd(false)}
 function setPerf(on,auto){perfLow=on;if(!auto){try{localStorage.setItem('catapulta-caos-ahorro',on?'1':'0')}catch(e){}}
+ document.body.classList.toggle('ahorro',!!on);{let pb=$('perfBadge');if(!pb){pb=document.createElement('div');pb.id='perfBadge';pb.textContent='⚡ Modo ahorro';document.body.appendChild(pb)}pb.hidden=!on}
  const b=$('perfBtn');b.textContent='⚡ Modo ahorro: '+(on?'sí':'no');b.setAttribute('aria-pressed',on?'true':'false');
  if(typeof layout==='function')layout();bgCache=null;
  if(auto)showNote('⚡ El juego va lento: modo ahorro activado (puedes quitarlo en el menú de inicio)')}
@@ -3906,12 +3999,14 @@ $('perfBtn').addEventListener('click',()=>{sfx.tick();setPerf(!perfLow,false)});
 setPerf(perfLow,false);
 $('nukeReload').addEventListener('click',()=>location.reload());
 $('playBtn').addEventListener('click',()=>{if(!tutSeen())startLevel(0);else showScreen('worlds')});
-$('backBtn').addEventListener('click',()=>{sfx.tick();wipeTo(menuWorld>=2?'w2':'w1',()=>showScreen('worlds'))});
+$('backBtn').addEventListener('click',()=>{sfx.tick();wipeTo(menuWorld===3?'w3':menuWorld===2?'w2':'w1',()=>showScreen('worlds'))});
 $('worldsBack').addEventListener('click',()=>showScreen('title'));
 // ---------- Códigos secretos ----------
 // Para añadir un código: CODES['MICODIGO']=()=>{ ...efecto...; return 'Mensaje que se muestra' }
 let aliensOn=false;let apacheOn=false;
 {const b=document.createElement('div');b.id='cheatBadge';b.hidden=true;b.textContent='🔧 TRUCOS ACTIVOS · victoria inválida';document.body.appendChild(b)}
+{const sh=document.createElement('div');sh.id='skipHint';sh.hidden=true;document.body.appendChild(sh);
+ setInterval(()=>{const q=projectile&&projectile.fired&&!won&&!gameOver?projectile:null;const sk=q&&SKILL_TXT[q.kind]&&!q.used;const on=!!(q&&(sk?q.age>5:q.age>70)&&!(q.kind==='red'&&!q.open));if(on){const tx=sk?'👆 Toca para '+SKILL_TXT[q.kind]:'👆 Toca la pantalla para terminar el disparo';if(sh.textContent!==tx)sh.textContent=tx}if(sh.hidden===on)sh.hidden=!on},150)}
 setInterval(()=>{const cb=$('cheatBadge');if(cb)cb.hidden=!(cheatsOn()&&!nukeDead)},250);
 function clearCheats(){aliensOn=false;apacheOn=false;stampedeCheat=false;stampedeQueue=false;herd=[];apacheReset();ufoReset();updateHud()}
 function cheatsOn(){return aliensOn||apacheOn||stampedeCheat||nukeCheat}   // solo visual y solo de esta sesión: se pierde al cerrar el juego
@@ -3954,9 +4049,10 @@ $('world1').addEventListener('click',()=>{sfx.tick();wipeTo('w1',()=>showScreen(
 $('worldLab').addEventListener('click',()=>$('labBtn').click());
 let noteT=0;
 function showNote(txt){let n=$('note');if(!n){n=document.createElement('div');n.id='note';n.setAttribute('role','status');document.body.appendChild(n)}n.textContent=txt;n.classList.add('show');clearTimeout(noteT);noteT=setTimeout(()=>n.classList.remove('show'),2600)}
-function wipeTo(kind,fn){const w=$('wipe');w.classList.remove('go','w1');if(kind==='w1')w.classList.add('w1');void w.offsetWidth;w.classList.add('go');sfx.splash();setTimeout(fn,430)}
+function wipeTo(kind,fn){if(kind==='w3'){const v=$('warp');v.classList.remove('go');void v.offsetWidth;v.classList.add('go');sfx.warp();setTimeout(fn,620);return}
+ const w=$('wipe');w.classList.remove('go','w1');if(kind==='w1')w.classList.add('w1');void w.offsetWidth;w.classList.add('go');sfx.splash();setTimeout(fn,430)}
 $('world2').addEventListener('click',()=>{sfx.tick();wipeTo('w2',()=>showScreen('levels',2))});
-$('world3').addEventListener('click',()=>{sfx.tick();wipeTo('w2',()=>showScreen('levels',3))});
+$('world3').addEventListener('click',()=>{sfx.tick();wipeTo('w3',()=>showScreen('levels',3))});
 $('resumeBtn').addEventListener('click',hideMenu);
 $('menuBtn').addEventListener('click',()=>showScreen('levels',worldOf(currentLevel)));
 $('toMenu').addEventListener('click',()=>showScreen('levels'));
