@@ -3,7 +3,7 @@
 // (cache: 'no-store' evita que la caché HTTP del navegador o del hosting devuelva una versión vieja).
 // La copia guardada solo se usa si no hay conexión o si el servidor tarda más de 4 s en responder.
 // Al publicar cambios no hace falta tocar nada; si quieres limpiar a la fuerza las copias viejas, sube el número de CACHE.
-const CACHE = 'fiq-demolicion-v2';
+const CACHE = 'fiq-demolicion-v3';
 const ESPERA_RED_MS = 4000;
 const ARCHIVOS = [
   './', './index.html', './manifest.json',
