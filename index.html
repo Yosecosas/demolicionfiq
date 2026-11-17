@@ -419,6 +419,7 @@
    background:linear-gradient(180deg,var(--c1),var(--c2));box-shadow:0 6px 0 var(--sh),0 12px 22px #0d253f55,inset 0 2px 0 #ffffff55;transition:transform .08s,box-shadow .08s,filter .15s;font-family:inherit}
   .world:hover{filter:brightness(1.08)}.world:active{transform:translateY(4px);box-shadow:0 2px 0 var(--sh),0 6px 12px #0d253f55,inset 0 2px 0 #ffffff55}
   .world .wi{font-size:2.4rem;line-height:1;filter:drop-shadow(0 2px 0 #0003)}.world b{font-size:1.2rem}.world small{font-size:.78rem;opacity:.9;line-height:1.25}
+  .credit{margin-top:10px;font-size:.85rem;letter-spacing:.04em;color:#cfe6ef;opacity:.85}.credit b{color:#fff;font-weight:800}
   .w1{--c1:#3cc0df;--c2:#1b86a2;--sh:#0f5f75}.w2{--c1:#6ccf7a;--c2:#2f9a4f;--sh:#1d6a33}.w3{--c1:#ff9a68;--c2:#ff6b35;--sh:#b8431a}
   .w4{--c1:#8a7dff;--c2:#4a3fc4;--sh:#2b2380}
   #note{position:fixed;left:50%;top:max(16px,env(safe-area-inset-top));transform:translate(-50%,-30px);opacity:0;pointer-events:none;z-index:50;background:#12303f;color:#fff;border:1px solid #ffffff44;
@@ -538,6 +539,7 @@ body.nuked #note,body.nuked #bossbar,body.nuked #wipe,body.nuked #warp{display:n
         <button class="play" id="playBtn">▶ Jugar</button>
         <div><button class="codeOpen" id="codeOpen">🔑 Códigos</button> <button class="codeOpen" id="perfBtn" aria-pressed="false">⚡ Modo ahorro: no</button></div>
         <div class="tip">Arrastra para disparar · <kbd>A</kbd> / <kbd>D</kbd> cambian de material · <kbd>F</kbd> pantalla completa</div>
+        <div class="credit">Creado por <b>Leo Rueda</b></div>
         <details class="help"><summary>❓ Cómo jugar y controles</summary><div class="hb"><strong>Cómo jugar:</strong> arrastra el proyectil hacia atrás y suelta (si antes lo devuelves a la catapulta o pulsas <strong>Esc</strong>, el disparo se cancela sin gastar munición); la guía de puntos muestra la trayectoria sin viento (el botón <strong>🧭</strong> la cambia a «con viento»). Cambia de material con <strong>A</strong> y <strong>D</strong> (o pulsando su ficha). Las estructuras están <strong>ancladas al suelo</strong> y se agrietan con cada golpe. El <strong>metal</strong> genera una onda de choque proporcional a su velocidad; el <strong>cristal</strong> se fragmenta (rómpelo sobre un volador para que llueva sobre el suelo); la <strong>red</strong> se abre en vuelo (clic, toque o Espacio) y derriba voladores, que se dañan según la altura de caída; el <strong>alcohol</strong> es una botella incendiaria que quema la madera. El <strong>viento</strong> desvía menos a los proyectiles pesados. Cada nivel tiene munición limitada. Con <strong>⏪ Deshacer</strong> (o <strong>Z</strong>) repites el último disparo con el mismo viento y recuperas la munición, pero cuenta como un disparo más en la puntuación. Tras cada nivel verás un <strong>informe</strong> con la física de tu partida, y en el <strong>🔬 Laboratorio libre</strong> puedes ajustar viento y masa. Pulsa <strong>M</strong> para silenciar el sonido y <strong>❓ Ayuda</strong> para repetir el tutorial.</div></details>
       </section>
       <section class="screen" id="screenCodes" hidden>
